@@ -6,20 +6,26 @@ import os
 import subprocess
 import sys
 
-parser = argparse.ArgumentParser(description='fetchMGs extracts the 40 single copy universal marker genes (decribed in Ciccarelli et al., Science, 2006 and Sorek et al., Science, 2007) from genomes and metagenomes in an easy and accurate manner.')
+parser = argparse.ArgumentParser(description='fetchMGs extracts the 40 single copy universal marker genes (decribed in Ciccarelli et al., Science, 2006 and Sorek et al., Science, 2007) from genomes and metagenomes in an easy and accurate manner.', formatter_class=argparse.RawTextHelpFormatter)
+
+# Add -m option that does nothing for legacy
+parser.add_argument('-m', '-mode', action='store_true', help='fetchMGs mode, see below')
 
 subparsers = parser.add_subparsers(title='modes', description='valid modes', dest='mode')
 subparsers.required = True
 
-ext_parser = subparsers.add_parser('extraction', help='extract marker genes from sequences')
-ext_parser.add_argument('files', nargs="+", help='files with sequences from which universal single-copy marker genes should be extracted')
-ext_parser.add_argument('-c', '--cogs', nargs='+', default='all', help='orthologous group id(s) to be extracted; example: "COG0012"')
-ext_parser.add_argument('-o', '--outdir', default='fetchmgs', help='output directory')
-ext_parser.add_argument('-b', '--bitscore', default='data/MG_BitScoreCutoffs.verybesthit.txt', help='path to bitscore cutoff file')
-ext_parser.add_argument('-l', '--library', default='data', help='path to directory that contains hmm models')
-ext_parser.add_argument('-a', '--all', action='store_true', help='output all results; default output is the best result for each COG in each file')
-ext_parser.add_argument('-t', '--threads', default=1, help='number of processors/threads to be used')
-ext_parser.add_argument('--hmmsearch', default='hmmsearch', help='path to hmmsearch executable if not in PATH')
+ext_parser = subparsers.add_parser('extraction', help='extract marker genes from sequences', formatter_class=argparse.RawTextHelpFormatter)
+ext_parser.add_argument('file', help='multi-FASTA file with protein sequences from which universal single-copy marker genes should be extracted')
+ext_parser.add_argument('-c', '-cog_used', nargs='+', default='all', help='orthologous group id(s) to be extracted; example: "COG0012"')
+ext_parser.add_argument('-o', '-outdir', default='fetchmgs', help='output directory')
+ext_parser.add_argument('-b', '-bitscore', default='data/MG_BitScoreCutoffs.allhits.txt', help='path to bitscore cutoff file')
+ext_parser.add_argument('-l', '-library', default='data', help='path to directory that contains hmm models')
+ext_parser.add_argument('-p', '-protein', action='store_true', help='set if nucleotide sequences file for <protein sequences> is not available')
+ext_parser.add_argument('-d', '-dnaFastaFile', help='multi-FASTA file with nucleotide sequences; not neccesary if protein and nucleotide fasta file have the same name except .faa and .fna suffixes')
+ext_parser.add_argument('-v', '-verybesthit_only', action='store_true', help='only extract the best hit of each OG from each genome\nrecommended to use, if extracting sequences from multiple reference genomes in the same file do not use it for metagenomes\nif this option is set fasta identifiers should be in the form: taxID.geneID and, if needed, have "project_id=XXX" in the header\nalternatively, set -i to ignore the headers; then, the best hit of each OG in the whole input file will be selected, regardless of the headers used')
+ext_parser.add_argument('-i', '-ignore_headers', action='store_true', help='if this option is set in addition to -v, the best hit of each COG will be selected\nrecommended to use, if extracting sequences from a single genome in the same file')
+ext_parser.add_argument('-t', '-threads', default=1, help='number of processors/threads to be used')
+ext_parser.add_argument('-x', '-executable', default='bin', help='path to executables used by this script\ndefault is bin/\nif set to \'\' will search for executables in $PATH')
 
 cal_parser = subparsers.add_parser('calibration', help='calibrate bitscores using results from extraction and a mapping file of known OGs')
 cal_parser.add_argument('file', help='file with sequences that include marker genes (true positives)')
@@ -28,41 +34,35 @@ cal_parser.add_argument('-o', '--outdir', default='fetchmgs', help='output direc
 cal_parser.add_argument('-b', '--bitscore', help='path to bitscore cutoff file')
 # None of this mode implemented yet
 
+# Arguments and modifications
 args = parser.parse_args()
-
-# Amino acid codes that aren't ACGT
-aas = ['P', 'V', 'L', 'I', 'M', 'F', 'Y', 'W', 'H', 'K', 'R', 'Q', 'N', 'E', 'D', 'S']
+if args.x != '':
+    if args.x[-1] != "/":
+        args.x = f'{args.x}/'
 
 # Compile list of HMM models
-hmms = glob.glob(f'{args.library}/*.hmm')
-if args.cogs == 'all':
-    args.cogs = [os.path.splitext(os.path.split(x)[1])[0] for x in hmms]
-hmms = {x:f'{args.library}/{x}.hmm' for x in args.cogs}
+hmms = glob.glob(f'{args.l}/*.hmm')
+if args.c == 'all':
+    args.c = [os.path.splitext(os.path.split(x)[1])[0] for x in hmms]
+hmms = {x:f'{args.l}/{x}.hmm' for x in args.c}
 
 # Parse cutoff file
+if args.v:
+    args.b = f'{args.l}/MG_BitScoreCutoffs.verybesthit.txt'
 cutoffs = {}
-with open(args.bitscore, 'r') as fi:
+with open(args.b, 'r') as fi:
     for line in fi.readlines():
         line = line.strip()
         if line[0] != '#':
            items = line.split('\t')
            cutoffs[items[0]] = int(items[1])
 
-def is_nucl(record):
-    '''
-    Guess whether a SeqRecord is protein or nucleotide sequence.
-    '''
-    if any(item in aas for item in record.seq.upper()):
-        return(False)
-    else:
-        return(True)
-
-def run_hmmsearch(hmm_path, stream, cutoff, threads, hmmsearch):
+def run_hmmsearch(hmm_path, file, cutoff, threads, hmmsearch):
     '''
     Run hmmsearch from HMMER3, one hmm file against one set of protein records, then parse the results.
     '''
     try:
-        output = subprocess.check_output(f'{hmmsearch} --noali --notextw --cpu {threads} -T {cutoff} {hmm_path} -', input=stream.encode(), shell=True).decode()
+        output = subprocess.check_output(f'{hmmsearch}hmmsearch --noali --notextw --cpu {threads} -T {cutoff} {hmm_path} {file}', shell=True).decode()
     except subprocess.CalledProcessError as err:
         sys.stdout.write(f'\t{err}\n')
         sys.exit(1)
@@ -88,90 +88,57 @@ def parse_hmmsearch(output):
             countdown -= 1
     return(hits)
 
-# Main loop through files to create protein record stream to send to hmmsearch
-all_results = {}
-all_prot_seqs = {}
-all_nucl_seqs = {}
-for file in args.files:
-    results = {}
-    prot_seqs = {}
-    nucl_seqs = {}
-    # Is file nucleotide sequences?
-    records = list(SeqIO.parse(file, 'fasta'))
-    file_is_nucl = is_nucl(records[0])
-    if file_is_nucl:
-        nucl_records = records
-        # Check if there is a corresponding protein file
-        prot_file = f'{os.path.splitext(file)[0]}.faa'
-        sys.stdout.write(f'{file} appears to be nucleotide sequences, checking for protein sequence file {prot_file}:\n')
-        if os.path.exists(prot_file):
-            sys.stdout.write(f'    Found.\nWill run hmmsearch on {prot_file}:\n')
-            prot_records = list(SeqIO.parse(prot_file, 'fasta'))
-        else:
-            # If not, translate sequences and create stream of pretend file contents
-            sys.stdout.write(f'    Not found. Will run hmmsearch on translated {file}:\n')
-            prot_records = []
-            for record in records: # Has to be a loop to avoid unknown ids
-                prot_record = record.translate()
-                prot_record.id = record.id
-                prot_records.append(prot_record)
+# Organise files and records
+results = {}
+prot_seqs = {}
+
+prot_records = SeqIO.parse(args.file, 'fasta')
+sys.stdout.write(f'Protein sequences: {args.file}\n')
+# Check for nucleotide file
+if not args.p:
+    if args.d is not None:
+        nucl_records = SeqIO.parse(args.d, 'fasta')
+        sys.stdout.write(f'Nucleotide sequences: {args.d}\n')
     else:
-        # Check if there is a corresponding nucleotide file
-        nucl_file = f'{os.path.splitext(file)[0]}.fna'
-        sys.stdout.write(f'{file} appears to be protein sequences, checking for nucleotide sequence file {nucl_file}:\n')
+        nucl_file = f'{os.path.splitext(args.file)[0]}.fna'
         if os.path.exists(nucl_file):
-            sys.stdout.write(f'    Found.\n')
-            nucl_records = list(SeqIO.parse(nucl_file, 'fasta'))
+            nucl_records = SeqIO.parse(nucl_file, 'fasta')
+            sys.stdout.write(f'Nucleotide sequences: {nucl_file}\n')
         else:
-            sys.stdout.write(f'    Not found. Will only output protein sequences.\n')
             nucl_records = None
-        prot_records = list(SeqIO.parse(file, 'fasta'))
+            sys.stdout.write(f'Nucleotide sequences: none found\n')
+else:
+    nucl_records = None
+    sys.stdout.write(f'Nucleotide sequences: none specified\n')
 
-    # Create stream
-    prot_stream = ''.join(f'>{x.id}\n{x.seq}\n' for x in prot_records)
+# Go through HMMs and save results
+for hmm in hmms.keys():
+    sys.stdout.write(f'    {hmm}\n')
+    results[hmm] = run_hmmsearch(hmms[hmm], args.file, cutoffs[hmm], args.t, args.x)
 
-    # Go through HMMs and save results
+# Filter if -v
+if args.v:
     for hmm in hmms.keys():
-        sys.stdout.write(f'    {hmm}\n')
-        results[hmm] = run_hmmsearch(hmms[hmm], prot_stream, cutoffs[hmm], args.threads, args.hmmsearch)
-        if nucl_records is not None:
-            if args.all:
-                nucl_seqs[hmm] = [x for x in nucl_records if x.id in results[hmm].keys()]
-            else:
-                best_hit = max(results[hmm], key=results[hmm].get)
-                nucl_seqs[hmm] = [x for x in nucl_records if x.id == best_hit]
-        else:
-            nucl_seqs[hmm] = None
-        if args.all:
-            prot_seqs[hmm] = [x for x in prot_records if x.id in results[hmm].keys()]
-        else:
-            best_hit = max(results[hmm], key=results[hmm].get)
-            prot_seqs[hmm] = [x for x in prot_records if x.id == best_hit]
+        best_hit = max(results[hmm], key=results[hmm].get)
+        results[hmm] = {best_hit:results[hmm][best_hit]}
 
-    all_results[file] = results
-    all_prot_seqs[file] = prot_seqs
-    all_nucl_seqs[file] = nucl_seqs
-
-# Rearrange sequences
-all_prot_seqs = {hmm:{file:all_prot_seqs[file][hmm] for file in all_prot_seqs.keys()} for hmm in hmms.keys()}
-all_nucl_seqs = {hmm:{file:all_nucl_seqs[file][hmm] for file in all_nucl_seqs.keys()} for hmm in hmms.keys()}
+# Only keep sequence records with hits
+hit_ids = [k for result in results.values() for k in result.keys()]
+prot_hits = {x.id:x for x in prot_records if x.id in hit_ids}
+if nucl_records is not None:
+    nucl_hits = {x.id:x for x in nucl_records if x.id in hit_ids}
 
 # Output results table
-os.makedirs(args.outdir, exist_ok=True)
-with open(os.path.join(args.outdir, "marker_genes_scores.tsv"), 'w') as fo:
-    for file in args.files:
-        for hmm in hmms.keys():
-            if args.all:
-                for prot, score in all_results[file][hmm].items():
-                    fo.write(f'{file}\t{hmm}\t{prot}\t{score}\n')
-            else:
-                best_hit = max(all_results[file][hmm], key=all_results[file][hmm].get)
-                fo.write(f'{file}\t{hmm}\t{best_hit}\t{all_results[file][hmm][best_hit]}\n')
+os.makedirs(args.o, exist_ok=True)
+with open(os.path.join(args.o, "marker_genes_scores.tsv"), 'w') as fo:
+    for hmm in hmms.keys():
+        for id, score in results[hmm].items():
+            fo.write(f'{id}\t{score}\t{hmm}\n')
 
 # Output sequences
 for hmm in hmms.keys():
-    with open(os.path.join(args.outdir, f'{hmm}.faa'), 'w') as fo:
-        for file in args.files:
-            filename = os.path.split(file)[1]
-            for seq in all_prot_seqs[hmm][file]:
-                fo.write(f'>{filename}_{seq.id}\n{seq.seq}\n')
+    with open(os.path.join(args.o, f'{hmm}.faa'), 'w') as fo:
+        ids = sorted(results[hmm], key=results[hmm].get, reverse=True)
+        for id in ids:
+            seq = prot_hits[id]
+            fo.write(f'>{seq.id}\n{seq.seq}\n')
