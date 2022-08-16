@@ -22,7 +22,7 @@ ext_parser.add_argument('-b', '-bitscore', default='data/MG_BitScoreCutoffs.allh
 ext_parser.add_argument('-l', '-library', default='data', help='path to directory that contains hmm models')
 ext_parser.add_argument('-p', '-protein', action='store_true', help='set if nucleotide sequences file for <protein sequences> is not available')
 ext_parser.add_argument('-d', '-dnaFastaFile', help='multi-FASTA file with nucleotide sequences; not neccesary if protein and nucleotide fasta file have the same name except .faa and .fna suffixes')
-ext_parser.add_argument('-v', '-verybesthit_only', action='store_true', help='only extract the best hit of each OG from each genome\nrecommended to use, if extracting sequences from multiple reference genomes in the same file do not use it for metagenomes\nif this option is set fasta identifiers should be in the form: taxID.geneID and, if needed, have "project_id=XXX" in the header\nalternatively, set -i to ignore the headers; then, the best hit of each OG in the whole input file will be selected, regardless of the headers used')
+ext_parser.add_argument('-v', '-verybesthit_only', action='store_true', help='only extract the best hit of each COG from each genome\nrecommended to use, if extracting sequences from multiple reference genomes in the same file do not use it for metagenomes\nif this option is set fasta identifiers should be in the form: taxID.geneID and, if needed, have "project_id=XXX" in the header\nalternatively, set -i to ignore the headers; then, the best hit of each OG in the whole input file will be selected, regardless of the headers used')
 ext_parser.add_argument('-i', '-ignore_headers', action='store_true', help='if this option is set in addition to -v, the best hit of each COG will be selected\nrecommended to use, if extracting sequences from a single genome in the same file')
 ext_parser.add_argument('-t', '-threads', default=1, help='number of processors/threads to be used')
 ext_parser.add_argument('-x', '-executable', default='bin', help='path to executables used by this script\ndefault is bin/\nif set to \'\' will search for executables in $PATH')
@@ -44,6 +44,7 @@ if args.x != '':
 hmms = glob.glob(f'{args.l}/*.hmm')
 if args.c == 'all':
     args.c = [os.path.splitext(os.path.split(x)[1])[0] for x in hmms]
+args.c = sorted(args.c)
 hmms = {x:f'{args.l}/{x}.hmm' for x in args.c}
 
 # Parse cutoff file
@@ -89,9 +90,6 @@ def parse_hmmsearch(output):
     return(hits)
 
 # Organise files and records
-results = {}
-prot_seqs = {}
-
 prot_records = SeqIO.parse(args.file, 'fasta')
 sys.stdout.write(f'Protein sequences: {args.file}\n')
 # Check for nucleotide file
@@ -112,18 +110,32 @@ else:
     sys.stdout.write(f'Nucleotide sequences: none specified\n')
 
 # Go through HMMs and save results
+results = {}
 for hmm in hmms.keys():
     sys.stdout.write(f'    {hmm}\n')
     results[hmm] = run_hmmsearch(hmms[hmm], args.file, cutoffs[hmm], args.t, args.x)
+hit_ids = [k for result in results.values() for k in result.keys()]
+
+# Get tax_ids if there are multiple genomes
+if not args.i:
+    if len(hit_ids[0].split(".")) > 1:
+        tax_ids = set(x.split(".")[0] for x in hit_ids)
+    else:
+        tax_ids = None
 
 # Filter if -v
 if args.v:
     for hmm in hmms.keys():
-        best_hit = max(results[hmm], key=results[hmm].get)
-        results[hmm] = {best_hit:results[hmm][best_hit]}
+        if tax_ids is not None:
+            for tax_id in tax_ids:
+                genome_results = {k:v for k,v in results[hmm].items() if k.split(".")[0]==tax_id}
+                best_hit = max(genome_results, key=genome_results.get)
+                [results[hmm].pop(k) for k in genome_results.keys() if k != best_hit]
+        else:
+            best_hit = max(results[hmm], key=results[hmm].get)
+            results[hmm] = {best_hit:results[hmm][best_hit]}
 
 # Only keep sequence records with hits
-hit_ids = [k for result in results.values() for k in result.keys()]
 prot_hits = {x.id:x for x in prot_records if x.id in hit_ids}
 if nucl_records is not None:
     nucl_hits = {x.id:x for x in nucl_records if x.id in hit_ids}
@@ -132,8 +144,14 @@ if nucl_records is not None:
 os.makedirs(args.o, exist_ok=True)
 with open(os.path.join(args.o, "marker_genes_scores.tsv"), 'w') as fo:
     for hmm in hmms.keys():
-        for id, score in results[hmm].items():
-            fo.write(f'{id}\t{score}\t{hmm}\n')
+        for id, score in sorted(results[hmm].items()):
+            fo.write(f'{id}\t{score}\t{hmm}\t')
+            project_id = re.search('project_id="(.+?)"', prot_hits[id].description)
+            if project_id is not None:
+                tax_id = prot_hits[id].id.split(".")[0]
+                fo.write(f'{tax_id}.{project_id.group(1)}\n')
+            else:
+                fo.write('-\n')
 
 # Output sequences
 for hmm in hmms.keys():
@@ -141,4 +159,10 @@ for hmm in hmms.keys():
         ids = sorted(results[hmm], key=results[hmm].get, reverse=True)
         for id in ids:
             seq = prot_hits[id]
-            fo.write(f'>{seq.id}\n{seq.seq}\n')
+            fo.write(f'>{seq.description}\n{seq.seq}\n')
+    if nucl_records is not None:
+        with open(os.path.join(args.o, f'{hmm}.fna'), 'w') as fo:
+            ids = sorted(results[hmm], key=results[hmm].get, reverse=True)
+            for id in ids:
+                seq = nucl_hits[id]
+                fo.write(f'>{seq.description}\n{seq.seq}\n')
