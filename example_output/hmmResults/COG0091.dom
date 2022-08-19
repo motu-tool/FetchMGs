@@ -1,0 +1,18 @@
+#                                                                            --- full sequence --- -------------- this domain -------------   hmm coord   ali coord   env coord
+# target name        accession   tlen query name           accession   qlen   E-value  score  bias   #  of  c-Evalue  i-Evalue  score  bias  from    to  from    to  from    to  acc description of target
+#------------------- ---------- ----- -------------------- ---------- ----- --------- ------ ----- --- --- --------- --------- ------ ----- ----- ----- ----- ----- ----- ----- ---- ---------------------
+1148.SYNGTS_0770     -            121 COG0091              -            368   1.2e-58  199.6   0.5   1   1   2.7e-62   1.3e-58  199.6   0.5    34   147     3   116     1   121 0.96 protein_id="BAK49518.1" gene="rpl22" product="50S ribosomal protein L22" GI="339273031" note="ORF_ID:sll1803" project_id="67081"
+1089456.NCGM2_5503   -             92 COG0091              -            368   8.6e-48  163.9   2.4   1   1     2e-51   9.4e-48  163.8   2.4    58   148     2    92     1    92 0.99 protein_id="BAK92324.1" gene="rplV" product="50S ribosomal protein L22" GI="348036964" note="similar to GI:116052293; similar to PA14_08900 of P. aeruginosa UCBPP-PA14" project_id="73453"
+944546.ABED_0704     -            110 COG0091              -            368   1.2e-46  160.2   6.0   1   1   2.7e-50   1.2e-46  160.1   6.0    40   149     1   106     1   110 0.97 protein_id="BAK70421.1" product="50S ribosomal protein L22" GI="345468970" project_id="61719"
+944547.ABLL_0979     -            110 COG0091              -            368   2.4e-46  159.1   5.4   1   1   5.6e-50   2.6e-46  159.0   5.4    40   149     1   106     1   110 0.97 protein_id="BAK72854.1" product="50S ribosomal protein L22" GI="345471404" project_id="61721"
+1037409.BJ6T_43920   -            128 COG0091              -            368   3.1e-46  158.8   6.1   1   1   7.2e-50   3.3e-46  158.7   6.1    28   151     2   125     1   128 0.96 protein_id="BAL09661.1" gene="rplV" product="50S ribosomal protein L22" GI="354956982" project_id="67463"
+#
+# Program:         hmmsearch
+# Version:         3.3.2 (Nov 2020)
+# Pipeline mode:   SEARCH
+# Query file:      data/COG0091.hmm
+# Target file:     ../../../../fetchMGs/example_datasets/example_data_genomes.faa
+# Option settings: bin/hmmsearch -o ../../../example_output/hmmResults/COG0091.out --domtblout ../../../example_output/hmmResults/COG0091.dom --noali --notextw -T 60 --cpu 8 data/COG0091.hmm ../../../../fetchMGs/example_datasets/example_data_genomes.faa 
+# Current dir:     /nfs/nas22/fs2202/biol_micro_bioinf/software/fetchmgs_dev/package/src/fetchMGs
+# Date:            Fri Aug 19 15:58:35 2022
+# [ok]

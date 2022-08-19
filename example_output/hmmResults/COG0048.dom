@@ -1,0 +1,18 @@
+#                                                                            --- full sequence --- -------------- this domain -------------   hmm coord   ali coord   env coord
+# target name        accession   tlen query name           accession   qlen   E-value  score  bias   #  of  c-Evalue  i-Evalue  score  bias  from    to  from    to  from    to  acc description of target
+#------------------- ---------- ----- -------------------- ---------- ----- --------- ------ ----- --- --- --------- --------- ------ ----- ----- ----- ----- ----- ----- ----- ---- ---------------------
+1037409.BJ6T_43820   -            123 COG0048              -            148   1.7e-53  180.8   5.5   1   1   7.4e-57   3.5e-53  179.8   5.5     2   147     1   123     1   123 0.92 protein_id="BAL09651.1" gene="rpsL" product="30S ribosomal protein S12" GI="354956972" project_id="67463"
+1089456.NCGM2_5513   -            123 COG0048              -            148   2.8e-53  180.1   4.3   1   1   1.8e-56   8.6e-53  178.5   4.3     2   147     1   123     1   123 0.96 protein_id="BAK92334.1" gene="rpsL" product="30S ribosomal protein S12" GI="348036974" note="similar to GI:116052303; similar to PA14_08790 of P. aeruginosa UCBPP-PA14" project_id="73453"
+1148.SYNGTS_1749     -            126 COG0048              -            148   5.6e-53  179.1   5.2   1   1   2.5e-56   1.2e-52  178.1   5.2     2   147     1   123     1   124 0.91 protein_id="BAK50497.1" gene="rps12" product="30S ribosomal protein S12" GI="339274010" note="ORF_ID:sll1096" project_id="67081"
+944546.ABED_1798     -            127 COG0048              -            148   3.9e-51  173.1   5.4   1   1   2.1e-54   9.6e-51  171.9   5.4     2   148     1   124     1   124 0.95 protein_id="BAK71515.1" product="30S ribosomal protein S12" GI="345470064" project_id="61719"
+944547.ABLL_2421     -            127 COG0048              -            148   4.1e-51  173.1   5.3   1   1     2e-54   9.3e-51  171.9   5.3     2   148     1   124     1   124 0.94 protein_id="BAK74296.1" product="30S ribosomal protein S12" GI="345472846" project_id="61721"
+#
+# Program:         hmmsearch
+# Version:         3.3.2 (Nov 2020)
+# Pipeline mode:   SEARCH
+# Query file:      data/COG0048.hmm
+# Target file:     ../../../../fetchMGs/example_datasets/example_data_genomes.faa
+# Option settings: bin/hmmsearch -o ../../../example_output/hmmResults/COG0048.out --domtblout ../../../example_output/hmmResults/COG0048.dom --noali --notextw -T 60 --cpu 8 data/COG0048.hmm ../../../../fetchMGs/example_datasets/example_data_genomes.faa 
+# Current dir:     /nfs/nas22/fs2202/biol_micro_bioinf/software/fetchmgs_dev/package/src/fetchMGs
+# Date:            Fri Aug 19 15:58:32 2022
+# [ok]

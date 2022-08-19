@@ -1,0 +1,110 @@
+# hmmsearch :: search profile(s) against a sequence database
+# HMMER 3.3.2 (Nov 2020); http://hmmer.org/
+# Copyright (C) 2020 Howard Hughes Medical Institute.
+# Freely distributed under the BSD open source license.
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+# query HMM file:                  data/COG0012.hmm
+# target sequence database:        ../../../../fetchMGs/example_datasets/example_data_genomes.faa
+# output directed to file:         ../../../example_output/hmmResults/COG0012.out
+# per-dom hits tabular output:     ../../../example_output/hmmResults/COG0012.dom
+# show alignments in output:       no
+# max ASCII text line length:      unlimited
+# sequence reporting threshold:    score >= 60
+# number of worker threads:        8
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+Query:       COG0012  [M=366]
+Scores for complete sequences (score includes all domains):
+   --- full sequence ---   --- best 1 domain ---    -#dom-
+    E-value  score  bias    E-value  score  bias    exp  N  Sequence           Description
+    ------- ------ -----    ------- ------ -----   ---- --  --------           -----------
+   7.9e-169  562.1   0.0   8.8e-169  561.9   0.0    1.0  1  1089456.NCGM2_0913  protein_id="BAK87790.1" gene="ychF" product="translation-associated GTPase" GI="348032430" note="similar to GI:116052818; similar to PA14_61820 of P. aeruginosa UCBPP-PA14" project_id="73453"
+   2.8e-163  543.8   0.1   3.2e-163  543.6   0.1    1.0  1  1037409.BJ6T_18600  protein_id="BAL07141.1" product="GTP-binding protein" GI="354954462" project_id="67463"
+   1.7e-162  541.3   0.1   1.9e-162  541.1   0.1    1.0  1  1148.SYNGTS_1374    protein_id="BAK50122.1" gene="ychF" GI="339273635" note="ORF_ID:sll0245" project_id="67081"
+     3e-156  520.7   2.4   3.4e-156  520.5   2.4    1.0  1  944546.ABED_0682    protein_id="BAK70399.1" product="GTP-binding protein" GI="345468948" project_id="61719"
+   4.6e-155  516.8   2.5   5.1e-155  516.6   2.5    1.0  1  944547.ABLL_0922    protein_id="BAK72797.1" product="GTP-binding protein" GI="345471347" project_id="61721"
+    1.9e-22   80.4   0.7    6.4e-19   68.8   0.4    3.1  2  1148.SYNGTS_0372    protein_id="BAK49120.1" gene="obgE" product="GTP-binding protein" GI="339272633" note="ORF_ID:slr1090" project_id="67081"
+    2.1e-21   77.0   2.0    1.9e-19   70.5   1.8    2.1  1  944547.ABLL_2084    protein_id="BAK73959.1" product="GTP-binding protein" GI="345472509" project_id="61721"
+    2.6e-20   73.4   2.1    8.9e-10   38.7   0.0    2.9  3  1037409.BJ6T_03900  protein_id="BAL05688.1" product="GTP-binding protein" GI="354953009" project_id="67463"
+    3.3e-20   73.1   0.4      2e-18   67.2   0.4    2.2  1  1089456.NCGM2_1030  protein_id="BAK87905.1" gene="obgE" product="GTPase" GI="348032545" note="similar to GI:116054395; similar to PA14_60445 of P. aeruginosa UCBPP-PA14" project_id="73453"
+    2.2e-19   70.3   2.8    2.2e-17   63.8   2.8    2.2  1  944546.ABED_1492    protein_id="BAK71209.1" product="GTP-binding protein" GI="345469758" project_id="61719"
+    1.5e-16   61.0   0.1    9.7e-08   32.0   0.1    4.3  3  1037409.BJ6T_57670  protein_id="BAL11022.1" product="GTP-binding protein" GI="354958343" project_id="67463"
+
+
+Domain annotation for each sequence:
+>> 1089456.NCGM2_0913  protein_id="BAK87790.1" gene="ychF" product="translation-associated GTPase" GI="348032430" note="similar to GI:116052818; similar to PA14_61820 of P. aeruginosa UCBPP-PA14" project_id="73453"
+   #    score  bias  c-Evalue  i-Evalue hmmfrom  hmm to    alifrom  ali to    envfrom  env to     acc
+ ---   ------ ----- --------- --------- ------- -------    ------- -------    ------- -------    ----
+   1 !  561.9   0.0  4.2e-172  8.8e-169       1     366 []       1     366 []       1     366 [] 0.98
+
+>> 1037409.BJ6T_18600  protein_id="BAL07141.1" product="GTP-binding protein" GI="354954462" project_id="67463"
+   #    score  bias  c-Evalue  i-Evalue hmmfrom  hmm to    alifrom  ali to    envfrom  env to     acc
+ ---   ------ ----- --------- --------- ------- -------    ------- -------    ------- -------    ----
+   1 !  543.6   0.1  1.5e-166  3.2e-163       1     365 [.       1     364 [.       1     365 [] 0.99
+
+>> 1148.SYNGTS_1374  protein_id="BAK50122.1" gene="ychF" GI="339273635" note="ORF_ID:sll0245" project_id="67081"
+   #    score  bias  c-Evalue  i-Evalue hmmfrom  hmm to    alifrom  ali to    envfrom  env to     acc
+ ---   ------ ----- --------- --------- ------- -------    ------- -------    ------- -------    ----
+   1 !  541.1   0.1  8.8e-166  1.9e-162       3     366 .]       2     363 .]       1     363 [] 0.99
+
+>> 944546.ABED_0682  protein_id="BAK70399.1" product="GTP-binding protein" GI="345468948" project_id="61719"
+   #    score  bias  c-Evalue  i-Evalue hmmfrom  hmm to    alifrom  ali to    envfrom  env to     acc
+ ---   ------ ----- --------- --------- ------- -------    ------- -------    ------- -------    ----
+   1 !  520.5   2.4  1.6e-159  3.4e-156       1     366 []       1     367 []       1     367 [] 0.97
+
+>> 944547.ABLL_0922  protein_id="BAK72797.1" product="GTP-binding protein" GI="345471347" project_id="61721"
+   #    score  bias  c-Evalue  i-Evalue hmmfrom  hmm to    alifrom  ali to    envfrom  env to     acc
+ ---   ------ ----- --------- --------- ------- -------    ------- -------    ------- -------    ----
+   1 !  516.6   2.5  2.4e-158  5.1e-155       1     366 []       1     367 []       1     367 [] 0.97
+
+>> 1148.SYNGTS_0372  protein_id="BAK49120.1" gene="obgE" product="GTP-binding protein" GI="339272633" note="ORF_ID:slr1090" project_id="67081"
+   #    score  bias  c-Evalue  i-Evalue hmmfrom  hmm to    alifrom  ali to    envfrom  env to     acc
+ ---   ------ ----- --------- --------- ------- -------    ------- -------    ------- -------    ----
+   1 !   68.8   0.4     3e-22   6.4e-19       4     112 ..     161     253 ..     158     267 .. 0.87
+   2 ?    2.9   0.0     0.034        71     199     251 ..     270     320 ..     260     353 .. 0.68
+
+>> 944547.ABLL_2084  protein_id="BAK73959.1" product="GTP-binding protein" GI="345472509" project_id="61721"
+   #    score  bias  c-Evalue  i-Evalue hmmfrom  hmm to    alifrom  ali to    envfrom  env to     acc
+ ---   ------ ----- --------- --------- ------- -------    ------- -------    ------- -------    ----
+   1 !   70.5   1.8     9e-23   1.9e-19       4     133 ..     160     271 ..     157     285 .. 0.83
+
+>> 1037409.BJ6T_03900  protein_id="BAL05688.1" product="GTP-binding protein" GI="354953009" project_id="67463"
+   #    score  bias  c-Evalue  i-Evalue hmmfrom  hmm to    alifrom  ali to    envfrom  env to     acc
+ ---   ------ ----- --------- --------- ------- -------    ------- -------    ------- -------    ----
+   1 !   38.7   0.0   4.2e-13   8.9e-10       4      45 ..     161     202 ..     158     208 .. 0.94
+   2 !   31.8   0.1   5.5e-11   1.2e-07      70     107 ..     210     247 ..     205     264 .. 0.91
+   3 ?    1.3   0.1       0.1   2.1e+02     195     233 ..     265     304 ..     250     324 .. 0.78
+
+>> 1089456.NCGM2_1030  protein_id="BAK87905.1" gene="obgE" product="GTPase" GI="348032545" note="similar to GI:116054395; similar to PA14_60445 of P. aeruginosa UCBPP-PA14" project_id="73453"
+   #    score  bias  c-Evalue  i-Evalue hmmfrom  hmm to    alifrom  ali to    envfrom  env to     acc
+ ---   ------ ----- --------- --------- ------- -------    ------- -------    ------- -------    ----
+   1 !   67.2   0.4   9.4e-22     2e-18       4     135 ..     161     269 ..     158     320 .. 0.84
+
+>> 944546.ABED_1492  protein_id="BAK71209.1" product="GTP-binding protein" GI="345469758" project_id="61719"
+   #    score  bias  c-Evalue  i-Evalue hmmfrom  hmm to    alifrom  ali to    envfrom  env to     acc
+ ---   ------ ----- --------- --------- ------- -------    ------- -------    ------- -------    ----
+   1 !   63.8   2.8     1e-20   2.2e-17       4     113 ..     160     253 ..     157     312 .. 0.86
+
+>> 1037409.BJ6T_57670  protein_id="BAL11022.1" product="GTP-binding protein" GI="354958343" project_id="67463"
+   #    score  bias  c-Evalue  i-Evalue hmmfrom  hmm to    alifrom  ali to    envfrom  env to     acc
+ ---   ------ ----- --------- --------- ------- -------    ------- -------    ------- -------    ----
+   1 !   32.0   0.1   4.6e-11   9.7e-08       1     104 [.       1      90 [.       1      95 [. 0.71
+   2 !    5.8   0.0    0.0043       9.1     190     215 ..     100     125 ..      93     165 .. 0.81
+   3 !   14.2   0.0   1.2e-05     0.025       4      23 ..     190     209 ..     188     229 .. 0.82
+
+
+
+Internal pipeline statistics summary:
+-------------------------------------
+Query model(s):                            1  (366 nodes)
+Target sequences:                      23272  (7230323 residues searched)
+Passed MSV filter:                      1347  (0.0578807); expected 465.4 (0.02)
+Passed bias filter:                      825  (0.0354503); expected 465.4 (0.02)
+Passed Vit filter:                       237  (0.0101839); expected 23.3 (0.001)
+Passed Fwd filter:                        55  (0.00236336); expected 0.2 (1e-05)
+Initial search space (Z):              23272  [actual number of targets]
+Domain search space  (domZ):              11  [number of targets reported over threshold]
+# CPU time: 0.50u 0.03s 00:00:00.53 Elapsed: 00:00:00.11
+# Mc/sec: 23753.58
+//
+[ok]

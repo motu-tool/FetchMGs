@@ -65,42 +65,36 @@ def parse_cutoffs(args):
                cutoffs[items[0]] = int(items[1])
     return(cutoffs)
 
-def run_hmmsearch(hmm_path, file, cutoff, threads, hmmsearch):
+def run_hmmsearch(hmm, hmm_path, cutoff, args):
     '''
     Run hmmsearch from HMMER3, one hmm file against one set of protein records, then parse the results.
     '''
+    hmmsearch_path = os.path.join(args.x, 'hmmsearch')
+    out_path = os.path.join(args.o, f'hmmResults/{hmm}.out')
+    tbl_path = os.path.join(args.o, f'hmmResults/{hmm}.dom')
     try:
-        output = subprocess.check_output(f'{hmmsearch}hmmsearch --noali --notextw --cpu {threads} -T {cutoff} {hmm_path} {file}', shell=True).decode()
+        subprocess.run(f'{hmmsearch_path} --noali --notextw --cpu {args.t} -T {cutoff} -o {out_path} --domtblout {tbl_path} {hmm_path} {args.file}', shell=True)
     except subprocess.CalledProcessError as err:
         sys.stderr.write(f'\t{err}\n')
         sys.exit(1)
-    results = parse_hmmsearch(output)
+    results = parse_hmmsearch(tbl_path)
     return(results)
 
-def parse_hmmsearch(output):
+def parse_hmmsearch(tbl_path):
     '''
     Parse the standard output from hmmsearch to get scores by sequence.
     '''
     hits = {}
-    countdown = 1000
-    for line in output.split("\n"):
-        line = line.strip()
-        if line[0:6] == 'Scores':
-            countdown = 4
-        if len(line) == 0:
-            countdown = 1000
-        if countdown == 0:
-            items = re.split("\s+", line)
-            hits[items[8]] = float(items[1])
-        else:
-            countdown -= 1
+    with open(tbl_path, 'r') as fi:
+        for line in fi.readlines():
+            line = line.strip()
+            if line[0] != '#':
+                items = re.split('\s+', line)
+                hits[items[0]] = float(items[7])
     return(hits)
 
 # Arguments and modifications
 args = parser.parse_args()
-if args.x != '':
-    if args.x[-1] != "/":
-        args.x = f'{args.x}/'
 
 # Compile list of HMM models
 hmms = glob.glob(f'{args.l}/*.hmm')
@@ -108,6 +102,10 @@ if args.c == 'all':
     args.c = [os.path.splitext(os.path.split(x)[1])[0] for x in hmms]
 args.c = sorted(args.c)
 hmms = {x:f'{args.l}/{x}.hmm' for x in args.c}
+
+# Create output directories
+os.makedirs(args.o, exist_ok=True)
+os.makedirs(os.path.join(args.o, 'hmmResults'), exist_ok=True)
 
 # Parse cutoff file
 if args.mode == 'calibration':
@@ -156,7 +154,7 @@ else:
 results = {}
 for hmm in hmms.keys():
     sys.stdout.write(f'    {hmm}\n')
-    results[hmm] = run_hmmsearch(hmms[hmm], args.file, cutoffs[hmm], args.t, args.x)
+    results[hmm] = run_hmmsearch(hmm, hmms[hmm], cutoffs[hmm], args)
 hit_ids = [k for result in results.values() for k in result.keys()]
 
 # Get tax_ids if there are multiple genomes
@@ -221,7 +219,6 @@ if args.mode == 'calibration':
             fo.write(f'{hmm}\t{new_cutoffs[hmm][0]}\t{new_cutoffs[hmm][4]}\t{new_cutoffs[hmm][5]}\n')
             
 # Output results table
-os.makedirs(args.o, exist_ok=True)
 with open(os.path.join(args.o, "marker_genes_scores.tsv"), 'w') as fo:
     for hmm in hmms.keys():
         for id, score in sorted(results[hmm].items()):

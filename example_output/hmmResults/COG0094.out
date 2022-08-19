@@ -1,0 +1,69 @@
+# hmmsearch :: search profile(s) against a sequence database
+# HMMER 3.3.2 (Nov 2020); http://hmmer.org/
+# Copyright (C) 2020 Howard Hughes Medical Institute.
+# Freely distributed under the BSD open source license.
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+# query HMM file:                  data/COG0094.hmm
+# target sequence database:        ../../../../fetchMGs/example_datasets/example_data_genomes.faa
+# output directed to file:         ../../../example_output/hmmResults/COG0094.out
+# per-dom hits tabular output:     ../../../example_output/hmmResults/COG0094.dom
+# show alignments in output:       no
+# max ASCII text line length:      unlimited
+# sequence reporting threshold:    score >= 60
+# number of worker threads:        8
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+Query:       COG0094  [M=177]
+Scores for complete sequences (score includes all domains):
+   --- full sequence ---   --- best 1 domain ---    -#dom-
+    E-value  score  bias    E-value  score  bias    exp  N  Sequence           Description
+    ------- ------ -----    ------- ------ -----   ---- --  --------           -----------
+    6.3e-85  283.6   0.1    6.9e-85  283.5   0.1    1.0  1  1089456.NCGM2_5496  protein_id="BAK92317.1" gene="rplE" product="50S ribosomal protein L5" GI="348036957" note="similar to GI:116052286; similar to PA14_08970 of P. aeruginosa UCBPP-PA14" project_id="73453"
+    2.5e-84  281.7   0.0    2.7e-84  281.5   0.0    1.0  1  1148.SYNGTS_0763    protein_id="BAK49511.1" gene="rpl5" product="50S ribosomal protein L5" GI="339273024" note="ORF_ID:sll1808; shortened N-terminus" project_id="67081"
+    2.2e-83  278.6   0.1    2.3e-83  278.5   0.1    1.0  1  1037409.BJ6T_43990  protein_id="BAL09668.1" gene="rplE" product="50S ribosomal protein L5" GI="354956989" project_id="67463"
+    6.8e-68  228.1   0.6      8e-68  227.9   0.6    1.0  1  944546.ABED_0711    protein_id="BAK70428.1" product="50S ribosomal protein L5" GI="345468977" project_id="61719"
+    5.3e-67  225.2   0.2    6.3e-67  225.0   0.2    1.0  1  944547.ABLL_0986    protein_id="BAK72861.1" product="50S ribosomal protein L5" GI="345471411" project_id="61721"
+
+
+Domain annotation for each sequence:
+>> 1089456.NCGM2_5496  protein_id="BAK92317.1" gene="rplE" product="50S ribosomal protein L5" GI="348036957" note="similar to GI:116052286; similar to PA14_08970 of P. aeruginosa UCBPP-PA14" project_id="73453"
+   #    score  bias  c-Evalue  i-Evalue hmmfrom  hmm to    alifrom  ali to    envfrom  env to     acc
+ ---   ------ ----- --------- --------- ------- -------    ------- -------    ------- -------    ----
+   1 !  283.5   0.1   1.5e-88   6.9e-85       2     176 ..       3     177 ..       1     179 [] 0.99
+
+>> 1148.SYNGTS_0763  protein_id="BAK49511.1" gene="rpl5" product="50S ribosomal protein L5" GI="339273024" note="ORF_ID:sll1808; shortened N-terminus" project_id="67081"
+   #    score  bias  c-Evalue  i-Evalue hmmfrom  hmm to    alifrom  ali to    envfrom  env to     acc
+ ---   ------ ----- --------- --------- ------- -------    ------- -------    ------- -------    ----
+   1 !  281.5   0.0   5.8e-88   2.7e-84       2     176 ..       4     178 ..       1     180 [] 0.99
+
+>> 1037409.BJ6T_43990  protein_id="BAL09668.1" gene="rplE" product="50S ribosomal protein L5" GI="354956989" project_id="67463"
+   #    score  bias  c-Evalue  i-Evalue hmmfrom  hmm to    alifrom  ali to    envfrom  env to     acc
+ ---   ------ ----- --------- --------- ------- -------    ------- -------    ------- -------    ----
+   1 !  278.5   0.1     5e-87   2.3e-83       2     176 ..       9     183 ..       1     185 [] 0.98
+
+>> 944546.ABED_0711  protein_id="BAK70428.1" product="50S ribosomal protein L5" GI="345468977" project_id="61719"
+   #    score  bias  c-Evalue  i-Evalue hmmfrom  hmm to    alifrom  ali to    envfrom  env to     acc
+ ---   ------ ----- --------- --------- ------- -------    ------- -------    ------- -------    ----
+   1 !  227.9   0.6   1.7e-71     8e-68       2     176 ..       4     177 ..       1     180 [. 0.98
+
+>> 944547.ABLL_0986  protein_id="BAK72861.1" product="50S ribosomal protein L5" GI="345471411" project_id="61721"
+   #    score  bias  c-Evalue  i-Evalue hmmfrom  hmm to    alifrom  ali to    envfrom  env to     acc
+ ---   ------ ----- --------- --------- ------- -------    ------- -------    ------- -------    ----
+   1 !  225.0   0.2   1.4e-70   6.3e-67       2     176 ..       4     177 ..       1     180 [. 0.98
+
+
+
+Internal pipeline statistics summary:
+-------------------------------------
+Query model(s):                            1  (177 nodes)
+Target sequences:                      23272  (7230323 residues searched)
+Passed MSV filter:                       586  (0.0251805); expected 465.4 (0.02)
+Passed bias filter:                      416  (0.0178756); expected 465.4 (0.02)
+Passed Vit filter:                        31  (0.00133207); expected 23.3 (0.001)
+Passed Fwd filter:                         5  (0.00021485); expected 0.2 (1e-05)
+Initial search space (Z):              23272  [actual number of targets]
+Domain search space  (domZ):               5  [number of targets reported over threshold]
+# CPU time: 0.13u 0.01s 00:00:00.14 Elapsed: 00:00:00.06
+# Mc/sec: 20955.32
+//
+[ok]

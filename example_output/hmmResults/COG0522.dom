@@ -1,0 +1,18 @@
+#                                                                            --- full sequence --- -------------- this domain -------------   hmm coord   ali coord   env coord
+# target name        accession   tlen query name           accession   qlen   E-value  score  bias   #  of  c-Evalue  i-Evalue  score  bias  from    to  from    to  from    to  acc description of target
+#------------------- ---------- ----- -------------------- ---------- ----- --------- ------ ----- --- --- --------- --------- ------ ----- ----- ----- ----- ----- ----- ----- ---- ---------------------
+1089456.NCGM2_5484   -            206 COG0522              -            267   2.5e-88  296.6   0.5   1   1   6.1e-92   2.8e-88  296.5   0.5    72   265     1   206     1   206 0.96 protein_id="BAK92305.1" gene="rpsD" product="30S ribosomal protein S4" GI="348036945" note="similar to GI:116052274; similar to PA14_09100 of P. aeruginosa UCBPP-PA14" project_id="73453"
+944547.ABLL_1772     -            208 COG0522              -            267     4e-85  286.2   1.0   1   1   9.6e-89   4.5e-85  286.0   1.0    72   265     1   208     1   208 0.97 protein_id="BAK73647.1" product="30S ribosomal protein S4" GI="345472197" project_id="61721"
+944546.ABED_0965     -            208 COG0522              -            267   8.6e-85  285.1   0.8   1   1   2.1e-88   9.6e-85  284.9   0.8    72   265     1   208     1   208 0.97 protein_id="BAK70682.1" product="30S ribosomal protein S4" GI="345469231" project_id="61719"
+1037409.BJ6T_40230   -            205 COG0522              -            267     3e-80  270.2   0.6   1   1   7.2e-84   3.3e-80  270.0   0.6    72   265     1   205     1   205 0.94 protein_id="BAL09297.1" gene="rpsD" product="30S ribosomal protein S4" GI="354956618" project_id="67463"
+1148.SYNGTS_2341     -            202 COG0522              -            267   4.2e-77  259.9   0.1   1   1     1e-80   4.6e-77  259.7   0.1    72   266     1   201     1   202 0.95 protein_id="BAK51089.1" gene="rps4" product="30S ribosomal protein S4" GI="339274602" note="ORF_ID:slr0469" project_id="67081"
+#
+# Program:         hmmsearch
+# Version:         3.3.2 (Nov 2020)
+# Pipeline mode:   SEARCH
+# Query file:      data/COG0522.hmm
+# Target file:     ../../../../fetchMGs/example_datasets/example_data_genomes.faa
+# Option settings: bin/hmmsearch -o ../../../example_output/hmmResults/COG0522.out --domtblout ../../../example_output/hmmResults/COG0522.dom --noali --notextw -T 60 --cpu 8 data/COG0522.hmm ../../../../fetchMGs/example_datasets/example_data_genomes.faa 
+# Current dir:     /nfs/nas22/fs2202/biol_micro_bioinf/software/fetchmgs_dev/package/src/fetchMGs
+# Date:            Fri Aug 19 15:58:39 2022
+# [ok]

@@ -1,0 +1,18 @@
+#                                                                            --- full sequence --- -------------- this domain -------------   hmm coord   ali coord   env coord
+# target name        accession   tlen query name           accession   qlen   E-value  score  bias   #  of  c-Evalue  i-Evalue  score  bias  from    to  from    to  from    to  acc description of target
+#------------------- ---------- ----- -------------------- ---------- ----- --------- ------ ----- --- --- --------- --------- ------ ----- ----- ----- ----- ----- ----- ----- ---- ---------------------
+1089456.NCGM2_5607   -            341 COG0533              -           1171  1.1e-182  610.8   1.6   1   1  2.7e-186  1.2e-182  610.6   1.6   564   888     1   339     1   341 0.97 protein_id="BAK92419.1" gene="gcp" product="O-sialoglycoprotein endopeptidase" GI="348037059" note="similar to GI:116054308; similar to PA14_07570 of P. aeruginosa UCBPP-PA14" project_id="73453"
+1148.SYNGTS_1534     -            348 COG0533              -           1171  1.4e-171  574.0   1.1   1   1  3.4e-175  1.6e-171  573.9   1.1   564   892     2   346     1   348 0.96 protein_id="BAK50282.1" gene="gcp" product="metalloendopeptidase" GI="339273795" note="ORF_ID:slr0807" project_id="67081"
+1037409.BJ6T_05380   -            357 COG0533              -           1171  1.6e-164  550.6  16.6   1   1  4.2e-168    2e-164  550.3  16.6   564   886     1   342     1   355 0.95 protein_id="BAL05834.1" product="O-sialoglycoprotein endopeptidase" GI="354953155" project_id="67463"
+944547.ABLL_0279     -            333 COG0533              -           1171  2.7e-148  496.9   0.0   1   1  6.8e-152  3.1e-148  496.7   0.0   564   871     1   316     1   331 0.95 protein_id="BAK72154.1" product="putative DNA-binding/iron metalloprotein/AP endonuclease" GI="345470704" project_id="61721"
+944546.ABED_0155     -            333 COG0533              -           1171  3.3e-147  493.3   0.0   1   1  8.4e-151  3.9e-147  493.0   0.0   564   872     1   317     1   331 0.94 protein_id="BAK69872.1" product="putative DNA-binding/iron metalloprotein/AP endonuclease" GI="345468421" project_id="61719"
+#
+# Program:         hmmsearch
+# Version:         3.3.2 (Nov 2020)
+# Pipeline mode:   SEARCH
+# Query file:      data/COG0533.hmm
+# Target file:     ../../../../fetchMGs/example_datasets/example_data_genomes.faa
+# Option settings: bin/hmmsearch -o ../../../example_output/hmmResults/COG0533.out --domtblout ../../../example_output/hmmResults/COG0533.dom --noali --notextw -T 60 --cpu 8 data/COG0533.hmm ../../../../fetchMGs/example_datasets/example_data_genomes.faa 
+# Current dir:     /nfs/nas22/fs2202/biol_micro_bioinf/software/fetchmgs_dev/package/src/fetchMGs
+# Date:            Fri Aug 19 15:58:41 2022
+# [ok]

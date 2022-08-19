@@ -1,0 +1,69 @@
+# hmmsearch :: search profile(s) against a sequence database
+# HMMER 3.3.2 (Nov 2020); http://hmmer.org/
+# Copyright (C) 2020 Howard Hughes Medical Institute.
+# Freely distributed under the BSD open source license.
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+# query HMM file:                  data/COG0197.hmm
+# target sequence database:        ../../../../fetchMGs/example_datasets/example_data_genomes.faa
+# output directed to file:         ../../../example_output/hmmResults/COG0197.out
+# per-dom hits tabular output:     ../../../example_output/hmmResults/COG0197.dom
+# show alignments in output:       no
+# max ASCII text line length:      unlimited
+# sequence reporting threshold:    score >= 60
+# number of worker threads:        8
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+Query:       COG0197  [M=143]
+Scores for complete sequences (score includes all domains):
+   --- full sequence ---   --- best 1 domain ---    -#dom-
+    E-value  score  bias    E-value  score  bias    exp  N  Sequence           Description
+    ------- ------ -----    ------- ------ -----   ---- --  --------           -----------
+    1.4e-67  226.3   0.9    1.7e-67  226.1   0.9    1.0  1  1148.SYNGTS_0768    protein_id="BAK49516.1" gene="rpl16" product="50S ribosomal protein L16" GI="339273029" note="ORF_ID:sll1805" project_id="67081"
+    2.6e-60  202.8   2.8    2.8e-60  202.7   2.8    1.0  1  1037409.BJ6T_43940  protein_id="BAL09663.1" gene="rplP" product="50S ribosomal protein L16" GI="354956984" project_id="67463"
+      1e-58  197.6   2.4    1.2e-58  197.4   2.4    1.0  1  944547.ABLL_0981    protein_id="BAK72856.1" product="50S ribosomal protein L16" GI="345471406" project_id="61721"
+    1.4e-58  197.1   2.2    1.7e-58  196.9   2.2    1.0  1  944546.ABED_0706    protein_id="BAK70423.1" product="50S ribosomal protein L16" GI="345468972" project_id="61719"
+    3.8e-58  195.8   2.0    4.1e-58  195.6   2.0    1.0  1  1089456.NCGM2_5501  protein_id="BAK92322.1" gene="rplP" product="50S ribosomal protein L16" GI="348036962" note="similar to GI:116052291; similar to PA14_08920 of P. aeruginosa UCBPP-PA14" project_id="73453"
+
+
+Domain annotation for each sequence:
+>> 1148.SYNGTS_0768  protein_id="BAK49516.1" gene="rpl16" product="50S ribosomal protein L16" GI="339273029" note="ORF_ID:sll1805" project_id="67081"
+   #    score  bias  c-Evalue  i-Evalue hmmfrom  hmm to    alifrom  ali to    envfrom  env to     acc
+ ---   ------ ----- --------- --------- ------- -------    ------- -------    ------- -------    ----
+   1 !  226.1   0.9   3.6e-71   1.7e-67       2     137 ..       1     136 [.       1     138 [. 0.98
+
+>> 1037409.BJ6T_43940  protein_id="BAL09663.1" gene="rplP" product="50S ribosomal protein L16" GI="354956984" project_id="67463"
+   #    score  bias  c-Evalue  i-Evalue hmmfrom  hmm to    alifrom  ali to    envfrom  env to     acc
+ ---   ------ ----- --------- --------- ------- -------    ------- -------    ------- -------    ----
+   1 !  202.7   2.8     6e-64   2.8e-60       2     135 ..       1     134 [.       1     137 [] 0.99
+
+>> 944547.ABLL_0981  protein_id="BAK72856.1" product="50S ribosomal protein L16" GI="345471406" project_id="61721"
+   #    score  bias  c-Evalue  i-Evalue hmmfrom  hmm to    alifrom  ali to    envfrom  env to     acc
+ ---   ------ ----- --------- --------- ------- -------    ------- -------    ------- -------    ----
+   1 !  197.4   2.4   2.6e-62   1.2e-58       2     139 ..       1     138 [.       1     140 [. 0.98
+
+>> 944546.ABED_0706  protein_id="BAK70423.1" product="50S ribosomal protein L16" GI="345468972" project_id="61719"
+   #    score  bias  c-Evalue  i-Evalue hmmfrom  hmm to    alifrom  ali to    envfrom  env to     acc
+ ---   ------ ----- --------- --------- ------- -------    ------- -------    ------- -------    ----
+   1 !  196.9   2.2   3.6e-62   1.7e-58       2     139 ..       1     138 [.       1     140 [. 0.98
+
+>> 1089456.NCGM2_5501  protein_id="BAK92322.1" gene="rplP" product="50S ribosomal protein L16" GI="348036962" note="similar to GI:116052291; similar to PA14_08920 of P. aeruginosa UCBPP-PA14" project_id="73453"
+   #    score  bias  c-Evalue  i-Evalue hmmfrom  hmm to    alifrom  ali to    envfrom  env to     acc
+ ---   ------ ----- --------- --------- ------- -------    ------- -------    ------- -------    ----
+   1 !  195.6   2.0   8.8e-62   4.1e-58       2     135 ..       1     134 [.       1     137 [] 0.99
+
+
+
+Internal pipeline statistics summary:
+-------------------------------------
+Query model(s):                            1  (143 nodes)
+Target sequences:                      23272  (7230323 residues searched)
+Passed MSV filter:                       546  (0.0234617); expected 465.4 (0.02)
+Passed bias filter:                      442  (0.0189928); expected 465.4 (0.02)
+Passed Vit filter:                        42  (0.00180474); expected 23.3 (0.001)
+Passed Fwd filter:                         6  (0.000257821); expected 0.2 (1e-05)
+Initial search space (Z):              23272  [actual number of targets]
+Domain search space  (domZ):               5  [number of targets reported over threshold]
+# CPU time: 0.12u 0.02s 00:00:00.13 Elapsed: 00:00:00.05
+# Mc/sec: 17666.02
+//
+[ok]

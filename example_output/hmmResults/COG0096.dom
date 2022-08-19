@@ -1,0 +1,18 @@
+#                                                                            --- full sequence --- -------------- this domain -------------   hmm coord   ali coord   env coord
+# target name        accession   tlen query name           accession   qlen   E-value  score  bias   #  of  c-Evalue  i-Evalue  score  bias  from    to  from    to  from    to  acc description of target
+#------------------- ---------- ----- -------------------- ---------- ----- --------- ------ ----- --- --- --------- --------- ------ ----- ----- ----- ----- ----- ----- ----- ---- ---------------------
+1037409.BJ6T_44010   -            132 COG0096              -            133     1e-51  174.6   0.0   1   1   2.5e-55   1.1e-51  174.5   0.0     2   133     1   132     1   132 0.96 protein_id="BAL09670.1" gene="rpsH" product="30S ribosomal protein S8" GI="354956991" project_id="67463"
+1148.SYNGTS_0762     -            133 COG0096              -            133   5.6e-51  172.3   0.1   1   1   1.3e-54   6.2e-51  172.1   0.1     2   133     1   133     1   133 0.97 protein_id="BAK49510.1" gene="rps8" product="30S ribosomal protein S8" GI="339273023" note="ORF_ID:sll1809" project_id="67081"
+944546.ABED_0713     -            132 COG0096              -            133   2.9e-46  157.0   1.8   1   1   6.9e-50   3.2e-46  156.9   1.8     4   133     2   132     1   132 0.96 protein_id="BAK70430.1" product="30S ribosomal protein S8" GI="345468979" project_id="61719"
+944547.ABLL_0988     -            132 COG0096              -            133   4.2e-46  156.5   2.2   1   1     1e-49   4.6e-46  156.3   2.2     4   133     2   132     1   132 0.96 protein_id="BAK72863.1" product="30S ribosomal protein S8" GI="345471413" project_id="61721"
+1089456.NCGM2_5494   -            104 COG0096              -            133   6.7e-45  152.6   0.1   1   1   1.6e-48   7.4e-45  152.5   0.1    28   133     1   104     1   104 0.97 protein_id="BAK92315.1" gene="rpsH" product="30S ribosomal protein S8" GI="348036955" note="similar to GI:116052284; similar to PA14_08990 of P. aeruginosa UCBPP-PA14" project_id="73453"
+#
+# Program:         hmmsearch
+# Version:         3.3.2 (Nov 2020)
+# Pipeline mode:   SEARCH
+# Query file:      data/COG0096.hmm
+# Target file:     ../../../../fetchMGs/example_datasets/example_data_genomes.faa
+# Option settings: bin/hmmsearch -o ../../../example_output/hmmResults/COG0096.out --domtblout ../../../example_output/hmmResults/COG0096.dom --noali --notextw -T 60 --cpu 8 data/COG0096.hmm ../../../../fetchMGs/example_datasets/example_data_genomes.faa 
+# Current dir:     /nfs/nas22/fs2202/biol_micro_bioinf/software/fetchmgs_dev/package/src/fetchMGs
+# Date:            Fri Aug 19 15:58:35 2022
+# [ok]
