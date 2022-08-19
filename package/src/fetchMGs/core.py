@@ -1,6 +1,7 @@
 import argparse
 from Bio import SeqIO
 import glob
+import numpy as np
 import re
 import os
 import subprocess
@@ -8,7 +9,7 @@ import sys
 
 parser = argparse.ArgumentParser(description='fetchMGs extracts the 40 single copy universal marker genes (decribed in Ciccarelli et al., Science, 2006 and Sorek et al., Science, 2007) from genomes and metagenomes in an easy and accurate manner.', formatter_class=argparse.RawTextHelpFormatter)
 
-# Add -m option that does nothing for legacy
+# Add -m option for legacy - it does nothing
 parser.add_argument('-m', '-mode', action='store_true', help='fetchMGs mode, see below')
 
 subparsers = parser.add_subparsers(title='modes', description='valid modes', dest='mode')
@@ -17,8 +18,8 @@ subparsers.required = True
 ext_parser = subparsers.add_parser('extraction', help='extract marker genes from sequences', formatter_class=argparse.RawTextHelpFormatter)
 ext_parser.add_argument('file', help='multi-FASTA file with protein sequences from which universal single-copy marker genes should be extracted')
 ext_parser.add_argument('-c', '-cog_used', nargs='+', default='all', help='orthologous group id(s) to be extracted; example: "COG0012"')
-ext_parser.add_argument('-o', '-outdir', default='fetchmgs', help='output directory')
-ext_parser.add_argument('-b', '-bitscore', default='data/MG_BitScoreCutoffs.allhits.txt', help='path to bitscore cutoff file')
+ext_parser.add_argument('-o', '-outdir', default='output', help='output directory')
+ext_parser.add_argument('-b', '-bitscore', default=None, help='path to bitscore cutoff file')
 ext_parser.add_argument('-l', '-library', default='data', help='path to directory that contains hmm models')
 ext_parser.add_argument('-p', '-protein', action='store_true', help='set if nucleotide sequences file for <protein sequences> is not available')
 ext_parser.add_argument('-d', '-dnaFastaFile', help='multi-FASTA file with nucleotide sequences; not neccesary if protein and nucleotide fasta file have the same name except .faa and .fna suffixes')
@@ -30,33 +31,39 @@ ext_parser.add_argument('-x', '-executable', default='bin', help='path to execut
 cal_parser = subparsers.add_parser('calibration', help='calibrate bitscores using results from extraction and a mapping file of known OGs')
 cal_parser.add_argument('file', help='file with sequences that include marker genes (true positives)')
 cal_parser.add_argument('map', help='tab-delimited file with true positive protein identifiers and COG ID')
-cal_parser.add_argument('-o', '--outdir', default='fetchmgs', help='output directory')
-cal_parser.add_argument('-b', '--bitscore', help='path to bitscore cutoff file')
+cal_parser.add_argument('-c', '-cog_used', nargs='+', default='all', help='orthologous group id(s) to be extracted; example: "COG0012"')
+cal_parser.add_argument('-o', '-outdir', default='output', help='output directory')
+cal_parser.add_argument('-l', '-library', default='data', help='path to directory that contains hmm models')
+cal_parser.add_argument('-p', '-protein', action='store_true', help='set if nucleotide sequences file for <protein sequences> is not available')
+cal_parser.add_argument('-d', '-dnaFastaFile', help='multi-FASTA file with nucleotide sequences; not neccesary if protein and nucleotide fasta file have the same name except .faa and .fna suffixes')
+cal_parser.add_argument('-v', '-verybesthit_only', action='store_true', help='only extract the best hit of each COG from each genome\nrecommended to use, if extracting sequences from multiple reference genomes in the same file do not use it for metagenomes\nif this option is set fasta identifiers should be in the form: taxID.geneID and, if needed, have "project_id=XXX" in the header\nalternatively, set -i to ignore the headers; then, the best hit of each OG in the whole input file will be selected, regardless of the headers used')
+cal_parser.add_argument('-i', '-ignore_headers', action='store_true', help='if this option is set in addition to -v, the best hit of each COG will be selected\nrecommended to use, if extracting sequences from a single genome in the same file')
+cal_parser.add_argument('-t', '-threads', default=1, help='number of processors/threads to be used')
+cal_parser.add_argument('-x', '-executable', default='bin', help='path to executables used by this script\ndefault is bin/\nif set to \'\' will search for executables in $PATH')
+
 # None of this mode implemented yet
 
-# Arguments and modifications
-args = parser.parse_args()
-if args.x != '':
-    if args.x[-1] != "/":
-        args.x = f'{args.x}/'
-
-# Compile list of HMM models
-hmms = glob.glob(f'{args.l}/*.hmm')
-if args.c == 'all':
-    args.c = [os.path.splitext(os.path.split(x)[1])[0] for x in hmms]
-args.c = sorted(args.c)
-hmms = {x:f'{args.l}/{x}.hmm' for x in args.c}
-
-# Parse cutoff file
-if args.v:
-    args.b = f'{args.l}/MG_BitScoreCutoffs.verybesthit.txt'
-cutoffs = {}
-with open(args.b, 'r') as fi:
-    for line in fi.readlines():
-        line = line.strip()
-        if line[0] != '#':
-           items = line.split('\t')
-           cutoffs[items[0]] = int(items[1])
+def parse_cutoffs(args):
+    cutoffs = {}
+    with open(args.b, 'r') as fi:
+        for line in fi.readlines():
+            line = line.strip()
+            if line[0] == '#':
+                if args.mode == 'calibration':
+                    if line != '#UNCALIBRATED CUTOFFS FILE':
+                        sys.stderr.write(f'ERROR: When calibrating, the default bit score file provided with fetchMGs has to be used')
+                        sys.exit(1)
+                elif args.v:
+                    if line != '#CALIBRATED CUTOFFS FILE - BEST HITS':
+                        sys.stderr.write(f'ERROR: To extract using the option v|verybesthit, the file has to be calibrated with the -v option')
+                        sys.exit(1)
+                elif line != '#CALIBRATED CUTOFFS FILE - ALL HITS':
+                    sys.stderr.write(f'ERROR: To extract without the option v|verybesthit, the file has to be calibrated without the -v option')
+                    sys.exit(1)
+            else:
+               items = line.split('\t')
+               cutoffs[items[0]] = int(items[1])
+    return(cutoffs)
 
 def run_hmmsearch(hmm_path, file, cutoff, threads, hmmsearch):
     '''
@@ -65,7 +72,7 @@ def run_hmmsearch(hmm_path, file, cutoff, threads, hmmsearch):
     try:
         output = subprocess.check_output(f'{hmmsearch}hmmsearch --noali --notextw --cpu {threads} -T {cutoff} {hmm_path} {file}', shell=True).decode()
     except subprocess.CalledProcessError as err:
-        sys.stdout.write(f'\t{err}\n')
+        sys.stderr.write(f'\t{err}\n')
         sys.exit(1)
     results = parse_hmmsearch(output)
     return(results)
@@ -89,9 +96,45 @@ def parse_hmmsearch(output):
             countdown -= 1
     return(hits)
 
+# Arguments and modifications
+args = parser.parse_args()
+if args.x != '':
+    if args.x[-1] != "/":
+        args.x = f'{args.x}/'
+
+# Compile list of HMM models
+hmms = glob.glob(f'{args.l}/*.hmm')
+if args.c == 'all':
+    args.c = [os.path.splitext(os.path.split(x)[1])[0] for x in hmms]
+args.c = sorted(args.c)
+hmms = {x:f'{args.l}/{x}.hmm' for x in args.c}
+
+# Parse cutoff file
+if args.mode == 'calibration':
+    args.b = f'{args.l}/MG_BitScoreCutoffs.uncalibrated.txt'
+
+if args.b is None:
+    if args.v:
+        args.b = f'{args.l}/MG_BitScoreCutoffs.verybesthit.txt'
+    else:
+        args.b = f'{args.l}/MG_BitScoreCutoffs.allhits.txt'
+cutoffs = parse_cutoffs(args)
+
+# Parse validated genes map if needed
+if args.mode == 'calibration':
+    valid_map = {}
+    for hmm in hmms.keys():
+        valid_map[hmm] = []
+    with open (args.map, 'r') as file:
+        for line in file.readlines():
+            line = line.strip()
+            items = line.split("\t")
+            valid_map[items[1]].append(items[0])
+
 # Organise files and records
 prot_records = SeqIO.parse(args.file, 'fasta')
 sys.stdout.write(f'Protein sequences: {args.file}\n')
+
 # Check for nucleotide file
 if not args.p:
     if args.d is not None:
@@ -140,6 +183,43 @@ prot_hits = {x.id:x for x in prot_records if x.id in hit_ids}
 if nucl_records is not None:
     nucl_hits = {x.id:x for x in nucl_records if x.id in hit_ids}
 
+# Calibrate
+def score_cutoff(pos, neg, nvalid, cutoff):
+    tp = len([x for x in pos if x >= cutoff])
+    fp = len([x for x in neg if x >= cutoff])
+    fn = nvalid - tp
+
+    precision = tp / (tp + fp)
+    recall = tp / (tp + fn)
+    fscore = 2 / ((1 / precision) + (1 / recall))
+
+    return([cutoff, tp, fp, fn, precision, recall, fscore])
+
+if args.mode == 'calibration':
+    new_cutoffs = {}
+    for hmm in hmms.keys():
+        pos = sorted(v for k,v in results[hmm].items() if k in valid_map[hmm])
+        neg = sorted(v for k,v in results[hmm].items() if k not in valid_map[hmm])
+        max_cutoff = max(neg+pos)
+
+        cutoff_scores = []
+        for cutoff in np.arange(cutoffs[hmm], max_cutoff, step = 10):
+            cutoff_scores.append(score_cutoff(pos, neg, len(valid_map[hmm]), cutoff))
+        cutoff_scores = sorted(cutoff_scores, key=lambda x:(-x[6], -x[0]))
+        new_cutoffs[hmm] = cutoff_scores[0]
+
+    # Output bitscore file
+    if args.v:
+        header = '#CALIBRATED CUTOFFS FILE - BEST HITS\n'
+        file = 'MG_BitScoreCutoffs.verybesthit.txt'
+    else:
+        header = '#CALIBRATED CUTOFFS FILE - ALL HITS\n'
+        file = 'MG_BitScoreCutoffs.allhits.txt'
+    with open(os.path.join(args.o, file), 'w') as fo:
+        fo.write("#CALIBRATED CUTOFFS FILE - BEST HITS\n")
+        for hmm in hmms.keys():
+            fo.write(f'{hmm}\t{new_cutoffs[hmm][0]}\t{new_cutoffs[hmm][4]}\t{new_cutoffs[hmm][5]}\n')
+            
 # Output results table
 os.makedirs(args.o, exist_ok=True)
 with open(os.path.join(args.o, "marker_genes_scores.tsv"), 'w') as fo:
