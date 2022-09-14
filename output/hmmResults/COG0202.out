@@ -1,0 +1,69 @@
+# hmmsearch :: search profile(s) against a sequence database
+# HMMER 3.3.2 (Nov 2020); http://hmmer.org/
+# Copyright (C) 2020 Howard Hughes Medical Institute.
+# Freely distributed under the BSD open source license.
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+# query HMM file:                  /nfs/home/fieldc/.local/lib/python3.7/site-packages/fetchmgs/data/COG0202.hmm
+# target sequence database:        ../fetchMGs/example_datasets/example_data_genomes.faa
+# output directed to file:         output/hmmResults/COG0202.out
+# per-dom hits tabular output:     output/hmmResults/COG0202.dom
+# show alignments in output:       no
+# max ASCII text line length:      unlimited
+# sequence reporting threshold:    score >= 80
+# number of worker threads:        1
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+Query:       COG0202  [M=349]
+Scores for complete sequences (score includes all domains):
+   --- full sequence ---   --- best 1 domain ---    -#dom-
+    E-value  score  bias    E-value  score  bias    exp  N  Sequence           Description
+    ------- ------ -----    ------- ------ -----   ---- --  --------           -----------
+   3.5e-132  440.9   0.0   4.4e-132  440.6   0.0    1.0  1  1037409.BJ6T_44110  protein_id="BAL09680.1" gene="rpoA" product="DNA-directed RNA polymerase alpha subunit" GI="354957001" project_id="67463"
+   3.3e-128  427.8   0.3   3.6e-128  427.7   0.3    1.0  1  1089456.NCGM2_5483  protein_id="BAK92304.1" gene="rpoA" product="DNA-directed RNA polymerase subunit alpha" GI="348036944" note="similar to GI:116054394; similar to PA14_09115 of P. aeruginosa UCBPP-PA14" project_id="73453"
+   5.9e-109  364.5   0.4   6.4e-109  364.4   0.4    1.0  1  1148.SYNGTS_0751    protein_id="BAK49499.1" gene="rpoA" product="DNA-directed RNA polymerase subunit alpha" GI="339273012" note="ORF_ID:sll1818" project_id="67081"
+    3.4e-89  299.5   2.0      4e-89  299.3   2.0    1.0  1  944547.ABLL_1771    protein_id="BAK73646.1" product="DNA-directed RNA polymerase alpha subunit" GI="345472196" project_id="61721"
+    6.8e-89  298.6   1.2      8e-89  298.3   1.2    1.0  1  944546.ABED_0966    protein_id="BAK70683.1" product="DNA-directed RNA polymerase alpha subunit" GI="345469232" project_id="61719"
+
+
+Domain annotation for each sequence:
+>> 1037409.BJ6T_44110  protein_id="BAL09680.1" gene="rpoA" product="DNA-directed RNA polymerase alpha subunit" GI="354957001" project_id="67463"
+   #    score  bias  c-Evalue  i-Evalue hmmfrom  hmm to    alifrom  ali to    envfrom  env to     acc
+ ---   ------ ----- --------- --------- ------- -------    ------- -------    ------- -------    ----
+   1 !  440.6   0.0  9.6e-136  4.4e-132      28     331 ..      10     330 ..       2     342 .. 0.92
+
+>> 1089456.NCGM2_5483  protein_id="BAK92304.1" gene="rpoA" product="DNA-directed RNA polymerase subunit alpha" GI="348036944" note="similar to GI:116054394; similar to PA14_09115 of P. aeruginosa UCBPP-PA14" project_id="73453"
+   #    score  bias  c-Evalue  i-Evalue hmmfrom  hmm to    alifrom  ali to    envfrom  env to     acc
+ ---   ------ ----- --------- --------- ------- -------    ------- -------    ------- -------    ----
+   1 !  427.7   0.3  7.8e-132  3.6e-128      30     333 ..       7     326 ..       1     333 [] 0.93
+
+>> 1148.SYNGTS_0751  protein_id="BAK49499.1" gene="rpoA" product="DNA-directed RNA polymerase subunit alpha" GI="339273012" note="ORF_ID:sll1818" project_id="67081"
+   #    score  bias  c-Evalue  i-Evalue hmmfrom  hmm to    alifrom  ali to    envfrom  env to     acc
+ ---   ------ ----- --------- --------- ------- -------    ------- -------    ------- -------    ----
+   1 !  364.4   0.4  1.4e-112  6.4e-109      38     326 ..       9     311 ..       1     314 [] 0.92
+
+>> 944547.ABLL_1771  protein_id="BAK73646.1" product="DNA-directed RNA polymerase alpha subunit" GI="345472196" project_id="61721"
+   #    score  bias  c-Evalue  i-Evalue hmmfrom  hmm to    alifrom  ali to    envfrom  env to     acc
+ ---   ------ ----- --------- --------- ------- -------    ------- -------    ------- -------    ----
+   1 !  299.3   2.0   8.6e-93     4e-89      34     328 ..      10     317 ..       1     331 [. 0.92
+
+>> 944546.ABED_0966  protein_id="BAK70683.1" product="DNA-directed RNA polymerase alpha subunit" GI="345469232" project_id="61719"
+   #    score  bias  c-Evalue  i-Evalue hmmfrom  hmm to    alifrom  ali to    envfrom  env to     acc
+ ---   ------ ----- --------- --------- ------- -------    ------- -------    ------- -------    ----
+   1 !  298.3   1.2   1.7e-92     8e-89      34     328 ..      10     317 ..       1     331 [. 0.92
+
+
+
+Internal pipeline statistics summary:
+-------------------------------------
+Query model(s):                            1  (349 nodes)
+Target sequences:                      23272  (7230323 residues searched)
+Passed MSV filter:                       824  (0.0354074); expected 465.4 (0.02)
+Passed bias filter:                      403  (0.0173169); expected 465.4 (0.02)
+Passed Vit filter:                        39  (0.00167583); expected 23.3 (0.001)
+Passed Fwd filter:                         6  (0.000257821); expected 0.2 (1e-05)
+Initial search space (Z):              23272  [actual number of targets]
+Domain search space  (domZ):               5  [number of targets reported over threshold]
+# CPU time: 0.20u 0.01s 00:00:00.21 Elapsed: 00:00:00.14
+# Mc/sec: 17707.33
+//
+[ok]
