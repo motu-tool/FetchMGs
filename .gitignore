@@ -416,3 +416,4 @@ buildNumber.properties
 /scratch/
 /scratch
 .snakemake/
+/example_input/

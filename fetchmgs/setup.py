@@ -9,7 +9,7 @@ setup(
     author_email='fieldc@ethz.ch',
     license='GPL-3.0',
     packages=setuptools.find_packages(),
-    package_data={'fetchmgs': ['data/*']},
+    package_data={'fetchmgs': ['bin/*', 'data/*']},
     entry_points = {
         'console_scripts': ['fetchmgs=fetchmgs.__main__:main'],
     }

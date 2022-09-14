@@ -3,14 +3,14 @@
 # Copyright (C) 2020 Howard Hughes Medical Institute.
 # Freely distributed under the BSD open source license.
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-# query HMM file:                  data/COG0124.hmm
-# target sequence database:        ../../../../fetchMGs/example_datasets/example_data_genomes.faa
-# output directed to file:         ../../../example_output/hmmResults/COG0124.out
-# per-dom hits tabular output:     ../../../example_output/hmmResults/COG0124.dom
+# query HMM file:                  /nfs/home/fieldc/.local/lib/python3.7/site-packages/fetchmgs/data/COG0124.hmm
+# target sequence database:        example_input/example_data_genomes.faa
+# output directed to file:         example_output/hmmResults/COG0124.out
+# per-dom hits tabular output:     example_output/hmmResults/COG0124.dom
 # show alignments in output:       no
 # max ASCII text line length:      unlimited
-# sequence reporting threshold:    score >= 60
-# number of worker threads:        8
+# sequence reporting threshold:    score >= 320
+# number of worker threads:        1
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 Query:       COG0124  [M=524]
@@ -23,65 +23,33 @@ Scores for complete sequences (score includes all domains):
    2.9e-151  505.1   0.1   3.2e-151  504.9   0.1    1.0  1  1037409.BJ6T_18330  protein_id="BAL07114.1" product="histidyl-tRNA synthetase" GI="354954435" project_id="67463"
    2.6e-142  475.5   0.0   2.8e-142  475.4   0.0    1.0  1  944547.ABLL_1218    protein_id="BAK73093.1" product="histidyl-tRNA synthase" GI="345471643" project_id="61721"
    3.1e-140  468.7   0.1   3.4e-140  468.5   0.1    1.0  1  944546.ABED_0911    protein_id="BAK70628.1" product="histidyl-tRNA synthase" GI="345469177" project_id="61719"
-    9.8e-58  196.4   0.0    1.2e-57  196.2   0.0    1.0  1  1148.SYNGTS_2996    protein_id="BAK51744.1" gene="hisS" product="histidyl tRNA synthetase" GI="339275257" note="ORF_ID:slr1560" project_id="67081"
-    1.6e-42  146.2   0.0    4.1e-42  144.9   0.0    1.5  1  1037409.BJ6T_17670  protein_id="BAL07048.1" GI="354954369" note="probable ATP phosphoribosyltransferase regulatory subunit" project_id="67463"
-    1.1e-39  136.9   0.0    1.3e-39  136.7   0.0    1.0  1  1089456.NCGM2_0581  protein_id="BAK87471.1" gene="hisZ" product="ATP phosphoribosyltransferase regulatory subunit" GI="348032111" note="similar to GI:116053088; similar to PA14_65250 of P. aeruginosa UCBPP-PA14" project_id="73453"
-    1.1e-18   67.6   1.7    1.8e-10   40.5   0.1    2.2  2  944546.ABED_0071    protein_id="BAK69788.1" product="threonyl-tRNA synthase" GI="345468337" project_id="61719"
-    1.5e-17   63.9   1.4      3e-09   36.4   0.0    2.2  2  944547.ABLL_0268    protein_id="BAK72143.1" product="threonyl-tRNA synthase" GI="345470693" project_id="61721"
 
 
 Domain annotation for each sequence:
 >> 1089456.NCGM2_4989  protein_id="BAK91812.1" gene="hisS" product="histidyl-tRNA synthetase" GI="348036452" note="similar to GI:116051827; similar to PA14_14890 of P. aeruginosa UCBPP-PA14" project_id="73453"
    #    score  bias  c-Evalue  i-Evalue hmmfrom  hmm to    alifrom  ali to    envfrom  env to     acc
  ---   ------ ----- --------- --------- ------- -------    ------- -------    ------- -------    ----
-   1 !  530.0   0.0  3.5e-162  8.2e-159      52     461 ..       1     425 [.       1     429 [] 0.96
+   1 !  530.0   0.0  1.8e-162  8.2e-159      52     461 ..       1     425 [.       1     429 [] 0.96
 
 >> 1148.SYNGTS_2208  protein_id="BAK50956.1" gene="hisS" product="histidyl-tRNA synthetase" GI="339274469" note="ORF_ID:slr0357" project_id="67081"
    #    score  bias  c-Evalue  i-Evalue hmmfrom  hmm to    alifrom  ali to    envfrom  env to     acc
  ---   ------ ----- --------- --------- ------- -------    ------- -------    ------- -------    ----
-   1 !  523.2   0.0  4.1e-160  9.5e-157      55     472 ..       3     428 ..       1     445 [. 0.95
+   1 !  523.2   0.0    2e-160  9.5e-157      55     472 ..       3     428 ..       1     445 [. 0.95
 
 >> 1037409.BJ6T_18330  protein_id="BAL07114.1" product="histidyl-tRNA synthetase" GI="354954435" project_id="67463"
    #    score  bias  c-Evalue  i-Evalue hmmfrom  hmm to    alifrom  ali to    envfrom  env to     acc
  ---   ------ ----- --------- --------- ------- -------    ------- -------    ------- -------    ----
-   1 !  504.9   0.1  1.4e-154  3.2e-151      46     467 ..       1     503 [.       1     506 [] 0.86
+   1 !  504.9   0.1  6.9e-155  3.2e-151      46     467 ..       1     503 [.       1     506 [] 0.86
 
 >> 944547.ABLL_1218  protein_id="BAK73093.1" product="histidyl-tRNA synthase" GI="345471643" project_id="61721"
    #    score  bias  c-Evalue  i-Evalue hmmfrom  hmm to    alifrom  ali to    envfrom  env to     acc
  ---   ------ ----- --------- --------- ------- -------    ------- -------    ------- -------    ----
-   1 !  475.4   0.0  1.2e-145  2.8e-142      49     452 ..       5     411 ..       1     413 [] 0.96
+   1 !  475.4   0.0  6.1e-146  2.8e-142      49     452 ..       5     411 ..       1     413 [] 0.96
 
 >> 944546.ABED_0911  protein_id="BAK70628.1" product="histidyl-tRNA synthase" GI="345469177" project_id="61719"
    #    score  bias  c-Evalue  i-Evalue hmmfrom  hmm to    alifrom  ali to    envfrom  env to     acc
  ---   ------ ----- --------- --------- ------- -------    ------- -------    ------- -------    ----
-   1 !  468.5   0.1  1.5e-143  3.4e-140      47     451 ..       3     410 ..       1     413 [] 0.96
-
->> 1148.SYNGTS_2996  protein_id="BAK51744.1" gene="hisS" product="histidyl tRNA synthetase" GI="339275257" note="ORF_ID:slr1560" project_id="67081"
-   #    score  bias  c-Evalue  i-Evalue hmmfrom  hmm to    alifrom  ali to    envfrom  env to     acc
- ---   ------ ----- --------- --------- ------- -------    ------- -------    ------- -------    ----
-   1 !  196.2   0.0   5.1e-61   1.2e-57      57     428 ..       4     395 ..       1     398 [. 0.81
-
->> 1037409.BJ6T_17670  protein_id="BAL07048.1" GI="354954369" note="probable ATP phosphoribosyltransferase regulatory subunit" project_id="67463"
-   #    score  bias  c-Evalue  i-Evalue hmmfrom  hmm to    alifrom  ali to    envfrom  env to     acc
- ---   ------ ----- --------- --------- ------- -------    ------- -------    ------- -------    ----
-   1 !  144.9   0.0   1.8e-45   4.1e-42      77     361 ..      16     375 ..       6     382 .. 0.72
-
->> 1089456.NCGM2_0581  protein_id="BAK87471.1" gene="hisZ" product="ATP phosphoribosyltransferase regulatory subunit" GI="348032111" note="similar to GI:116053088; similar to PA14_65250 of P. aeruginosa UCBPP-PA14" project_id="73453"
-   #    score  bias  c-Evalue  i-Evalue hmmfrom  hmm to    alifrom  ali to    envfrom  env to     acc
- ---   ------ ----- --------- --------- ------- -------    ------- -------    ------- -------    ----
-   1 !  136.7   0.0   5.4e-43   1.3e-39      58     403 ..       9     363 ..       1     374 [. 0.81
-
->> 944546.ABED_0071  protein_id="BAK69788.1" product="threonyl-tRNA synthase" GI="345468337" project_id="61719"
-   #    score  bias  c-Evalue  i-Evalue hmmfrom  hmm to    alifrom  ali to    envfrom  env to     acc
- ---   ------ ----- --------- --------- ------- -------    ------- -------    ------- -------    ----
-   1 !   26.3   0.3   1.5e-09   3.6e-06      61     217 ..     228     387 ..     188     413 .. 0.88
-   2 !   40.5   0.1   7.7e-14   1.8e-10     357     463 ..     483     598 ..     481     601 .. 0.85
-
->> 944547.ABLL_0268  protein_id="BAK72143.1" product="threonyl-tRNA synthase" GI="345470693" project_id="61721"
-   #    score  bias  c-Evalue  i-Evalue hmmfrom  hmm to    alifrom  ali to    envfrom  env to     acc
- ---   ------ ----- --------- --------- ------- -------    ------- -------    ------- -------    ----
-   1 !   26.3   0.3   1.5e-09   3.6e-06      61     217 ..     228     387 ..     188     413 .. 0.88
-   2 !   36.4   0.0   1.3e-12     3e-09     357     463 ..     483     598 ..     481     601 .. 0.84
+   1 !  468.5   0.1  7.3e-144  3.4e-140      47     451 ..       3     410 ..       1     413 [] 0.96
 
 
 
@@ -94,8 +62,8 @@ Passed bias filter:                      749  (0.0321846); expected 465.4 (0.02)
 Passed Vit filter:                       109  (0.00468374); expected 23.3 (0.001)
 Passed Fwd filter:                        31  (0.00133207); expected 0.2 (1e-05)
 Initial search space (Z):              23272  [actual number of targets]
-Domain search space  (domZ):              10  [number of targets reported over threshold]
-# CPU time: 0.49u 0.04s 00:00:00.53 Elapsed: 00:00:00.11
-# Mc/sec: 32596.72
+Domain search space  (domZ):               5  [number of targets reported over threshold]
+# CPU time: 0.49u 0.01s 00:00:00.50 Elapsed: 00:00:00.40
+# Mc/sec: 9353.90
 //
 [ok]

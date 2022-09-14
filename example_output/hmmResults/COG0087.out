@@ -3,14 +3,14 @@
 # Copyright (C) 2020 Howard Hughes Medical Institute.
 # Freely distributed under the BSD open source license.
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-# query HMM file:                  data/COG0087.hmm
-# target sequence database:        ../../../../fetchMGs/example_datasets/example_data_genomes.faa
-# output directed to file:         ../../../example_output/hmmResults/COG0087.out
-# per-dom hits tabular output:     ../../../example_output/hmmResults/COG0087.dom
+# query HMM file:                  /nfs/home/fieldc/.local/lib/python3.7/site-packages/fetchmgs/data/COG0087.hmm
+# target sequence database:        example_input/example_data_genomes.faa
+# output directed to file:         example_output/hmmResults/COG0087.out
+# per-dom hits tabular output:     example_output/hmmResults/COG0087.dom
 # show alignments in output:       no
 # max ASCII text line length:      unlimited
-# sequence reporting threshold:    score >= 60
-# number of worker threads:        8
+# sequence reporting threshold:    score >= 120
+# number of worker threads:        1
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 Query:       COG0087  [M=362]
@@ -63,7 +63,7 @@ Passed Vit filter:                        74  (0.00317979); expected 23.3 (0.001
 Passed Fwd filter:                        18  (0.000773462); expected 0.2 (1e-05)
 Initial search space (Z):              23272  [actual number of targets]
 Domain search space  (domZ):               5  [number of targets reported over threshold]
-# CPU time: 0.31u 0.02s 00:00:00.33 Elapsed: 00:00:00.07
-# Mc/sec: 34496.10
+# CPU time: 0.33u 0.01s 00:00:00.34 Elapsed: 00:00:00.25
+# Mc/sec: 10352.98
 //
 [ok]

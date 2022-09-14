@@ -3,14 +3,14 @@
 # Copyright (C) 2020 Howard Hughes Medical Institute.
 # Freely distributed under the BSD open source license.
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-# query HMM file:                  data/COG0215.hmm
-# target sequence database:        ../../../../fetchMGs/example_datasets/example_data_genomes.faa
-# output directed to file:         ../../../example_output/hmmResults/COG0215.out
-# per-dom hits tabular output:     ../../../example_output/hmmResults/COG0215.dom
+# query HMM file:                  /nfs/home/fieldc/.local/lib/python3.7/site-packages/fetchmgs/data/COG0215.hmm
+# target sequence database:        example_input/example_data_genomes.faa
+# output directed to file:         example_output/hmmResults/COG0215.out
+# per-dom hits tabular output:     example_output/hmmResults/COG0215.dom
 # show alignments in output:       no
 # max ASCII text line length:      unlimited
-# sequence reporting threshold:    score >= 60
-# number of worker threads:        8
+# sequence reporting threshold:    score >= 400
+# number of worker threads:        1
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 Query:       COG0215  [M=702]
@@ -23,40 +23,33 @@ Scores for complete sequences (score includes all domains):
    1.6e-189  632.7   0.0   1.8e-189  632.6   0.0    1.0  1  1037409.BJ6T_60740  protein_id="BAL11328.1" product="cysteinyl-tRNA synthetase" GI="354958649" project_id="67463"
    3.3e-182  608.6  11.0   3.7e-182  608.4  11.0    1.0  1  944546.ABED_0227    protein_id="BAK69944.1" product="cysteinyl-tRNA synthase" GI="345468493" project_id="61719"
    1.2e-174  583.6   8.4   1.3e-174  583.5   8.4    1.0  1  944547.ABLL_0379    protein_id="BAK72254.1" product="cysteinyl-tRNA synthase" GI="345470804" project_id="61721"
-    1.3e-16   61.2   0.0      2e-07   30.9   0.0    2.1  2  1148.SYNGTS_2408    protein_id="BAK51156.1" gene="metS" product="methionyl-tRNA synthetase" GI="339274669" note="ORF_ID:slr0649" project_id="67081"
 
 
 Domain annotation for each sequence:
 >> 1089456.NCGM2_2699  protein_id="BAK89556.1" gene="cysS" product="cysteinyl-tRNA synthetase" GI="348034196" note="similar to GI:116049743; similar to PA14_41360 of P. aeruginosa UCBPP-PA14" project_id="73453"
    #    score  bias  c-Evalue  i-Evalue hmmfrom  hmm to    alifrom  ali to    envfrom  env to     acc
  ---   ------ ----- --------- --------- ------- -------    ------- -------    ------- -------    ----
-   1 !  749.5   0.0  1.9e-228  7.5e-225     229     673 ..       2     459 ..       1     460 [] 0.95
+   1 !  749.5   0.0  1.6e-228  7.5e-225     229     673 ..       2     459 ..       1     460 [] 0.95
 
 >> 1148.SYNGTS_1850  protein_id="BAK50598.1" gene="cysS" product="cysteinyl-tRNA synthetase" GI="339274111" note="ORF_ID:slr0958" project_id="67081"
    #    score  bias  c-Evalue  i-Evalue hmmfrom  hmm to    alifrom  ali to    envfrom  env to     acc
  ---   ------ ----- --------- --------- ------- -------    ------- -------    ------- -------    ----
-   1 !  665.8   0.0    4e-203  1.6e-199     228     670 ..       2     481 ..       1     483 [] 0.91
+   1 !  665.8   0.0  3.3e-203  1.6e-199     228     670 ..       2     481 ..       1     483 [] 0.91
 
 >> 1037409.BJ6T_60740  protein_id="BAL11328.1" product="cysteinyl-tRNA synthetase" GI="354958649" project_id="67463"
    #    score  bias  c-Evalue  i-Evalue hmmfrom  hmm to    alifrom  ali to    envfrom  env to     acc
  ---   ------ ----- --------- --------- ------- -------    ------- -------    ------- -------    ----
-   1 !  632.6   0.0  4.6e-193  1.8e-189     228     673 ..       2     459 ..       1     460 [] 0.91
+   1 !  632.6   0.0  3.8e-193  1.8e-189     228     673 ..       2     459 ..       1     460 [] 0.91
 
 >> 944546.ABED_0227  protein_id="BAK69944.1" product="cysteinyl-tRNA synthase" GI="345468493" project_id="61719"
    #    score  bias  c-Evalue  i-Evalue hmmfrom  hmm to    alifrom  ali to    envfrom  env to     acc
  ---   ------ ----- --------- --------- ------- -------    ------- -------    ------- -------    ----
-   1 !  608.4  11.0  9.4e-186  3.7e-182     228     672 ..       3     466 ..       1     467 [] 0.94
+   1 !  608.4  11.0  7.9e-186  3.7e-182     228     672 ..       3     466 ..       1     467 [] 0.94
 
 >> 944547.ABLL_0379  protein_id="BAK72254.1" product="cysteinyl-tRNA synthase" GI="345470804" project_id="61721"
    #    score  bias  c-Evalue  i-Evalue hmmfrom  hmm to    alifrom  ali to    envfrom  env to     acc
  ---   ------ ----- --------- --------- ------- -------    ------- -------    ------- -------    ----
-   1 !  583.5   8.4  3.3e-178  1.3e-174     228     672 ..       3     466 ..       1     467 [] 0.93
-
->> 1148.SYNGTS_2408  protein_id="BAK51156.1" gene="metS" product="methionyl-tRNA synthetase" GI="339274669" note="ORF_ID:slr0649" project_id="67081"
-   #    score  bias  c-Evalue  i-Evalue hmmfrom  hmm to    alifrom  ali to    envfrom  env to     acc
- ---   ------ ----- --------- --------- ------- -------    ------- -------    ------- -------    ----
-   1 !   28.2   0.0   3.2e-10   1.2e-06     259     369 ..      18     129 ..      17     142 .. 0.86
-   2 !   30.9   0.0     5e-11     2e-07     480     609 ..     297     458 ..     291     497 .. 0.78
+   1 !  583.5   8.4  2.8e-178  1.3e-174     228     672 ..       3     466 ..       1     467 [] 0.93
 
 
 
@@ -69,8 +62,8 @@ Passed bias filter:                      559  (0.0240203); expected 465.4 (0.02)
 Passed Vit filter:                       104  (0.00446889); expected 23.3 (0.001)
 Passed Fwd filter:                        32  (0.00137504); expected 0.2 (1e-05)
 Initial search space (Z):              23272  [actual number of targets]
-Domain search space  (domZ):               6  [number of targets reported over threshold]
-# CPU time: 0.69u 0.05s 00:00:00.74 Elapsed: 00:00:00.13
-# Mc/sec: 36909.81
+Domain search space  (domZ):               5  [number of targets reported over threshold]
+# CPU time: 0.57u 0.02s 00:00:00.59 Elapsed: 00:00:00.49
+# Mc/sec: 10325.86
 //
 [ok]

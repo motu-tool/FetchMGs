@@ -10,9 +10,9 @@
 # Program:         hmmsearch
 # Version:         3.3.2 (Nov 2020)
 # Pipeline mode:   SEARCH
-# Query file:      data/COG0184.hmm
-# Target file:     ../../../../fetchMGs/example_datasets/example_data_genomes.faa
-# Option settings: bin/hmmsearch -o ../../../example_output/hmmResults/COG0184.out --domtblout ../../../example_output/hmmResults/COG0184.dom --noali --notextw -T 60 --cpu 8 data/COG0184.hmm ../../../../fetchMGs/example_datasets/example_data_genomes.faa 
-# Current dir:     /nfs/nas22/fs2202/biol_micro_bioinf/software/fetchmgs_dev/package/src/fetchMGs
-# Date:            Fri Aug 19 15:58:37 2022
+# Query file:      /nfs/home/fieldc/.local/lib/python3.7/site-packages/fetchmgs/data/COG0184.hmm
+# Target file:     example_input/example_data_genomes.faa
+# Option settings: /nfs/home/fieldc/.local/lib/python3.7/site-packages/fetchmgs/bin/hmmsearch -o example_output/hmmResults/COG0184.out --domtblout example_output/hmmResults/COG0184.dom --noali --notextw -T 60 --cpu 1 /nfs/home/fieldc/.local/lib/python3.7/site-packages/fetchmgs/data/COG0184.hmm example_input/example_data_genomes.faa 
+# Current dir:     /nfs/nas22/fs2202/biol_micro_bioinf/software/fetchmgs_dev
+# Date:            Mon Aug 22 15:53:17 2022
 # [ok]
