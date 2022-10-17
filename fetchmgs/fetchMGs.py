@@ -1,4 +1,12 @@
-from fetchmgs import *
+import argparse
+from Bio import SeqIO
+import glob
+import numpy as np
+import re
+import os
+import subprocess
+import sys
+import pathlib
 
 def parse_cutoffs(args):
     '''
@@ -75,7 +83,7 @@ def cli():
 
     subparsers = parser.add_subparsers(title='modes', description='valid modes', dest='mode')
     subparsers.required = True
-
+    PACKAGE_DIR = str(pathlib.Path(__file__).parent)
     ext_parser = subparsers.add_parser('extraction', help='extract marker genes from sequences', formatter_class=argparse.RawTextHelpFormatter)
     ext_parser.add_argument('file', help='multi-FASTA file with protein sequences from which universal single-copy marker genes should be extracted')
     ext_parser.add_argument('-c', '-cog_used', nargs='+', default='all', help='orthologous group id(s) to be extracted; example: "COG0012"')
