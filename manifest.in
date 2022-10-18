@@ -1,0 +1,3 @@
+include fetchmgs/data/*.hmm
+include fetchmgs/data/*.txt
+include fetchmgs/bin/hmmsearch
