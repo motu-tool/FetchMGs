@@ -9,9 +9,9 @@ import sys
 import pathlib
 
 def parse_cutoffs(args):
-    '''
+    """
     Parse the correct cutoffs file according to the run mode
-    '''
+    """
     cutoffs = {}
     with open(args.b, 'r') as fi:
         for line in fi.readlines():
