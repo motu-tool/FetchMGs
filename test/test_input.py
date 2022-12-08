@@ -2,7 +2,7 @@ from fetchmgs.fetchMGs import parse_cutoffs, import_files
 from pathlib import Path
 import pytest
 
-TESTDIR = Path('/nfs/nas22/fs2202/biol_micro_bioinf/software/fetchMGs/example_datasets')
+TESTDIR = Path('test/test_data')
 
 class FakeArgs:
     def __init__(self, params):
@@ -77,7 +77,7 @@ def test_import_files_defaults_calibration(cutoffs, hmms):
     args = FakeArgs({'l': 'fetchmgs/data',
                      'c': 'all',
                      'mode': 'calibration',
-                     'file': TESTDIR/'example_data.faa',
+                     'file': TESTDIR/'input_test_data.faa',
                      'map':  'test/known_positives.map',
                       })
     out_hmms, out_cutoffs, valid_map, prot_records, nucl_records = import_files(args)
@@ -91,7 +91,7 @@ def test_import_files_defaults_extraction_verybest(cutoffs, hmms):
                      'c': 'all',
                      'mode': 'extraction',
                      'v': True,
-                     'file': TESTDIR/'example_data.faa',
+                     'file': TESTDIR/'input_test_data.faa',
                      'map':  'test/known_positives.map',
                       })
     out_hmms, out_cutoffs, valid_map, prot_records, nucl_records = import_files(args)
@@ -104,7 +104,7 @@ def test_import_files_defaults_extraction_allhits(cutoffs, hmms, first_sequence)
                      'c': 'all',
                      'mode': 'extraction',
                      'v': False,
-                     'file': TESTDIR/'example_data.faa',
+                     'file': TESTDIR/'input_test_data.faa',
                      'map':  'test/known_positives.map',
                       })
     out_hmms, out_cutoffs, valid_map, prot_records, nucl_records = import_files(args)
