@@ -213,7 +213,7 @@ def calibration(args, results, valid_map):
 
     return(new_cutoffs)
 
-def output_cutoffs(args, new_cutoffs):
+def output_cutoffs(args, new_cutoffs, hmms):
     # Output bitscore file
     if args.v:
         header = '#CALIBRATED CUTOFFS FILE - BEST HITS\n'
@@ -275,7 +275,7 @@ def main():
 
     if args.mode == 'calibration':
         new_cutoffs = calibration(args, results, valid_map)
-        output_cutoffs(args, new_cutoffs)
+        output_cutoffs(args, new_cutoffs, hmms)
 
     output_results(args, hmms, results, hit_ids, prot_records, nucl_records)
 
