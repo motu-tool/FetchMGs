@@ -9,9 +9,9 @@ import sys
 import pathlib
 
 def parse_cutoffs(args):
-    '''
+    """
     Parse the correct cutoffs file according to the run mode
-    '''
+    """
     cutoffs = {}
     with open(args.b, 'r') as fi:
         for line in fi.readlines():
@@ -197,7 +197,7 @@ def extraction(args, hmms, cutoffs):
 
     return(results, hit_ids)
 
-def calibration(args, results, valid_map):
+def calibration(args, results, valid_map, hmms):
     # Calibrate
     new_cutoffs = {}
     for hmm in hmms.keys():
@@ -210,10 +210,10 @@ def calibration(args, results, valid_map):
             cutoff_scores.append(score_cutoff(pos, neg, len(valid_map[hmm]), cutoff))
         cutoff_scores = sorted(cutoff_scores, key=lambda x:(-x[6], -x[0]))
         new_cutoffs[hmm] = cutoff_scores[0]
-
     return(new_cutoffs)
 
-def output_cutoffs(args, new_cutoffs):
+
+def output_cutoffs(args, new_cutoffs, hmms):
     # Output bitscore file
     if args.v:
         header = '#CALIBRATED CUTOFFS FILE - BEST HITS\n'
@@ -274,8 +274,8 @@ def main():
     results, hit_ids = extraction(args, hmms, cutoffs)
 
     if args.mode == 'calibration':
-        new_cutoffs = calibration(args, results, valid_map)
-        output_cutoffs(args, new_cutoffs)
+        new_cutoffs = calibration(args, results, valid_map, hmms)
+        output_cutoffs(args, new_cutoffs, hmms)
 
     output_results(args, hmms, results, hit_ids, prot_records, nucl_records)
 
