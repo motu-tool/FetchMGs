@@ -41,7 +41,7 @@ def run_hmmsearch(hmm, hmm_path, cutoff, args):
     out_path = os.path.join(args.o, f'hmmResults/{hmm}.out')
     tbl_path = os.path.join(args.o, f'hmmResults/{hmm}.dom')
     try:
-        subprocess.run(f'{hmmsearch_path} --noali --notextw --cpu {args.t} -T {cutoff} -o {out_path} --domtblout {tbl_path} {hmm_path} {args.file}', shell=True)
+        subprocess.run(f'hmmsearch --noali --notextw --cpu {args.t} -T {cutoff} -o {out_path} --domtblout {tbl_path} {hmm_path} {args.file}', shell=True)
     except subprocess.CalledProcessError as err:
         sys.stderr.write(f'\t{err}\n')
         sys.exit(1)
@@ -152,7 +152,7 @@ def import_files(args):
     # Check for nucleotide file and set up generators
     if not args.p:
         if args.d is not None:
-            nucl_records = SeqIO.parse(args.d, 'fasta')
+            nucl_records = SeqIO.parse(args.d, 'fafsta')
             sys.stdout.write(f'Nucleotide sequences: {args.d}\n')
         else:
             nucl_file = f'{os.path.splitext(args.file)[0]}.fna'
