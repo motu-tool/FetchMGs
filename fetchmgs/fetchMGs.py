@@ -59,7 +59,7 @@ def parse_hmmsearch(tbl_path):
             if line[0] != '#':
                 items = re.split('\s+', line)
                 hits[items[0]] = float(items[7])
-    return(hits)
+    return (hits)
 
 def score_cutoff(pos, neg, nvalid, cutoff):
     '''
@@ -73,10 +73,12 @@ def score_cutoff(pos, neg, nvalid, cutoff):
     recall = tp / (tp + fn)
     fscore = 2 / ((1 / precision) + (1 / recall))
 
-    return([cutoff, tp, fp, fn, precision, recall, fscore])
+    return ([cutoff, tp, fp, fn, precision, recall, fscore])
 
 def cli():
-    parser = argparse.ArgumentParser(description='fetchMGs extracts the 40 single copy universal marker genes (decribed in Ciccarelli et al., Science, 2006 and Sorek et al., Science, 2007) from genomes and metagenomes in an easy and accurate manner.', formatter_class=argparse.RawTextHelpFormatter)
+    parser = argparse.ArgumentParser(
+        description='fetchMGs extracts the 40 single copy universal marker genes (decribed in Ciccarelli et al., Science, 2006 and Sorek et al., Science, 2007) from genomes and metagenomes in an easy and accurate manner.',
+        formatter_class=argparse.RawTextHelpFormatter)
 
     # Add -m option for legacy - it does nothing
     parser.add_argument('-m', '-mode', action='store_true', help='fetchMGs mode, see below')
@@ -84,34 +86,52 @@ def cli():
     subparsers = parser.add_subparsers(title='modes', description='valid modes', dest='mode')
     subparsers.required = True
     PACKAGE_DIR = str(pathlib.Path(__file__).parent)
-    ext_parser = subparsers.add_parser('extraction', help='extract marker genes from sequences', formatter_class=argparse.RawTextHelpFormatter)
-    ext_parser.add_argument('file', help='multi-FASTA file with protein sequences from which universal single-copy marker genes should be extracted')
-    ext_parser.add_argument('-c', '-cog_used', nargs='+', default='all', help='orthologous group id(s) to be extracted; example: "COG0012"')
+    ext_parser = subparsers.add_parser('extraction', help='extract marker genes from sequences',
+                                       formatter_class=argparse.RawTextHelpFormatter)
+    ext_parser.add_argument('file',
+                            help='multi-FASTA file with protein sequences from which universal single-copy marker genes should be extracted')
+    ext_parser.add_argument('-c', '-cog_used', nargs='+', default='all',
+                            help='orthologous group id(s) to be extracted; example: "COG0012"')
     ext_parser.add_argument('-o', '-outdir', default='output', help='output directory')
     ext_parser.add_argument('-b', '-bitscore', default=None, help='path to bitscore cutoff file')
-    ext_parser.add_argument('-l', '-library', default=os.path.join(PACKAGE_DIR, 'data'), help='path to directory that contains hmm models')
-    ext_parser.add_argument('-p', '-protein', action='store_true', help='set if nucleotide sequences file for <protein sequences> is not available')
-    ext_parser.add_argument('-d', '-dnaFastaFile', help='multi-FASTA file with nucleotide sequences; not neccesary if protein and nucleotide fasta file have the same name except .faa and .fna suffixes')
-    ext_parser.add_argument('-v', '-verybesthit_only', action='store_true', help='only extract the best hit of each COG from each genome\nrecommended to use, if extracting sequences from multiple reference genomes in the same file do not use it for metagenomes\nif this option is set fasta identifiers should be in the form: taxID.geneID and, if needed, have "project_id=XXX" in the header\nalternatively, set -i to ignore the headers; then, the best hit of each OG in the whole input file will be selected, regardless of the headers used')
-    ext_parser.add_argument('-i', '-ignore_headers', action='store_true', help='if this option is set in addition to -v, the best hit of each COG will be selected\nrecommended to use, if extracting sequences from a single genome in the same file')
+    ext_parser.add_argument('-l', '-library', default=os.path.join(PACKAGE_DIR, 'data'),
+                            help='path to directory that contains hmm models')
+    ext_parser.add_argument('-p', '-protein', action='store_true',
+                            help='set if nucleotide sequences file for <protein sequences> is not available')
+    ext_parser.add_argument('-d', '-dnaFastaFile',
+                            help='multi-FASTA file with nucleotide sequences; not neccesary if protein and nucleotide fasta file have the same name except .faa and .fna suffixes')
+    ext_parser.add_argument('-v', '-verybesthit_only', action='store_true',
+                            help='only extract the best hit of each COG from each genome\nrecommended to use, if extracting sequences from multiple reference genomes in the same file do not use it for metagenomes\nif this option is set fasta identifiers should be in the form: taxID.geneID and, if needed, have "project_id=XXX" in the header\nalternatively, set -i to ignore the headers; then, the best hit of each OG in the whole input file will be selected, regardless of the headers used')
+    ext_parser.add_argument('-i', '-ignore_headers', action='store_true',
+                            help='if this option is set in addition to -v, the best hit of each COG will be selected\nrecommended to use, if extracting sequences from a single genome in the same file')
     ext_parser.add_argument('-t', '-threads', default=1, help='number of processors/threads to be used')
-    ext_parser.add_argument('-x', '-executable', default=os.path.join(PACKAGE_DIR, 'bin'), help='path to executables used by this script\ndefault is bin/\nif set to \'\' will search for executables in $PATH')
+    ext_parser.add_argument('-x', '-executable', default=os.path.join(PACKAGE_DIR, 'bin'),
+                            help='path to executables used by this script\ndefault is bin/\nif set to \'\' will search for executables in $PATH')
 
-    cal_parser = subparsers.add_parser('calibration', help='calibrate bitscores using results from extraction and a mapping file of known OGs', formatter_class=argparse.RawTextHelpFormatter)
+    cal_parser = subparsers.add_parser('calibration',
+                                       help='calibrate bitscores using results from extraction and a mapping file of known OGs',
+                                       formatter_class=argparse.RawTextHelpFormatter)
     cal_parser.add_argument('file', help='file with sequences that include marker genes (true positives)')
     cal_parser.add_argument('map', help='tab-delimited file with true positive protein identifiers and COG ID')
-    cal_parser.add_argument('-c', '-cog_used', nargs='+', default='all', help='orthologous group id(s) to be extracted; example: "COG0012"')
+    cal_parser.add_argument('-c', '-cog_used', nargs='+', default='all',
+                            help='orthologous group id(s) to be extracted; example: "COG0012"')
     cal_parser.add_argument('-o', '-outdir', default='output', help='output directory')
-    cal_parser.add_argument('-l', '-library', default=os.path.join(PACKAGE_DIR, 'data'), help='path to directory that contains hmm models')
-    cal_parser.add_argument('-p', '-protein', action='store_true', help='set if nucleotide sequences file for <protein sequences> is not available')
-    cal_parser.add_argument('-d', '-dnaFastaFile', help='multi-FASTA file with nucleotide sequences; not neccesary if protein and nucleotide fasta file have the same name except .faa and .fna suffixes')
-    cal_parser.add_argument('-v', '-verybesthit_only', action='store_true', help='only extract the best hit of each COG from each genome\nrecommended to use, if extracting sequences from multiple reference genomes in the same file do not use it for metagenomes\nif this option is set fasta identifiers should be in the form: taxID.geneID and, if needed, have "project_id=XXX" in the header\nalternatively, set -i to ignore the headers; then, the best hit of each OG in the whole input file will be selected, regardless of the headers used')
-    cal_parser.add_argument('-i', '-ignore_headers', action='store_true', help='if this option is set in addition to -v, the best hit of each COG will be selected\nrecommended to use, if extracting sequences from a single genome in the same file')
+    cal_parser.add_argument('-l', '-library', default=os.path.join(PACKAGE_DIR, 'data'),
+                            help='path to directory that contains hmm models')
+    cal_parser.add_argument('-p', '-protein', action='store_true',
+                            help='set if nucleotide sequences file for <protein sequences> is not available')
+    cal_parser.add_argument('-d', '-dnaFastaFile',
+                            help='multi-FASTA file with nucleotide sequences; not neccesary if protein and nucleotide fasta file have the same name except .faa and .fna suffixes')
+    cal_parser.add_argument('-v', '-verybesthit_only', action='store_true',
+                            help='only extract the best hit of each COG from each genome\nrecommended to use, if extracting sequences from multiple reference genomes in the same file do not use it for metagenomes\nif this option is set fasta identifiers should be in the form: taxID.geneID and, if needed, have "project_id=XXX" in the header\nalternatively, set -i to ignore the headers; then, the best hit of each OG in the whole input file will be selected, regardless of the headers used')
+    cal_parser.add_argument('-i', '-ignore_headers', action='store_true',
+                            help='if this option is set in addition to -v, the best hit of each COG will be selected\nrecommended to use, if extracting sequences from a single genome in the same file')
     cal_parser.add_argument('-t', '-threads', default=1, help='number of processors/threads to be used')
-    cal_parser.add_argument('-x', '-executable', default=os.path.join(PACKAGE_DIR, 'bin'), help='path to executables used by this script\ndefault is bin/\nif set to \'\' will search for executables in $PATH')
+    cal_parser.add_argument('-x', '-executable', default=os.path.join(PACKAGE_DIR, 'bin'),
+                            help='path to executables used by this script\ndefault is bin/\nif set to \'\' will search for executables in $PATH')
 
     args = parser.parse_args()
-    return(args)
+    return (args)
 
 def import_files(args):
     # Compile list of HMM models
@@ -119,8 +139,8 @@ def import_files(args):
     if args.c == 'all':
         args.c = [os.path.splitext(os.path.split(x)[1])[0] for x in hmms]
     args.c = sorted(args.c)
-    hmms = {x:f'{args.l}/{x}.hmm' for x in args.c}
-    
+    hmms = {x: f'{args.l}/{x}.hmm' for x in args.c}
+
     # Parse cutoff file
     if args.mode == 'calibration':
         args.b = f'{args.l}/MG_BitScoreCutoffs.uncalibrated.txt'
@@ -137,7 +157,7 @@ def import_files(args):
         valid_map = {}
         for hmm in hmms.keys():
             valid_map[hmm] = []
-        with open (args.map, 'r') as file:
+        with open(args.map, 'r') as file:
             for line in file.readlines():
                 line = line.strip()
                 items = line.split("\t")
@@ -152,7 +172,7 @@ def import_files(args):
     # Check for nucleotide file and set up generators
     if not args.p:
         if args.d is not None:
-            nucl_records = SeqIO.parse(args.d, 'fafsta')
+            nucl_records = SeqIO.parse(args.d, 'fasta')
             sys.stdout.write(f'Nucleotide sequences: {args.d}\n')
         else:
             nucl_file = f'{os.path.splitext(args.file)[0]}.fna'
@@ -166,7 +186,7 @@ def import_files(args):
         nucl_records = None
         sys.stdout.write(f'Nucleotide sequences: none specified\n')
 
-    return(hmms, cutoffs, valid_map, prot_records, nucl_records)    
+    return (hmms, cutoffs, valid_map, prot_records, nucl_records)
 
 def extraction(args, hmms, cutoffs):
     # Go through HMMs and save results
@@ -175,7 +195,7 @@ def extraction(args, hmms, cutoffs):
         sys.stdout.write(f'    {hmm}\n')
         results[hmm] = run_hmmsearch(hmm, hmms[hmm], cutoffs[hmm], args)
     hit_ids = [k for result in results.values() for k in result.keys()]
-    
+
     # Get tax_ids if there are multiple genomes
     if not args.i:
         if len(hit_ids[0].split(".")) > 1:
@@ -188,29 +208,29 @@ def extraction(args, hmms, cutoffs):
         for hmm in hmms.keys():
             if tax_ids is not None:
                 for tax_id in tax_ids:
-                    genome_results = {k:v for k,v in results[hmm].items() if k.split(".")[0]==tax_id}
+                    genome_results = {k: v for k, v in results[hmm].items() if k.split(".")[0] == tax_id}
                     best_hit = max(genome_results, key=genome_results.get)
                     [results[hmm].pop(k) for k in genome_results.keys() if k != best_hit]
             else:
                 best_hit = max(results[hmm], key=results[hmm].get)
-                results[hmm] = {best_hit:results[hmm][best_hit]}
+                results[hmm] = {best_hit: results[hmm][best_hit]}
 
-    return(results, hit_ids)
+    return (results, hit_ids)
 
-def calibration(args, results, valid_map, hmms):
+def calibration(args, results, valid_map, hmms, cutoffs):
     # Calibrate
     new_cutoffs = {}
     for hmm in hmms.keys():
-        pos = sorted(v for k,v in results[hmm].items() if k in valid_map[hmm])
-        neg = sorted(v for k,v in results[hmm].items() if k not in valid_map[hmm])
-        max_cutoff = max(neg+pos)
+        pos = sorted(v for k, v in results[hmm].items() if k in valid_map[hmm])
+        neg = sorted(v for k, v in results[hmm].items() if k not in valid_map[hmm])
+        max_cutoff = max(neg + pos)
 
         cutoff_scores = []
-        for cutoff in np.arange(cutoffs[hmm], max_cutoff, step = 10):
+        for cutoff in np.arange(cutoffs[hmm], max_cutoff, step=10):
             cutoff_scores.append(score_cutoff(pos, neg, len(valid_map[hmm]), cutoff))
-        cutoff_scores = sorted(cutoff_scores, key=lambda x:(-x[6], -x[0]))
+        cutoff_scores = sorted(cutoff_scores, key=lambda x: (-x[6], -x[0]))
         new_cutoffs[hmm] = cutoff_scores[0]
-    return(new_cutoffs)
+    return (new_cutoffs)
 
 
 def output_cutoffs(args, new_cutoffs, hmms):
@@ -226,11 +246,12 @@ def output_cutoffs(args, new_cutoffs, hmms):
         for hmm in hmms.keys():
             fo.write(f'{hmm}\t{new_cutoffs[hmm][0]}\t{new_cutoffs[hmm][4]}\t{new_cutoffs[hmm][5]}\n')
 
+
 def output_results(args, hmms, results, hit_ids, prot_records, nucl_records):
     # Only keep sequence records with hits
-    prot_hits = {x.id:x for x in prot_records if x.id in hit_ids}
+    prot_hits = {x.id: x for x in prot_records if x.id in hit_ids}
     if nucl_records is not None:
-        nucl_hits = {x.id:x for x in nucl_records if x.id in hit_ids}
+        nucl_hits = {x.id: x for x in nucl_records if x.id in hit_ids}
 
     # Output results table
     with open(os.path.join(args.o, "marker_genes_scores.tsv"), 'w') as fo:
@@ -274,7 +295,7 @@ def main():
     results, hit_ids = extraction(args, hmms, cutoffs)
 
     if args.mode == 'calibration':
-        new_cutoffs = calibration(args, results, valid_map, hmms)
+        new_cutoffs = calibration(args, results, valid_map, hmms, cutoffs)
         output_cutoffs(args, new_cutoffs, hmms)
 
     output_results(args, hmms, results, hit_ids, prot_records, nucl_records)
