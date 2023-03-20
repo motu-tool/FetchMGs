@@ -182,6 +182,8 @@ def extraction(args, hmms, cutoffs):
             tax_ids = set(x.split(".")[0] for x in hit_ids)
         else:
             tax_ids = None
+    else:
+        tax_ids = None 
 
     # Filter if -v
     if args.v:
