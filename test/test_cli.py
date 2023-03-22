@@ -1,3 +1,4 @@
+import sys, os
 import pytest
 import subprocess
 
@@ -14,6 +15,12 @@ from fetchMGs import cli
 def test_cli_no_mode():
     """ Test for the command line interface output when no mode is defined """
 
-    proc = subprocess.Popen(["python", "-c", "import writer; writer.write()"], stdout=subprocess.PIPE)
-    out = proc.communicate()[0]
-    print out.upper()
+    proc = subprocess.Popen(["python", f"{PARENT_DIR}/fetchMGs.py", "-h"], stdout=subprocess.PIPE)
+    test_out = proc.communicate()[0].decode()
+    print(test_out)
+
+    original_out = open(f"{TEST_DATA_DIR}/cli_no_mode.txt", "r")
+    print(original_out.read())
+
+    print(test_out == original_out)
+test_cli_no_mode()
