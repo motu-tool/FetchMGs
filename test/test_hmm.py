@@ -11,7 +11,6 @@ TEST_DIR       = os.path.dirname(os.path.abspath(__file__))
 PARENT_DIR     = f'{TEST_DIR}/../fetchmgs'         # Points to the package directory
 EXAMPLE_DIR    = f'{TEST_DIR}/example_output/hmmResults/'      # HMM search example to be compared with tests
 TEST_FILE      = f'{TEST_DIR}/test_data/example_data_genomes.faa'
-TMP_DIR        = tempfile.TemporaryDirectory()
 
 # Load fetchMGs functions
 sys.path.insert(0, PARENT_DIR) 
