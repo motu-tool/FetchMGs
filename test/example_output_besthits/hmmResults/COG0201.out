@@ -1,0 +1,69 @@
+# hmmsearch :: search profile(s) against a sequence database
+# HMMER 3.3 (Nov 2019); http://hmmer.org/
+# Copyright (C) 2019 Howard Hughes Medical Institute.
+# Freely distributed under the BSD open source license.
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+# query HMM file:                  .//../fetchmgs/data/COG0201.hmm
+# target sequence database:        .//test_data/example_data_genomes.faa
+# output directed to file:         ./example_output_besthits/hmmResults/COG0201.out
+# per-dom hits tabular output:     ./example_output_besthits/hmmResults/COG0201.dom
+# show alignments in output:       no
+# max ASCII text line length:      unlimited
+# sequence reporting threshold:    score >= 210
+# number of worker threads:        1
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+Query:       COG0201  [M=512]
+Scores for complete sequences (score includes all domains):
+   --- full sequence ---   --- best 1 domain ---    -#dom-
+    E-value  score  bias    E-value  score  bias    exp  N  Sequence           Description
+    ------- ------ -----    ------- ------ -----   ---- --  --------           -----------
+   2.5e-163  544.8  20.9   2.8e-163  544.7  20.9    1.0  1  1037409.BJ6T_44070  protein_id="BAL09676.1" product="preprotein translocase SECY subunit" GI="354956997" project_id="67463"
+   6.8e-161  536.8  22.3   8.6e-161  536.5  22.3    1.0  1  1089456.NCGM2_5488  protein_id="BAK92309.1" gene="secY" product="preprotein translocase subunit" GI="348036949" note="similar to GI:116052278; similar to PA14_09050 of P. aeruginosa UCBPP-PA14" project_id="73453"
+   9.2e-140  467.1  27.7     1e-139  467.0  27.7    1.0  1  1148.SYNGTS_0757    protein_id="BAK49505.1" gene="secY" product="preprotein translocase SecY subunit" GI="339273018" note="ORF_ID:sll1814" project_id="67081"
+   9.8e-134  447.2  37.1   1.2e-133  447.0  37.1    1.0  1  944546.ABED_0718    protein_id="BAK70435.1" product="preprotein translocase subunit SecY" GI="345468984" project_id="61719"
+   1.5e-133  446.6  38.0   1.8e-133  446.3  38.0    1.0  1  944547.ABLL_0993    protein_id="BAK72868.1" product="preprotein translocase subunit SecY" GI="345471418" project_id="61721"
+
+
+Domain annotation for each sequence:
+>> 1037409.BJ6T_44070  protein_id="BAL09676.1" product="preprotein translocase SECY subunit" GI="354956997" project_id="67463"
+   #    score  bias  c-Evalue  i-Evalue hmmfrom  hmm to    alifrom  ali to    envfrom  env to     acc
+ ---   ------ ----- --------- --------- ------- -------    ------- -------    ------- -------    ----
+   1 !  544.7  20.9  5.9e-167  2.8e-163      66     470 ..      13     441 ..       1     443 [] 0.95
+
+>> 1089456.NCGM2_5488  protein_id="BAK92309.1" gene="secY" product="preprotein translocase subunit" GI="348036949" note="similar to GI:116052278; similar to PA14_09050 of P. aeruginosa UCBPP-PA14" project_id="73453"
+   #    score  bias  c-Evalue  i-Evalue hmmfrom  hmm to    alifrom  ali to    envfrom  env to     acc
+ ---   ------ ----- --------- --------- ------- -------    ------- -------    ------- -------    ----
+   1 !  536.5  22.3  1.9e-164  8.6e-161      74     469 ..      16     435 ..       3     441 .. 0.95
+
+>> 1148.SYNGTS_0757  protein_id="BAK49505.1" gene="secY" product="preprotein translocase SecY subunit" GI="339273018" note="ORF_ID:sll1814" project_id="67081"
+   #    score  bias  c-Evalue  i-Evalue hmmfrom  hmm to    alifrom  ali to    envfrom  env to     acc
+ ---   ------ ----- --------- --------- ------- -------    ------- -------    ------- -------    ----
+   1 !  467.0  27.7  2.2e-143    1e-139      60     464 ..       8     441 ..       1     442 [] 0.92
+
+>> 944546.ABED_0718  protein_id="BAK70435.1" product="preprotein translocase subunit SecY" GI="345468984" project_id="61719"
+   #    score  bias  c-Evalue  i-Evalue hmmfrom  hmm to    alifrom  ali to    envfrom  env to     acc
+ ---   ------ ----- --------- --------- ------- -------    ------- -------    ------- -------    ----
+   1 !  447.0  37.1  2.5e-137  1.2e-133      74     460 ..       3     414 ..       1     418 [. 0.93
+
+>> 944547.ABLL_0993  protein_id="BAK72868.1" product="preprotein translocase subunit SecY" GI="345471418" project_id="61721"
+   #    score  bias  c-Evalue  i-Evalue hmmfrom  hmm to    alifrom  ali to    envfrom  env to     acc
+ ---   ------ ----- --------- --------- ------- -------    ------- -------    ------- -------    ----
+   1 !  446.3  38.0  3.8e-137  1.8e-133      74     460 ..       3     414 ..       1     418 [. 0.93
+
+
+
+Internal pipeline statistics summary:
+-------------------------------------
+Query model(s):                            1  (512 nodes)
+Target sequences:                      23272  (7230323 residues searched)
+Passed MSV filter:                      1776  (0.0763149); expected 465.4 (0.02)
+Passed bias filter:                      559  (0.0240203); expected 465.4 (0.02)
+Passed Vit filter:                        51  (0.00219147); expected 23.3 (0.001)
+Passed Fwd filter:                         5  (0.00021485); expected 0.2 (1e-05)
+Initial search space (Z):              23272  [actual number of targets]
+Domain search space  (domZ):               5  [number of targets reported over threshold]
+# CPU time: 0.16u 0.03s 00:00:00.19 Elapsed: 00:00:00.13
+# Mc/sec: 28269.33
+//
+[ok]

@@ -1,0 +1,18 @@
+#                                                                            --- full sequence --- -------------- this domain -------------   hmm coord   ali coord   env coord
+# target name        accession   tlen query name           accession   qlen   E-value  score  bias   #  of  c-Evalue  i-Evalue  score  bias  from    to  from    to  from    to  acc description of target
+#------------------- ---------- ----- -------------------- ---------- ----- --------- ------ ----- --- --- --------- --------- ------ ----- ----- ----- ----- ----- ----- ----- ---- ---------------------
+1089456.NCGM2_5508   -            211 COG0087              -            362   5.1e-97  325.7  10.9   1   1  1.2e-100   5.7e-97  325.6  10.9    42   250     1   209     1   211 0.98 protein_id="BAK92329.1" gene="rplC" product="50S ribosomal protein L3" GI="348036969" note="similar to GI:116052298; similar to PA14_08850 of P. aeruginosa UCBPP-PA14" project_id="73453"
+1037409.BJ6T_43870   -            237 COG0087              -            362   4.3e-93  312.8   9.3   1   1   9.9e-97   4.6e-93  312.7   9.3    42   265     1   228     1   237 0.95 protein_id="BAL09656.1" gene="rplC" product="50S ribosomal protein L3" GI="354956977" project_id="67463"
+1148.SYNGTS_0775     -            213 COG0087              -            362   1.1e-82  278.6   1.3   1   1   2.6e-86   1.2e-82  278.4   1.3    42   247     1   207     1   212 0.96 protein_id="BAK49523.1" gene="rpl3" product="50S ribosomal protein L3" GI="339273036" note="ORF_ID:sll1799" project_id="67081"
+944546.ABED_0699     -            191 COG0087              -            362     5e-42  144.8   7.6   1   1   1.2e-45   5.6e-42  144.7   7.6    45   246     2   189     1   191 0.91 protein_id="BAK70416.1" product="50S ribosomal protein L3" GI="345468965" project_id="61719"
+944547.ABLL_0974     -            191 COG0087              -            362   8.5e-42  144.1   8.2   1   1   2.1e-45   9.6e-42  143.9   8.2    45   246     2   189     1   191 0.91 protein_id="BAK72849.1" product="50S ribosomal protein L3" GI="345471399" project_id="61721"
+#
+# Program:         hmmsearch
+# Version:         3.3.2 (Nov 2020)
+# Pipeline mode:   SEARCH
+# Query file:      /nfs/home/fieldc/.local/lib/python3.7/site-packages/fetchmgs/data/COG0087.hmm
+# Target file:     ../fetchMGs/example_datasets/example_data_genomes.faa
+# Option settings: /nfs/home/fieldc/.local/lib/python3.7/site-packages/fetchmgs/bin/hmmsearch -o output/hmmResults/COG0087.out --domtblout output/hmmResults/COG0087.dom --noali --notextw -T 120 --cpu 1 /nfs/home/fieldc/.local/lib/python3.7/site-packages/fetchmgs/data/COG0087.hmm ../fetchMGs/example_datasets/example_data_genomes.faa 
+# Current dir:     /nfs/nas22/fs2202/biol_micro_bioinf/software/fetchmgs_dev
+# Date:            Wed Sep 14 14:19:35 2022
+# [ok]

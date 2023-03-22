@@ -1,0 +1,18 @@
+#                                                                            --- full sequence --- -------------- this domain -------------   hmm coord   ali coord   env coord
+# target name        accession   tlen query name           accession   qlen   E-value  score  bias   #  of  c-Evalue  i-Evalue  score  bias  from    to  from    to  from    to  acc description of target
+#------------------- ---------- ----- -------------------- ---------- ----- --------- ------ ----- --- --- --------- --------- ------ ----- ----- ----- ----- ----- ----- ----- ---- ---------------------
+1037409.BJ6T_44110   -            343 COG0202              -            349  3.5e-132  440.9   0.0   1   1  9.6e-136  4.4e-132  440.6   0.0    28   331    10   330     2   342 0.92 protein_id="BAL09680.1" gene="rpoA" product="DNA-directed RNA polymerase alpha subunit" GI="354957001" project_id="67463"
+1089456.NCGM2_5483   -            333 COG0202              -            349  3.3e-128  427.8   0.3   1   1  7.8e-132  3.6e-128  427.7   0.3    30   333     7   326     1   333 0.93 protein_id="BAK92304.1" gene="rpoA" product="DNA-directed RNA polymerase subunit alpha" GI="348036944" note="similar to GI:116054394; similar to PA14_09115 of P. aeruginosa UCBPP-PA14" project_id="73453"
+1148.SYNGTS_0751     -            314 COG0202              -            349  5.9e-109  364.5   0.4   1   1  1.4e-112  6.4e-109  364.4   0.4    38   326     9   311     1   314 0.92 protein_id="BAK49499.1" gene="rpoA" product="DNA-directed RNA polymerase subunit alpha" GI="339273012" note="ORF_ID:sll1818" project_id="67081"
+944547.ABLL_1771     -            332 COG0202              -            349   3.4e-89  299.5   2.0   1   1   8.6e-93     4e-89  299.3   2.0    34   328    10   317     1   331 0.92 protein_id="BAK73646.1" product="DNA-directed RNA polymerase alpha subunit" GI="345472196" project_id="61721"
+944546.ABED_0966     -            332 COG0202              -            349   6.8e-89  298.6   1.2   1   1   1.7e-92     8e-89  298.3   1.2    34   328    10   317     1   331 0.92 protein_id="BAK70683.1" product="DNA-directed RNA polymerase alpha subunit" GI="345469232" project_id="61719"
+#
+# Program:         hmmsearch
+# Version:         3.3.2 (Nov 2020)
+# Pipeline mode:   SEARCH
+# Query file:      /nfs/home/fieldc/.local/lib/python3.7/site-packages/fetchmgs/data/COG0202.hmm
+# Target file:     example_input/example_data_genomes.faa
+# Option settings: /nfs/home/fieldc/.local/lib/python3.7/site-packages/fetchmgs/bin/hmmsearch -o example_output/hmmResults/COG0202.out --domtblout example_output/hmmResults/COG0202.dom --noali --notextw -T 80 --cpu 1 /nfs/home/fieldc/.local/lib/python3.7/site-packages/fetchmgs/data/COG0202.hmm example_input/example_data_genomes.faa 
+# Current dir:     /nfs/nas22/fs2202/biol_micro_bioinf/software/fetchmgs_dev
+# Date:            Mon Aug 22 15:53:18 2022
+# [ok]
