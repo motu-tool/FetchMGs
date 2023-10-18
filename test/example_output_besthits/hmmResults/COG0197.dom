@@ -1,0 +1,18 @@
+#                                                                            --- full sequence --- -------------- this domain -------------   hmm coord   ali coord   env coord
+# target name        accession   tlen query name           accession   qlen   E-value  score  bias   #  of  c-Evalue  i-Evalue  score  bias  from    to  from    to  from    to  acc description of target
+#------------------- ---------- ----- -------------------- ---------- ----- --------- ------ ----- --- --- --------- --------- ------ ----- ----- ----- ----- ----- ----- ----- ---- ---------------------
+1148.SYNGTS_0768     -            139 COG0197              -            143   1.4e-67  226.3   0.9   1   1   3.6e-71   1.7e-67  226.1   0.9     2   137     1   136     1   138 0.98 protein_id="BAK49516.1" gene="rpl16" product="50S ribosomal protein L16" GI="339273029" note="ORF_ID:sll1805" project_id="67081"
+1037409.BJ6T_43940   -            137 COG0197              -            143   2.6e-60  202.8   2.8   1   1     6e-64   2.8e-60  202.7   2.8     2   135     1   134     1   137 0.99 protein_id="BAL09663.1" gene="rplP" product="50S ribosomal protein L16" GI="354956984" project_id="67463"
+944547.ABLL_0981     -            141 COG0197              -            143     1e-58  197.6   2.4   1   1   2.6e-62   1.2e-58  197.4   2.4     2   139     1   138     1   140 0.98 protein_id="BAK72856.1" product="50S ribosomal protein L16" GI="345471406" project_id="61721"
+944546.ABED_0706     -            141 COG0197              -            143   1.4e-58  197.1   2.2   1   1   3.6e-62   1.7e-58  196.9   2.2     2   139     1   138     1   140 0.98 protein_id="BAK70423.1" product="50S ribosomal protein L16" GI="345468972" project_id="61719"
+1089456.NCGM2_5501   -            137 COG0197              -            143   3.8e-58  195.8   2.0   1   1   8.8e-62   4.1e-58  195.6   2.0     2   135     1   134     1   137 0.99 protein_id="BAK92322.1" gene="rplP" product="50S ribosomal protein L16" GI="348036962" note="similar to GI:116052291; similar to PA14_08920 of P. aeruginosa UCBPP-PA14" project_id="73453"
+#
+# Program:         hmmsearch
+# Version:         3.3 (Nov 2019)
+# Pipeline mode:   SEARCH
+# Query file:      .//../fetchmgs/data/COG0197.hmm
+# Target file:     .//test_data/example_data_genomes.faa
+# Option settings: hmmsearch -o ./example_output_besthits/hmmResults/COG0197.out --domtblout ./example_output_besthits/hmmResults/COG0197.dom --noali --notextw -T 70 --cpu 1 .//../fetchmgs/data/COG0197.hmm .//test_data/example_data_genomes.faa 
+# Current dir:     /home/smiravet/eth/fetchmgs_dev/test
+# Date:            Mon Mar 20 16:23:10 2023
+# [ok]
