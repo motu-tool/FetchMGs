@@ -1,0 +1,18 @@
+#                                                                            --- full sequence --- -------------- this domain -------------   hmm coord   ali coord   env coord
+# target name        accession   tlen query name           accession   qlen   E-value  score  bias   #  of  c-Evalue  i-Evalue  score  bias  from    to  from    to  from    to  acc description of target
+#------------------- ---------- ----- -------------------- ---------- ----- --------- ------ ----- --- --- --------- --------- ------ ----- ----- ----- ----- ----- ----- ----- ---- ---------------------
+1089456.NCGM2_4787   -            246 COG0052              -            333  3.9e-122  407.6   0.0   1   1  9.1e-126  4.2e-122  407.5   0.0    26   264     1   239     1   246 0.96 protein_id="BAK91610.1" gene="rpsB" product="30S ribosomal protein S2" GI="348036250" note="similar to GI:116051653; similar to PA14_17060 of P. aeruginosa UCBPP-PA14" project_id="73453"
+944546.ABED_0514     -            265 COG0052              -            333    5e-117  390.8   1.0   1   1  1.2e-120  5.4e-117  390.7   1.0    29   286     2   259     1   265 0.95 protein_id="BAK70231.1" product="30S ribosomal protein S2" GI="345468780" project_id="61719"
+1037409.BJ6T_48500   -            331 COG0052              -            333  3.4e-116  388.1   0.0   1   1  8.9e-120  4.2e-116  387.8   0.0    27   265     4   242     1   258 0.96 protein_id="BAL10112.1" product="30S ribosomal protein S2" GI="354957433" project_id="67463"
+944547.ABLL_0659     -            263 COG0052              -            333  4.1e-116  387.8   0.8   1   1  9.7e-120  4.5e-116  387.7   0.8    29   283     2   256     1   263 0.94 protein_id="BAK72534.1" product="30S ribosomal protein S2" GI="345471084" project_id="61721"
+1148.SYNGTS_1572     -            269 COG0052              -            333  4.4e-116  387.7   0.0   1   1    1e-119  4.8e-116  387.6   0.0    26   286     1   260     1   269 0.91 protein_id="BAK50320.1" gene="rps2" product="30S ribosomal protein S2" GI="339273833" note="ORF_ID:sll1260" project_id="67081"
+#
+# Program:         hmmsearch
+# Version:         3.3.2 (Nov 2020)
+# Pipeline mode:   SEARCH
+# Query file:      /nfs/cds-peta/exports/biol_micro_cds_gr_sunagawa/scratch/lifeer/fetchmgs_dev/fetchmgs/data/COG0052.hmm
+# Target file:     /nfs/cds-peta/exports/biol_micro_cds_gr_sunagawa/scratch/lifeer/fetchmgs_dev/data/example_data_genomes.faa
+# Option settings: hmmsearch -o output/hmmResults/COG0052.out --domtblout output/hmmResults/COG0052.dom --noali --notextw -T 60 --cpu 1 /nfs/cds-peta/exports/biol_micro_cds_gr_sunagawa/scratch/lifeer/fetchmgs_dev/fetchmgs/data/COG0052.hmm /nfs/cds-peta/exports/biol_micro_cds_gr_sunagawa/scratch/lifeer/fetchmgs_dev/data/example_data_genomes.faa 
+# Current dir:     /nfs/cds-peta/exports/biol_micro_cds_gr_sunagawa/scratch/lifeer/fetchmgs_dev/fetchmgs
+# Date:            Wed Aug 30 17:53:28 2023
+# [ok]

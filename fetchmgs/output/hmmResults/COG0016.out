@@ -1,0 +1,69 @@
+# hmmsearch :: search profile(s) against a sequence database
+# HMMER 3.3.2 (Nov 2020); http://hmmer.org/
+# Copyright (C) 2020 Howard Hughes Medical Institute.
+# Freely distributed under the BSD open source license.
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+# query HMM file:                  /nfs/cds-peta/exports/biol_micro_cds_gr_sunagawa/scratch/lifeer/fetchmgs_dev/fetchmgs/data/COG0016.hmm
+# target sequence database:        /nfs/cds-peta/exports/biol_micro_cds_gr_sunagawa/scratch/lifeer/fetchmgs_dev/data/example_data_genomes.faa
+# output directed to file:         output/hmmResults/COG0016.out
+# per-dom hits tabular output:     output/hmmResults/COG0016.dom
+# show alignments in output:       no
+# max ASCII text line length:      unlimited
+# sequence reporting threshold:    score >= 60
+# number of worker threads:        1
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+Query:       COG0016  [M=423]
+Scores for complete sequences (score includes all domains):
+   --- full sequence ---   --- best 1 domain ---    -#dom-
+    E-value  score  bias    E-value  score  bias    exp  N  Sequence           Description
+    ------- ------ -----    ------- ------ -----   ---- --  --------           -----------
+   1.3e-143  479.6   0.0   1.4e-143  479.4   0.0    1.0  1  1089456.NCGM2_3777  protein_id="BAK90619.1" gene="pheS" product="phenylalanyl-tRNA synthetase subunit alpha" GI="348035259" note="similar to GI:116050730; similar to PA14_28690 of P. aeruginosa UCBPP-PA14" project_id="73453"
+   3.4e-141  471.6   0.0     4e-141  471.4   0.0    1.0  1  1037409.BJ6T_06760  protein_id="BAL05971.1" product="phenylalanyl-tRNA synthetase alpha chain" GI="354953292" project_id="67463"
+   1.5e-138  462.9   0.0   1.7e-138  462.7   0.0    1.0  1  1148.SYNGTS_2365    protein_id="BAK51113.1" gene="pheS" product="phenylalanyl-tRNA synthetase alpha chain" GI="339274626" note="ORF_ID:sll0454" project_id="67081"
+   4.5e-119  398.7   0.7   5.1e-119  398.6   0.7    1.0  1  944547.ABLL_2541    protein_id="BAK74416.1" product="phenylalanyl-tRNA synthase alpha subunit" GI="345472966" project_id="61721"
+   2.7e-116  389.6   0.5   3.1e-116  389.4   0.5    1.0  1  944546.ABED_1860    protein_id="BAK71577.1" product="phenylalanyl-tRNA synthase alpha subunit" GI="345470126" project_id="61719"
+
+
+Domain annotation for each sequence:
+>> 1089456.NCGM2_3777  protein_id="BAK90619.1" gene="pheS" product="phenylalanyl-tRNA synthetase subunit alpha" GI="348035259" note="similar to GI:116050730; similar to PA14_28690 of P. aeruginosa UCBPP-PA14" project_id="73453"
+   #    score  bias  c-Evalue  i-Evalue hmmfrom  hmm to    alifrom  ali to    envfrom  env to     acc
+ ---   ------ ----- --------- --------- ------- -------    ------- -------    ------- -------    ----
+   1 !  479.4   0.0  3.1e-147  1.4e-143      72     415 ..       2     337 ..       1     338 [] 0.98
+
+>> 1037409.BJ6T_06760  protein_id="BAL05971.1" product="phenylalanyl-tRNA synthetase alpha chain" GI="354953292" project_id="67463"
+   #    score  bias  c-Evalue  i-Evalue hmmfrom  hmm to    alifrom  ali to    envfrom  env to     acc
+ ---   ------ ----- --------- --------- ------- -------    ------- -------    ------- -------    ----
+   1 !  471.4   0.0  8.5e-145    4e-141      73     418 ..       3     347 ..       1     352 [. 0.95
+
+>> 1148.SYNGTS_2365  protein_id="BAK51113.1" gene="pheS" product="phenylalanyl-tRNA synthetase alpha chain" GI="339274626" note="ORF_ID:sll0454" project_id="67081"
+   #    score  bias  c-Evalue  i-Evalue hmmfrom  hmm to    alifrom  ali to    envfrom  env to     acc
+ ---   ------ ----- --------- --------- ------- -------    ------- -------    ------- -------    ----
+   1 !  462.7   0.0  3.7e-142  1.7e-138      69     415 ..       4     331 .]       1     331 [] 0.98
+
+>> 944547.ABLL_2541  protein_id="BAK74416.1" product="phenylalanyl-tRNA synthase alpha subunit" GI="345472966" project_id="61721"
+   #    score  bias  c-Evalue  i-Evalue hmmfrom  hmm to    alifrom  ali to    envfrom  env to     acc
+ ---   ------ ----- --------- --------- ------- -------    ------- -------    ------- -------    ----
+   1 !  398.6   0.7  1.1e-122  5.1e-119      81     415 ..       4     329 ..       1     330 [] 0.97
+
+>> 944546.ABED_1860  protein_id="BAK71577.1" product="phenylalanyl-tRNA synthase alpha subunit" GI="345470126" project_id="61719"
+   #    score  bias  c-Evalue  i-Evalue hmmfrom  hmm to    alifrom  ali to    envfrom  env to     acc
+ ---   ------ ----- --------- --------- ------- -------    ------- -------    ------- -------    ----
+   1 !  389.4   0.5  6.6e-120  3.1e-116      81     415 ..       4     329 ..       1     330 [] 0.97
+
+
+
+Internal pipeline statistics summary:
+-------------------------------------
+Query model(s):                            1  (423 nodes)
+Target sequences:                      23272  (7230323 residues searched)
+Passed MSV filter:                      1449  (0.0622637); expected 465.4 (0.02)
+Passed bias filter:                      996  (0.0427982); expected 465.4 (0.02)
+Passed Vit filter:                       165  (0.00709007); expected 23.3 (0.001)
+Passed Fwd filter:                        60  (0.00257821); expected 0.2 (1e-05)
+Initial search space (Z):              23272  [actual number of targets]
+Domain search space  (domZ):               5  [number of targets reported over threshold]
+# CPU time: 0.64u 0.01s 00:00:00.65 Elapsed: 00:00:00.53
+# Mc/sec: 5674.20
+//
+[ok]

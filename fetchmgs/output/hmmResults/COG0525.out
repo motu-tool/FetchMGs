@@ -1,0 +1,167 @@
+# hmmsearch :: search profile(s) against a sequence database
+# HMMER 3.3.2 (Nov 2020); http://hmmer.org/
+# Copyright (C) 2020 Howard Hughes Medical Institute.
+# Freely distributed under the BSD open source license.
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+# query HMM file:                  /nfs/cds-peta/exports/biol_micro_cds_gr_sunagawa/scratch/lifeer/fetchmgs_dev/fetchmgs/data/COG0525.hmm
+# target sequence database:        /nfs/cds-peta/exports/biol_micro_cds_gr_sunagawa/scratch/lifeer/fetchmgs_dev/data/example_data_genomes.faa
+# output directed to file:         output/hmmResults/COG0525.out
+# per-dom hits tabular output:     output/hmmResults/COG0525.dom
+# show alignments in output:       no
+# max ASCII text line length:      unlimited
+# sequence reporting threshold:    score >= 60
+# number of worker threads:        1
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+Query:       COG0525  [M=2007]
+Scores for complete sequences (score includes all domains):
+   --- full sequence ---   --- best 1 domain ---    -#dom-
+    E-value  score  bias    E-value  score  bias    exp  N  Sequence           Description
+    ------- ------ -----    ------- ------ -----   ---- --  --------           -----------
+          0 1455.6   0.0          0 1455.4   0.0    1.0  1  1148.SYNGTS_2918    protein_id="BAK51666.1" gene="valS" product="valyl-tRNA synthetase" GI="339275179" note="ORF_ID:slr0557" project_id="67081"
+          0 1434.7   1.6          0 1434.6   1.6    1.0  1  1089456.NCGM2_5023  protein_id="BAK91845.1" gene="valS" product="valyl-tRNA synthetase" GI="348036485" note="similar to GI:116051862; similar to PA14_14440 of P. aeruginosa UCBPP-PA14" project_id="73453"
+          0 1409.4   6.3          0 1409.3   6.3    1.0  1  1037409.BJ6T_52700  protein_id="BAL10530.1" product="valyl-tRNA synthetase" GI="354957851" project_id="67463"
+          0 1272.1   9.8          0 1271.9   9.8    1.0  1  944546.ABED_0537    protein_id="BAK70254.1" product="valyl-tRNA synthase" GI="345468803" project_id="61719"
+          0 1270.7  11.3          0 1270.5  11.3    1.0  1  944547.ABLL_0703    protein_id="BAK72578.1" product="valyl-tRNA synthase" GI="345471128" project_id="61721"
+   1.3e-167  560.6   0.9   1.5e-167  560.4   0.9    1.0  1  1148.SYNGTS_0971    protein_id="BAK49719.1" gene="ileS" product="isoleucyl-tRNA synthetase" GI="339273232" note="ORF_ID:sll1362" project_id="67081"
+   6.4e-149  498.6   1.5   8.5e-149  498.2   1.5    1.0  1  944546.ABED_0486    protein_id="BAK70203.1" product="isoleucyl-tRNA synthase" GI="345468752" project_id="61719"
+   4.4e-147  492.5   1.9   5.8e-147  492.2   1.9    1.0  1  944547.ABLL_0649    protein_id="BAK72524.1" product="isoleucyl-tRNA synthase" GI="345471074" project_id="61721"
+   8.8e-137  458.4   0.0   1.1e-136  458.0   0.0    1.0  1  1089456.NCGM2_1036  protein_id="BAK87911.1" gene="ileS" product="isoleucyl-tRNA synthetase" GI="348032551" note="similar to GI:116052703; similar to PA14_60370 of P. aeruginosa UCBPP-PA14" project_id="73453"
+   4.4e-122  409.6   0.6   7.7e-122  408.8   0.6    1.3  1  1037409.BJ6T_18080  protein_id="BAL07089.1" product="isoleucyl-tRNA synthetase" GI="354954410" project_id="67463"
+   1.8e-102  344.6  12.6    7.1e-40  137.0   4.9    5.7  4  1148.SYNGTS_0727    protein_id="BAK49475.1" gene="leuS" product="leucyl-tRNA synthetase" GI="339272988" note="ORF_ID:sll1074" project_id="67081"
+    2.7e-94  317.5   0.0      1e-57  196.2   0.4    4.4  2  1089456.NCGM2_5187  protein_id="BAK92008.1" gene="leuS" product="leucyl-tRNA synthetase" GI="348036648" note="similar to GI:116052026; similar to PA14_12230 of P. aeruginosa UCBPP-PA14" project_id="73453"
+    7.2e-93  312.8   2.9    4.2e-41  141.1   0.0    4.5  4  1037409.BJ6T_05950  protein_id="BAL05890.1" product="leucyl-tRNA synthetase" GI="354953211" project_id="67463"
+    3.4e-80  270.8  11.5    1.1e-46  159.6   5.6    4.1  2  944546.ABED_0377    protein_id="BAK70094.1" product="leucyl-tRNA synthase" GI="345468643" project_id="61719"
+    1.2e-78  265.6   7.1    3.6e-47  161.2   2.0    3.8  2  944547.ABLL_0532    protein_id="BAK72407.1" product="leucyl-tRNA synthase" GI="345470957" project_id="61721"
+    1.8e-33  115.8   2.2    4.2e-20   71.5   0.0    2.9  2  1148.SYNGTS_2408    protein_id="BAK51156.1" gene="metS" product="methionyl-tRNA synthetase" GI="339274669" note="ORF_ID:slr0649" project_id="67081"
+    1.3e-32  112.9   2.3    1.3e-23   83.1   0.0    4.0  3  1037409.BJ6T_52150  protein_id="BAL10475.1" product="methionyl-tRNA synthetase" GI="354957796" project_id="67463"
+      3e-32  111.7   9.7    1.8e-17   62.7   0.3    4.1  2  944547.ABLL_1549    protein_id="BAK73424.1" product="methionyl-tRNA synthase" GI="345471974" project_id="61721"
+    6.7e-31  107.3   9.3    6.5e-17   60.9   0.6    3.5  2  944546.ABED_1143    protein_id="BAK70860.1" product="methionyl-tRNA synthase" GI="345469409" project_id="61719"
+
+
+Domain annotation for each sequence:
+>> 1148.SYNGTS_2918  protein_id="BAK51666.1" gene="valS" product="valyl-tRNA synthetase" GI="339275179" note="ORF_ID:slr0557" project_id="67081"
+   #    score  bias  c-Evalue  i-Evalue hmmfrom  hmm to    alifrom  ali to    envfrom  env to     acc
+ ---   ------ ----- --------- --------- ------- -------    ------- -------    ------- -------    ----
+   1 ! 1455.4   0.0         0         0     781    1632 ..       2     909 ..       1     910 [] 0.94
+
+>> 1089456.NCGM2_5023  protein_id="BAK91845.1" gene="valS" product="valyl-tRNA synthetase" GI="348036485" note="similar to GI:116051862; similar to PA14_14440 of P. aeruginosa UCBPP-PA14" project_id="73453"
+   #    score  bias  c-Evalue  i-Evalue hmmfrom  hmm to    alifrom  ali to    envfrom  env to     acc
+ ---   ------ ----- --------- --------- ------- -------    ------- -------    ------- -------    ----
+   1 ! 1434.6   1.6         0         0     784    1633 ..       1     948 [.       1     950 [] 0.95
+
+>> 1037409.BJ6T_52700  protein_id="BAL10530.1" product="valyl-tRNA synthetase" GI="354957851" project_id="67463"
+   #    score  bias  c-Evalue  i-Evalue hmmfrom  hmm to    alifrom  ali to    envfrom  env to     acc
+ ---   ------ ----- --------- --------- ------- -------    ------- -------    ------- -------    ----
+   1 ! 1409.3   6.3         0         0     783    1635 ..       1     957 [.       1     958 [] 0.91
+
+>> 944546.ABED_0537  protein_id="BAK70254.1" product="valyl-tRNA synthase" GI="345468803" project_id="61719"
+   #    score  bias  c-Evalue  i-Evalue hmmfrom  hmm to    alifrom  ali to    envfrom  env to     acc
+ ---   ------ ----- --------- --------- ------- -------    ------- -------    ------- -------    ----
+   1 ! 1271.9   9.8         0         0     784    1632 ..       1     870 [.       1     871 [] 0.94
+
+>> 944547.ABLL_0703  protein_id="BAK72578.1" product="valyl-tRNA synthase" GI="345471128" project_id="61721"
+   #    score  bias  c-Evalue  i-Evalue hmmfrom  hmm to    alifrom  ali to    envfrom  env to     acc
+ ---   ------ ----- --------- --------- ------- -------    ------- -------    ------- -------    ----
+   1 ! 1270.5  11.3         0         0     784    1632 ..       1     875 [.       1     876 [] 0.94
+
+>> 1148.SYNGTS_0971  protein_id="BAK49719.1" gene="ileS" product="isoleucyl-tRNA synthetase" GI="339273232" note="ORF_ID:sll1362" project_id="67081"
+   #    score  bias  c-Evalue  i-Evalue hmmfrom  hmm to    alifrom  ali to    envfrom  env to     acc
+ ---   ------ ----- --------- --------- ------- -------    ------- -------    ------- -------    ----
+   1 !  560.4   0.9  1.3e-170  1.5e-167     772    1519 ..       6     862 ..       1     910 [. 0.86
+
+>> 944546.ABED_0486  protein_id="BAK70203.1" product="isoleucyl-tRNA synthase" GI="345468752" project_id="61719"
+   #    score  bias  c-Evalue  i-Evalue hmmfrom  hmm to    alifrom  ali to    envfrom  env to     acc
+ ---   ------ ----- --------- --------- ------- -------    ------- -------    ------- -------    ----
+   1 !  498.2   1.5    7e-152  8.5e-149     782    1507 ..      12     831 ..       3     860 .. 0.88
+
+>> 944547.ABLL_0649  protein_id="BAK72524.1" product="isoleucyl-tRNA synthase" GI="345471074" project_id="61721"
+   #    score  bias  c-Evalue  i-Evalue hmmfrom  hmm to    alifrom  ali to    envfrom  env to     acc
+ ---   ------ ----- --------- --------- ------- -------    ------- -------    ------- -------    ----
+   1 !  492.2   1.9  4.7e-150  5.8e-147     782    1508 ..      12     832 ..       3     870 .. 0.88
+
+>> 1089456.NCGM2_1036  protein_id="BAK87911.1" gene="ileS" product="isoleucyl-tRNA synthetase" GI="348032551" note="similar to GI:116052703; similar to PA14_60370 of P. aeruginosa UCBPP-PA14" project_id="73453"
+   #    score  bias  c-Evalue  i-Evalue hmmfrom  hmm to    alifrom  ali to    envfrom  env to     acc
+ ---   ------ ----- --------- --------- ------- -------    ------- -------    ------- -------    ----
+   1 !  458.0   0.0  9.1e-140  1.1e-136     794    1527 ..       9     844 ..       2     892 .. 0.83
+
+>> 1037409.BJ6T_18080  protein_id="BAL07089.1" product="isoleucyl-tRNA synthetase" GI="354954410" project_id="67463"
+   #    score  bias  c-Evalue  i-Evalue hmmfrom  hmm to    alifrom  ali to    envfrom  env to     acc
+ ---   ------ ----- --------- --------- ------- -------    ------- -------    ------- -------    ----
+   1 !  408.8   0.6  6.3e-125  7.7e-122     771    1516 ..      14     930 ..       1     984 [. 0.82
+
+>> 1148.SYNGTS_0727  protein_id="BAK49475.1" gene="leuS" product="leucyl-tRNA synthetase" GI="339272988" note="ORF_ID:sll1074" project_id="67081"
+   #    score  bias  c-Evalue  i-Evalue hmmfrom  hmm to    alifrom  ali to    envfrom  env to     acc
+ ---   ------ ----- --------- --------- ------- -------    ------- -------    ------- -------    ----
+   1 !  137.0   4.9   5.8e-43   7.1e-40     784     970 ..       1     174 [.       1     176 [. 0.90
+   2 !   19.1   0.2   2.2e-07   0.00026    1119    1171 ..     175     225 ..     169     230 .. 0.92
+   3 !   66.7   0.3   9.2e-22   1.1e-18     978    1104 ..     232     409 ..     226     420 .. 0.89
+   4 !  120.7   0.0     5e-38   6.1e-35    1174    1500 ..     421     822 ..     418     859 .. 0.75
+
+>> 1089456.NCGM2_5187  protein_id="BAK92008.1" gene="leuS" product="leucyl-tRNA synthetase" GI="348036648" note="similar to GI:116052026; similar to PA14_12230 of P. aeruginosa UCBPP-PA14" project_id="73453"
+   #    score  bias  c-Evalue  i-Evalue hmmfrom  hmm to    alifrom  ali to    envfrom  env to     acc
+ ---   ------ ----- --------- --------- ------- -------    ------- -------    ------- -------    ----
+   1 !  196.2   0.4   8.5e-61     1e-57     784    1107 ..       1     432 [.       1     439 [. 0.84
+   2 !  114.5   0.0   3.6e-36   4.5e-33    1174    1498 ..     441     838 ..     439     873 .. 0.75
+
+>> 1037409.BJ6T_05950  protein_id="BAL05890.1" product="leucyl-tRNA synthetase" GI="354953211" project_id="67463"
+   #    score  bias  c-Evalue  i-Evalue hmmfrom  hmm to    alifrom  ali to    envfrom  env to     acc
+ ---   ------ ----- --------- --------- ------- -------    ------- -------    ------- -------    ----
+   1 !  131.6   0.6   2.5e-41     3e-38     785     968 ..       3     173 ..       1     175 [. 0.92
+   2 !    7.2   0.2   0.00079      0.97    1119    1171 ..     175     225 ..     174     230 .. 0.93
+   3 !   29.1   0.0   2.1e-10   2.5e-07     979    1103 ..     233     413 ..     228     417 .. 0.87
+   4 !  141.1   0.0   3.4e-44   4.2e-41    1174    1493 ..     431     821 ..     428     852 .. 0.77
+
+>> 944546.ABED_0377  protein_id="BAK70094.1" product="leucyl-tRNA synthase" GI="345468643" project_id="61719"
+   #    score  bias  c-Evalue  i-Evalue hmmfrom  hmm to    alifrom  ali to    envfrom  env to     acc
+ ---   ------ ----- --------- --------- ------- -------    ------- -------    ------- -------    ----
+   1 !  159.6   5.6   8.8e-50   1.1e-46     787    1114 ..       2     422 ..       1     425 [. 0.81
+   2 !  112.0   0.3   2.1e-35   2.5e-32    1173    1408 ..     423     691 ..     421     740 .. 0.76
+
+>> 944547.ABLL_0532  protein_id="BAK72407.1" product="leucyl-tRNA synthase" GI="345470957" project_id="61721"
+   #    score  bias  c-Evalue  i-Evalue hmmfrom  hmm to    alifrom  ali to    envfrom  env to     acc
+ ---   ------ ----- --------- --------- ------- -------    ------- -------    ------- -------    ----
+   1 !  161.2   2.0   2.9e-50   3.6e-47     787    1105 ..       2     413 ..       1     423 [. 0.81
+   2 !  104.7   0.3   3.3e-33   4.1e-30    1173    1408 ..     423     691 ..     417     767 .. 0.71
+
+>> 1148.SYNGTS_2408  protein_id="BAK51156.1" gene="metS" product="methionyl-tRNA synthetase" GI="339274669" note="ORF_ID:slr0649" project_id="67081"
+   #    score  bias  c-Evalue  i-Evalue hmmfrom  hmm to    alifrom  ali to    envfrom  env to     acc
+ ---   ------ ----- --------- --------- ------- -------    ------- -------    ------- -------    ----
+   1 !   39.9   1.8   1.1e-13   1.4e-10     813     959 ..       7     135 ..       2     135 .. 0.87
+   2 !   71.5   0.0   3.4e-23   4.2e-20    1241    1465 ..     249     483 ..     230     517 .. 0.77
+
+>> 1037409.BJ6T_52150  protein_id="BAL10475.1" product="methionyl-tRNA synthetase" GI="354957796" project_id="67463"
+   #    score  bias  c-Evalue  i-Evalue hmmfrom  hmm to    alifrom  ali to    envfrom  env to     acc
+ ---   ------ ----- --------- --------- ------- -------    ------- -------    ------- -------    ----
+   1 !   37.9   0.8   4.7e-13   5.7e-10     824     952 ..     162     272 ..     146     287 .. 0.74
+   2 ?   -0.6   0.0      0.18   2.2e+02    1125    1190 ..     300     367 ..     299     368 .. 0.89
+   3 !   83.1   0.0   1.1e-26   1.3e-23    1220    1454 ..     370     612 ..     368     615 .. 0.79
+
+>> 944547.ABLL_1549  protein_id="BAK73424.1" product="methionyl-tRNA synthase" GI="345471974" project_id="61721"
+   #    score  bias  c-Evalue  i-Evalue hmmfrom  hmm to    alifrom  ali to    envfrom  env to     acc
+ ---   ------ ----- --------- --------- ------- -------    ------- -------    ------- -------    ----
+   1 !   44.2   4.0   5.5e-15   6.8e-12     827     960 ..      20     135 ..       7     137 .. 0.85
+   2 !   62.7   0.3   1.5e-20   1.8e-17    1218    1342 ..     223     344 ..     138     351 .. 0.82
+
+>> 944546.ABED_1143  protein_id="BAK70860.1" product="methionyl-tRNA synthase" GI="345469409" project_id="61719"
+   #    score  bias  c-Evalue  i-Evalue hmmfrom  hmm to    alifrom  ali to    envfrom  env to     acc
+ ---   ------ ----- --------- --------- ------- -------    ------- -------    ------- -------    ----
+   1 !   44.9   2.5   3.6e-15   4.4e-12     827     960 ..      20     135 ..       9     136 .. 0.82
+   2 !   60.9   0.6   5.3e-20   6.5e-17    1218    1404 ..     223     414 ..     151     420 .. 0.76
+
+
+
+Internal pipeline statistics summary:
+-------------------------------------
+Query model(s):                            1  (2007 nodes)
+Target sequences:                      23272  (7230323 residues searched)
+Passed MSV filter:                      1711  (0.0735218); expected 465.4 (0.02)
+Passed bias filter:                      889  (0.0382004); expected 465.4 (0.02)
+Passed Vit filter:                       309  (0.0132778); expected 23.3 (0.001)
+Passed Fwd filter:                       174  (0.0074768); expected 0.2 (1e-05)
+Initial search space (Z):              23272  [actual number of targets]
+Domain search space  (domZ):              19  [number of targets reported over threshold]
+# CPU time: 4.83u 0.12s 00:00:04.95 Elapsed: 00:00:04.84
+# Mc/sec: 2996.61
+//
+[ok]
