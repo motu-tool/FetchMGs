@@ -79,7 +79,7 @@ class TestOutputCutoffs(unittest.TestCase):
         self.assertTrue(pathlib.Path('MG_BitScoreCutoffs.verybesthit.txt').exists())
         self.assertListEqual(
             list(io.open('MG_BitScoreCutoffs.verybesthit.txt')),
-            list(io.open('output/MG_BitScoreCutoffs.verybesthit.txt')))
+            list(io.open(pathlib.Path('../test/output/MG_BitScoreCutoffs.verybesthit.txt'))))
         pathlib.Path('MG_BitScoreCutoffs.verybesthit.txt').unlink()
 
     def test_output_cutoffs_allhits(self):
@@ -155,7 +155,7 @@ class TestOutputCutoffs(unittest.TestCase):
         self.assertTrue(pathlib.Path('MG_BitScoreCutoffs.allhits.txt').exists())
         self.assertListEqual(
             list(io.open('MG_BitScoreCutoffs.allhits.txt')),
-            list(io.open('output/MG_BitScoreCutoffs.allhits.txt')))
+            list(io.open(pathlib.Path('../test/output/MG_BitScoreCutoffs.allhits.txt'))))
         pathlib.Path('MG_BitScoreCutoffs.allhits.txt').unlink()
 
 
