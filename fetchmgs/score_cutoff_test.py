@@ -18,5 +18,4 @@ def test_score_cutoff():
     pos = [516.8, 520.7, 541.3, 543.8, 562.1]
 
     assert score_cutoff(pos, neg, nvalid, cutoff) == \
-        #     return ([cutoff, tp, fp, fn, precision, recall, fscore])
         [60.0, 5, 6, 0, 0.45454545454545453, 1.0, 0.625]

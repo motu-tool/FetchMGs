@@ -18,7 +18,7 @@ from fetchMGs import run_hmmsearch, parse_cutoffs, parse_hmmsearch, extraction
 
 # Locate the HMMSearch binary
 HMMSEARCH_BIN  = f'{TEST_DIR}/../fetchmgs/bin/hmmsearch'    # Points to the hmmsearch bin in fetchmgs/bin
-HMMSEARCH_BIN  = 'hmmsearch'    # Points to the hmmsearch bin in fetchmgs/bin
+#HMMSEARCH_BIN  = 'hmmsearch'    # Points to the hmmsearch in PATH
 
 ##########
 # Dependencies
@@ -38,9 +38,10 @@ cutoffs = {"allhits" : parse_cutoffs(FakeArgs({'b':f'{PARENT_DIR}/data/MG_BitSco
 hmms    = {cog_file.split('/')[-1].replace('.hmm', ''):cog_file for cog_file in glob.glob(f'{PARENT_DIR}/data/*.hmm')}   # This searches for all the hmm files in /data
 
 # Functions to retrieve a fixture with test_results (2 different modes, depends on parse_cutoffs function) from hmms dictionary
-def cmd_hmmsearh(cutoff, out_path, tbl_path, hmm_path):
+def cmd_hmmsearch(cutoff, out_path, tbl_path, hmm_path):
     """ Command line call to run hmmsearch """
     cmd = f'{HMMSEARCH_BIN} --noali --notextw --cpu 1 -T {cutoff} -o {out_path} --domtblout {tbl_path} {hmm_path} {TEST_FILE}'
+    print(cmd)
     os.system(cmd)
     return parse_hmmsearch(tbl_path)
 
@@ -60,7 +61,7 @@ def alternative_hmmsearch(v=0):
                 cutoff = cutoffs['allhits'][hmm]
             arguments += [[cutoff, os.path.join(tmpdirname, f'{hmm}.out'), os.path.join(tmpdirname, f'{hmm}.dom'), hmm_path]]
             hmm_keys.append(hmm)
-        results = Parallel(n_jobs=-1)(delayed(cmd_hmmsearh)(cutoff, out_path, tbl_path, hmm_path) for cutoff, out_path, tbl_path, hmm_path in arguments)
+        results = Parallel(n_jobs=-1)(delayed(cmd_hmmsearch)(cutoff, out_path, tbl_path, hmm_path) for cutoff, out_path, tbl_path, hmm_path in arguments)
         return dict(zip(hmm_keys, results))
 
 @pytest.fixture(scope = 'module', autouse=True)
