@@ -1,9 +1,7 @@
 from fetchmgs.fetchMGs import parse_cutoffs, import_files
-from pathlib import Path
+from fetchmgs.test_config import *
+import os
 import pytest
-
-TESTDIR = Path("test/test_data")
-
 
 class FakeArgs:
     """
@@ -50,7 +48,7 @@ fail_params = [
         FakeArgs(
             {
                 "mode": "calibration",
-                "b": "fetchmgs/data/MG_BitScoreCutoffs.allhits.txt",
+                "b": f'{PACKAGE_DIR}/data/MG_BitScoreCutoffs.allhits.txt',
             }
         ),
         "ERROR: When calibrating, the default bit score file provided with fetchMGs has to be used",
@@ -59,7 +57,7 @@ fail_params = [
         FakeArgs(
             {
                 "mode": "extraction",
-                "b": "fetchmgs/data/MG_BitScoreCutoffs.uncalibrated.txt",
+                "b": f'{PACKAGE_DIR}/data/MG_BitScoreCutoffs.uncalibrated.txt',
                 "v": True,
             }
         ),
@@ -69,7 +67,7 @@ fail_params = [
         FakeArgs(
             {
                 "mode": "extraction",
-                "b": "fetchmgs/data/MG_BitScoreCutoffs.verybesthit.txt",
+                "b": f'{PACKAGE_DIR}/data/MG_BitScoreCutoffs.verybesthit.txt',
                 "v": False,
             }
         ),
@@ -277,20 +275,20 @@ def pass_cutoff_params():
         FakeArgs(
             params={
                 "mode": "calibration",
-                "b": "fetchmgs/data/MG_BitScoreCutoffs.uncalibrated.txt",
+                "b": f'{PACKAGE_DIR}/data/MG_BitScoreCutoffs.uncalibrated.txt',
             }
         ),
         FakeArgs(
             params={
                 "mode": "extraction",
-                "b": "fetchmgs/data/MG_BitScoreCutoffs.allhits.txt",
+                "b": f'{PACKAGE_DIR}/data/MG_BitScoreCutoffs.allhits.txt',
                 "v": False,
             }
         ),
         FakeArgs(
             params={
                 "mode": "extraction",
-                "b": "fetchmgs/data/MG_BitScoreCutoffs.verybesthit.txt",
+                "b": f'{PACKAGE_DIR}/data/MG_BitScoreCutoffs.verybesthit.txt',
                 "v": True,
             }
         ),
@@ -319,8 +317,8 @@ def pass_import_files_params():
                 "l": "fetchmgs/data",
                 "c": "all",
                 "mode": "calibration",
-                "file": TESTDIR / "input_test_data.faa",
-                "map": "test/known_positives.map",
+                "file": f'{TEST_INPUT_DIR}/input_test_data.faa',
+                "map": f'{TEST_INPUT_DIR}/known_positives.map',
             }
         ),
         FakeArgs(
@@ -329,8 +327,8 @@ def pass_import_files_params():
                 "c": "all",
                 "mode": "extraction",
                 "v": True,
-                "file": TESTDIR / "input_test_data.faa",
-                "map": "test/known_positives.map",
+                "file": f'{TEST_INPUT_DIR}/input_test_data.faa',
+                "map": f'{TEST_INPUT_DIR}/known_positives.map',
             }
         ),
         FakeArgs(
@@ -339,8 +337,8 @@ def pass_import_files_params():
                 "c": "all",
                 "mode": "extraction",
                 "v": False,
-                "file": TESTDIR / "input_test_data.faa",
-                "map": "test/known_positives.map",
+                "file": f'{TEST_INPUT_DIR}/input_test_data.faa',
+                "map": f'{TEST_INPUT_DIR}/known_positives.map',
             }
         ),
     ]

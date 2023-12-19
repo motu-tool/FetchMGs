@@ -1,11 +1,7 @@
 import sys, os
 import pytest
 import subprocess
-
-# Directories required, modify if package structure changes
-TEST_DIR       = os.path.dirname(os.path.abspath(__file__))
-PACKAGE_DIR     = f'{TEST_DIR}/../fetchmgs'         # Points to the package directory
-TEST_DATA_DIR  = f'{TEST_DIR}/test_input/'
+from fetchmgs.test_config import *
 
 # Load fetchMGs functions
 sys.path.insert(0, PACKAGE_DIR) 
@@ -21,7 +17,7 @@ def test_cli_no_mode():
 
     proc = subprocess.Popen(["python", f"{PACKAGE_DIR}/fetchMGs.py", "-h"], stdout=subprocess.PIPE)
     test_out = proc.communicate()[0].decode().split()
-    original_out = open(f"{TEST_DATA_DIR}/cli_no_mode.txt", "r").read().split()
+    original_out = open(f"{TEST_INPUT_DIR}/cli_no_mode.txt", "r").read().split()
     assert test_out == original_out
 
 
@@ -35,7 +31,7 @@ def test_cli_calibration():
 
     proc = subprocess.Popen(["python", f"{PACKAGE_DIR}/fetchMGs.py", "-m", "calibration", "-h"], stdout=subprocess.PIPE)
     test_out = proc.communicate()[0].decode().split()
-    original_out = open(f"{TEST_DATA_DIR}/cli_calibration.txt", "r").read().split()
+    original_out = open(f"{TEST_INPUT_DIR}/cli_calibration.txt", "r").read().split()
     assert test_out == original_out
 
 
@@ -49,5 +45,5 @@ def test_cli_extraction():
 
     proc = subprocess.Popen(["python", f"{PACKAGE_DIR}/fetchMGs.py", "-m", "extraction", "-h"], stdout=subprocess.PIPE)
     test_out = proc.communicate()[0].decode().split()
-    original_out = open(f"{TEST_DATA_DIR}/cli_extraction.txt", "r").read().split()
+    original_out = open(f"{TEST_INPUT_DIR}/cli_extraction.txt", "r").read().split()
     assert test_out == original_out

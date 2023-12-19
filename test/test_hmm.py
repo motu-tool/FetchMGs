@@ -3,14 +3,13 @@ import sys
 import glob
 import pytest
 import tempfile
-from pathlib import Path
 from joblib import Parallel, delayed
+from fetchmgs.test_config import *
 
 # Directories required, modify if package structure changes
-TEST_DIR       = os.path.dirname(os.path.abspath(__file__))
-PACKAGE_DIR    = f'{TEST_DIR}/../fetchmgs'         # Points to the package directory
-EXAMPLE_DIR    = f'{TEST_DIR}/test_output/hmmResults/'      # HMM search example to be compared with tests
-TEST_FILE      = f'{TEST_DIR}/test_input/example_data_genomes.faa'
+ALL_EXAMPLE_DIR  = f'{TEST_DIR}/true_output/allhits_hmmResults/'       # HMM search example to be compared with tests
+BEST_EXAMPLE_DIR = f'{TEST_DIR}/true_output/besthits_hmmResults/'      # HMM search example to be compared with tests
+TEST_FILE        = f'{TEST_DIR}/test_input/example_data_genomes.faa'
 
 # Load fetchMGs functions
 sys.path.insert(0, PACKAGE_DIR) 
@@ -78,7 +77,7 @@ def test_parse_hmmsearch():
     """
     hits = {}
     test_hits = {}
-    for tbl_path in glob.glob(f'{TEST_DIR}/test_output/hmmResults/*.dom'):
+    for tbl_path in glob.glob(f'{ALL_EXAMPLE_DIR}/*.dom'):
         hits[tbl_path] = parse_hmmsearch(tbl_path)
         test_hits[tbl_path] = {}
         with open(tbl_path, 'r') as fi:
@@ -94,7 +93,7 @@ def test_run_hmmsearch_allhits(hmm_test_results):
     using the allhits cutoffs.
     """  
     # Run hmmsearch with allhits
-    results = {hmm:parse_hmmsearch(f'{TEST_DIR}/test_output/hmmResults/{hmm}.dom') for hmm in hmms.keys()}
+    results = {hmm:parse_hmmsearch(f'{ALL_EXAMPLE_DIR}/{hmm}.dom') for hmm in hmms.keys()}
     assert results==hmm_test_results['allhits'], f'HMM search using allhits cutoffs test failed, differences'
 
 def test_run_hmmsearch_besthits(hmm_test_results):
@@ -103,14 +102,14 @@ def test_run_hmmsearch_besthits(hmm_test_results):
     using the besthits cutoffs.
     """  
     # Run hmmsearch with allhits
-    results = {hmm:parse_hmmsearch(f'{TEST_DIR}/test_output_besthits/hmmResults/{hmm}.dom') for hmm in hmms.keys()}
+    results = {hmm:parse_hmmsearch(f'{BEST_EXAMPLE_DIR}/{hmm}.dom') for hmm in hmms.keys()}
     assert results==hmm_test_results['besthits'], f'HMM search using besthits cutoffs test failed'
 
 def test_extraction_hit_ids_retrieval(hmm_test_results):
     """
     Test the retrieval of a list of hit ids (second output of the extraction function). 
     """
-    results      = {hmm:parse_hmmsearch(f'{TEST_DIR}/test_output/hmmResults/{hmm}.dom') for hmm in hmms.keys()}
+    results      = {hmm:parse_hmmsearch(f'{ALL_EXAMPLE_DIR}/{hmm}.dom') for hmm in hmms.keys()}
     hit_ids      = [k for result in results.values() for k in result.keys()]  # As done in the original function
     # We test only with one of the modes
     test_hit_ids = []
@@ -130,7 +129,7 @@ def test_extraction_with_very_best_filter(hmm_test_results):
 
     TODO: Multiple genomes testing
     """
-    results      = {hmm:parse_hmmsearch(f'{TEST_DIR}/test_output/hmmResults/{hmm}.dom') for hmm in hmms.keys()}       # Precomputed
+    results      = {hmm:parse_hmmsearch(f'{ALL_EXAMPLE_DIR}/{hmm}.dom') for hmm in hmms.keys()}       # Precomputed
     test_results = {}
     for hmm in hmms.keys():
         # Original

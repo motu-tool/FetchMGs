@@ -1,3 +1,11 @@
 biopython
 numpy
 pytest
+joblib
+argparse
+glob
+io
+os
+subprocess
+sys
+tempfile
