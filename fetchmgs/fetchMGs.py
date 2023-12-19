@@ -7,6 +7,7 @@ import os
 import subprocess
 import sys
 import pathlib
+from shutil import which
 
 def parse_cutoffs(args):
     """
@@ -105,8 +106,8 @@ def cli():
     ext_parser.add_argument('-i', '-ignore_headers', action='store_true',
                             help='if this option is set in addition to -v, the best hit of each COG will be selected\nrecommended to use, if extracting sequences from a single genome in the same file')
     ext_parser.add_argument('-t', '-threads', default=1, help='number of processors/threads to be used')
-    ext_parser.add_argument('-x', '-executable', default=os.path.join(PACKAGE_DIR, 'bin'),
-                            help='path to executables used by this script\ndefault is bin/\nif set to \'\' will search for executables in $PATH')
+    ext_parser.add_argument('-x', '-executable', default=os.path.join(PACKAGE_DIR, ''),
+                            help='path to executables used by this script\nif set to \'\', will search for executables in $PATH (default)')
 
     cal_parser = subparsers.add_parser('calibration',
                                        help='calibrate bitscores using results from extraction and a mapping file of known OGs',
@@ -127,8 +128,8 @@ def cli():
     cal_parser.add_argument('-i', '-ignore_headers', action='store_true',
                             help='if this option is set in addition to -v, the best hit of each COG will be selected\nrecommended to use, if extracting sequences from a single genome in the same file')
     cal_parser.add_argument('-t', '-threads', default=1, help='number of processors/threads to be used')
-    cal_parser.add_argument('-x', '-executable', default=os.path.join(PACKAGE_DIR, 'bin'),
-                            help='path to executables used by this script\ndefault is bin/\nif set to \'\' will search for executables in $PATH')
+    cal_parser.add_argument('-x', '-executable', default=os.path.join(PACKAGE_DIR, ''),
+                            help='path to executables used by this script\nif set to \'\', will search for executables in $PATH (default)')
 
     args = parser.parse_args()
     return (args)
@@ -287,6 +288,12 @@ def main():
     #   Move import of valid map to calibrate function
 
     args = cli()
+
+    # Check that hmmsearch exists
+    hmmsearch_path = os.path.join(args.x, 'hmmsearch')
+    if which(hmmsearch_path) is None:
+        sys.stderr.write(f'ERROR: hmmsearch cannot be found at {hmmsearch_path}.')
+        sys.exit(1)
 
     # Create output directories before running HMMER
     os.makedirs(args.o, exist_ok=True)

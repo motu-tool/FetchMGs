@@ -1,0 +1,69 @@
+# hmmsearch :: search profile(s) against a sequence database
+# HMMER 3.3.2 (Nov 2020); http://hmmer.org/
+# Copyright (C) 2020 Howard Hughes Medical Institute.
+# Freely distributed under the BSD open source license.
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+# query HMM file:                  /nfs/home/fieldc/.local/lib/python3.7/site-packages/fetchmgs/data/COG0186.hmm
+# target sequence database:        example_input/example_data_genomes.faa
+# output directed to file:         example_output/hmmResults/COG0186.out
+# per-dom hits tabular output:     example_output/hmmResults/COG0186.dom
+# show alignments in output:       no
+# max ASCII text line length:      unlimited
+# sequence reporting threshold:    score >= 80
+# number of worker threads:        1
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+Query:       COG0186  [M=201]
+Scores for complete sequences (score includes all domains):
+   --- full sequence ---   --- best 1 domain ---    -#dom-
+    E-value  score  bias    E-value  score  bias    exp  N  Sequence           Description
+    ------- ------ -----    ------- ------ -----   ---- --  --------           -----------
+    1.9e-43  149.2   4.8      2e-43  149.1   4.8    1.0  1  1089456.NCGM2_5499  protein_id="BAK92320.1" gene="rpsQ" product="30S ribosomal protein S17" GI="348036960" note="similar to GI:116052289; similar to PA14_08940 of P. aeruginosa UCBPP-PA14" project_id="73453"
+    5.7e-38  131.3   5.2    5.9e-38  131.2   5.2    1.0  1  1148.SYNGTS_0766    protein_id="BAK49514.1" gene="rps17" product="30S ribosomal protein S17" GI="339273027" note="ORF_ID:ssl3437" project_id="67081"
+    1.6e-37  129.8   4.4    1.7e-37  129.8   4.4    1.0  1  1037409.BJ6T_43960  protein_id="BAL09665.1" gene="rpsQ" product="30S ribosomal protein S17" GI="354956986" project_id="67463"
+    6.5e-30  105.0   4.5    6.8e-30  104.9   4.5    1.0  1  944546.ABED_0708    protein_id="BAK70425.1" product="30S ribosomal protein S17" GI="345468974" project_id="61719"
+    1.6e-29  103.7   5.0    1.7e-29  103.7   5.0    1.0  1  944547.ABLL_0983    protein_id="BAK72858.1" product="30S ribosomal protein S17" GI="345471408" project_id="61721"
+
+
+Domain annotation for each sequence:
+>> 1089456.NCGM2_5499  protein_id="BAK92320.1" gene="rpsQ" product="30S ribosomal protein S17" GI="348036960" note="similar to GI:116052289; similar to PA14_08940 of P. aeruginosa UCBPP-PA14" project_id="73453"
+   #    score  bias  c-Evalue  i-Evalue hmmfrom  hmm to    alifrom  ali to    envfrom  env to     acc
+ ---   ------ ----- --------- --------- ------- -------    ------- -------    ------- -------    ----
+   1 !  149.1   4.8   4.4e-47     2e-43     109     191 ..       5      87 ..       1      88 [] 0.94
+
+>> 1148.SYNGTS_0766  protein_id="BAK49514.1" gene="rps17" product="30S ribosomal protein S17" GI="339273027" note="ORF_ID:ssl3437" project_id="67081"
+   #    score  bias  c-Evalue  i-Evalue hmmfrom  hmm to    alifrom  ali to    envfrom  env to     acc
+ ---   ------ ----- --------- --------- ------- -------    ------- -------    ------- -------    ----
+   1 !  131.2   5.2   1.3e-41   5.9e-38     113     188 ..       4      79 ..       1      81 [] 0.96
+
+>> 1037409.BJ6T_43960  protein_id="BAL09665.1" gene="rpsQ" product="30S ribosomal protein S17" GI="354956986" project_id="67463"
+   #    score  bias  c-Evalue  i-Evalue hmmfrom  hmm to    alifrom  ali to    envfrom  env to     acc
+ ---   ------ ----- --------- --------- ------- -------    ------- -------    ------- -------    ----
+   1 !  129.8   4.4   3.7e-41   1.7e-37     110     185 ..       1      76 [.       1      82 [] 0.94
+
+>> 944546.ABED_0708  protein_id="BAK70425.1" product="30S ribosomal protein S17" GI="345468974" project_id="61719"
+   #    score  bias  c-Evalue  i-Evalue hmmfrom  hmm to    alifrom  ali to    envfrom  env to     acc
+ ---   ------ ----- --------- --------- ------- -------    ------- -------    ------- -------    ----
+   1 !  104.9   4.5   1.5e-33   6.8e-30     111     188 ..       3      80 ..       1      83 [] 0.95
+
+>> 944547.ABLL_0983  protein_id="BAK72858.1" product="30S ribosomal protein S17" GI="345471408" project_id="61721"
+   #    score  bias  c-Evalue  i-Evalue hmmfrom  hmm to    alifrom  ali to    envfrom  env to     acc
+ ---   ------ ----- --------- --------- ------- -------    ------- -------    ------- -------    ----
+   1 !  103.7   5.0   3.6e-33   1.7e-29     111     188 ..       3      80 ..       1      83 [] 0.95
+
+
+
+Internal pipeline statistics summary:
+-------------------------------------
+Query model(s):                            1  (201 nodes)
+Target sequences:                      23272  (7230323 residues searched)
+Passed MSV filter:                       812  (0.0348917); expected 465.4 (0.02)
+Passed bias filter:                      406  (0.0174459); expected 465.4 (0.02)
+Passed Vit filter:                        41  (0.00176177); expected 23.3 (0.001)
+Passed Fwd filter:                         5  (0.00021485); expected 0.2 (1e-05)
+Initial search space (Z):              23272  [actual number of targets]
+Domain search space  (domZ):               5  [number of targets reported over threshold]
+# CPU time: 0.14u 0.01s 00:00:00.15 Elapsed: 00:00:00.09
+# Mc/sec: 14773.62
+//
+[ok]

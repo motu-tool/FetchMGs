@@ -1,0 +1,18 @@
+#                                                                            --- full sequence --- -------------- this domain -------------   hmm coord   ali coord   env coord
+# target name        accession   tlen query name           accession   qlen   E-value  score  bias   #  of  c-Evalue  i-Evalue  score  bias  from    to  from    to  from    to  acc description of target
+#------------------- ---------- ----- -------------------- ---------- ----- --------- ------ ----- --- --- --------- --------- ------ ----- ----- ----- ----- ----- ----- ----- ---- ---------------------
+1089456.NCGM2_5486   -            118 COG0099              -            150   2.7e-56  189.8   2.9   1   1   6.3e-60   2.9e-56  189.7   2.9    23   140     1   117     1   118 0.99 protein_id="BAK92307.1" gene="rpsM" product="30S ribosomal protein S13" GI="348036947" note="similar to GI:116052276; similar to PA14_09080 of P. aeruginosa UCBPP-PA14" project_id="73453"
+1037409.BJ6T_44090   -            122 COG0099              -            150   3.2e-56  189.6   4.7   1   1   7.6e-60   3.5e-56  189.4   4.7    23   144     1   122     1   122 0.99 protein_id="BAL09678.1" gene="rpsM" product="30S ribosomal protein S13" GI="354956999" project_id="67463"
+1148.SYNGTS_0753     -            127 COG0099              -            150     6e-55  185.5   2.0   1   1   1.4e-58   6.5e-55  185.3   2.0    23   147     1   125     1   127 0.98 protein_id="BAK49501.1" gene="rps13" product="30S ribosomal protein S13" GI="339273014" note="ORF_ID:sll1816" project_id="67081"
+944546.ABED_0963     -            122 COG0099              -            150   7.5e-54  181.9   1.4   1   1   1.8e-57   8.1e-54  181.8   1.4    23   141     1   119     1   122 0.98 protein_id="BAK70680.1" product="30S ribosomal protein S13" GI="345469229" project_id="61719"
+944547.ABLL_1774     -            122 COG0099              -            150   1.3e-53  181.1   1.6   1   1   3.1e-57   1.5e-53  180.9   1.6    23   141     1   119     1   122 0.98 protein_id="BAK73649.1" product="30S ribosomal protein S13" GI="345472199" project_id="61721"
+#
+# Program:         hmmsearch
+# Version:         3.3.2 (Nov 2020)
+# Pipeline mode:   SEARCH
+# Query file:      /nfs/home/fieldc/.local/lib/python3.7/site-packages/fetchmgs/data/COG0099.hmm
+# Target file:     example_input/example_data_genomes.faa
+# Option settings: /nfs/home/fieldc/.local/lib/python3.7/site-packages/fetchmgs/bin/hmmsearch -o example_output/hmmResults/COG0099.out --domtblout example_output/hmmResults/COG0099.dom --noali --notextw -T 120 --cpu 1 /nfs/home/fieldc/.local/lib/python3.7/site-packages/fetchmgs/data/COG0099.hmm example_input/example_data_genomes.faa 
+# Current dir:     /nfs/nas22/fs2202/biol_micro_bioinf/software/fetchmgs_dev
+# Date:            Mon Aug 22 15:53:15 2022
+# [ok]
