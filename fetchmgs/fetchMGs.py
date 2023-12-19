@@ -226,9 +226,11 @@ def calibration(args, results, valid_map, hmms, cutoffs):
         pos = sorted(v for k, v in results[hmm].items() if k in valid_map[hmm])
         neg = sorted(v for k, v in results[hmm].items() if k not in valid_map[hmm])
         max_cutoff = max(neg + pos)
+        max_cutoff = int(max_cutoff/10)*10
 
         cutoff_scores = []
-        for cutoff in range(cutoffs[hmm], max_cutoff, step=10):
+        min_cutoff = int(cutoffs[hmm]/10)*10
+        for cutoff in range(min_cutoff, max_cutoff, 10):
             cutoff_scores.append(score_cutoff(pos, neg, len(valid_map[hmm]), cutoff))
         cutoff_scores = sorted(cutoff_scores, key=lambda x: (-x[6], -x[0]))
         new_cutoffs[hmm] = cutoff_scores[0]
