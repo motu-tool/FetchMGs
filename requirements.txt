@@ -1,4 +1,3 @@
-biopython
 numpy
 pytest
 joblib

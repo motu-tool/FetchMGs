@@ -1,7 +1,6 @@
 import argparse
 from Bio import SeqIO
 import glob
-import numpy as np
 import re
 import os
 import subprocess
@@ -15,7 +14,7 @@ def parse_cutoffs(args):
     """
     cutoffs = {}
     with open(args.b, 'r') as fi:
-        for line in fi.readlines():
+        for line in fi:
             line = line.strip()
             if line[0] == '#':
                 if args.mode == 'calibration':
@@ -42,7 +41,7 @@ def run_hmmsearch(hmm, hmm_path, cutoff, args):
     out_path = os.path.join(args.o, f'hmmResults/{hmm}.out')
     tbl_path = os.path.join(args.o, f'hmmResults/{hmm}.dom')
     try:
-        subprocess.run(f'hmmsearch --noali --notextw --cpu {args.t} -T {cutoff} -o {out_path} --domtblout {tbl_path} {hmm_path} {args.file}', shell=True)
+        subprocess.run(f'hmmsearch --noali --notextw --cpu {args.t} -T {cutoff} -o {out_path} --domtblout {tbl_path} {hmm_path} {args.file}', shell=True, check=True)
     except subprocess.CalledProcessError as err:
         sys.stderr.write(f'\t{err}\n')
         sys.exit(1)
@@ -55,7 +54,7 @@ def parse_hmmsearch(tbl_path):
     '''
     hits = {}
     with open(tbl_path, 'r') as fi:
-        for line in fi.readlines():
+        for line in fi:
             line = line.strip()
             if line[0] != '#':
                 items = re.split('\s+', line)
@@ -158,8 +157,8 @@ def import_files(args):
         valid_map = {}
         for hmm in hmms.keys():
             valid_map[hmm] = []
-        with open(args.map, 'r') as file:
-            for line in file.readlines():
+        with open(args.map, 'r') as fi:
+            for line in fi:
                 line = line.strip()
                 items = line.split("\t")
                 valid_map[items[1]].append(items[0])
@@ -229,7 +228,7 @@ def calibration(args, results, valid_map, hmms, cutoffs):
         max_cutoff = max(neg + pos)
 
         cutoff_scores = []
-        for cutoff in np.arange(cutoffs[hmm], max_cutoff, step=10):
+        for cutoff in range(cutoffs[hmm], max_cutoff, step=10):
             cutoff_scores.append(score_cutoff(pos, neg, len(valid_map[hmm]), cutoff))
         cutoff_scores = sorted(cutoff_scores, key=lambda x: (-x[6], -x[0]))
         new_cutoffs[hmm] = cutoff_scores[0]
@@ -296,8 +295,8 @@ def main():
         sys.exit(1)
 
     # Create output directories before running HMMER
-    os.makedirs(args.o, exist_ok=True)
-    os.makedirs(os.path.join(args.o, 'hmmResults'), exist_ok=True)
+    os.makedirs(args.o)
+    os.makedirs(os.path.join(args.o, 'hmmResults'))
 
     hmms, cutoffs, valid_map, prot_records, nucl_records = import_files(args)
 
@@ -308,6 +307,8 @@ def main():
         output_cutoffs(args, new_cutoffs, hmms)
 
     output_results(args, hmms, results, hit_ids, prot_records, nucl_records)
+
+
 
 if __name__ == '__main__':
     main()
