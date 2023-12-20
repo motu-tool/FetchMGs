@@ -33,7 +33,7 @@ def parse_cutoffs(args):
                cutoffs[items[0]] = int(items[1])
     return(cutoffs)
 
-def run_hmmsearch(hmm, hmm_path, cutoff, args):
+def run_hmmsearch(hmm, hmm_path, cutoff, args, hits):
     '''
     Run hmmsearch from HMMER3, one hmm file against one set of protein records, then parse the results.
     '''
@@ -45,20 +45,23 @@ def run_hmmsearch(hmm, hmm_path, cutoff, args):
     except subprocess.CalledProcessError as err:
         sys.stderr.write(f'\t{err}\n')
         sys.exit(1)
-    results = parse_hmmsearch(tbl_path)
-    return(results)
+    hits = parse_hmmsearch(tbl_path, hmm, hits)
+    return(hits)
 
-def parse_hmmsearch(tbl_path):
+def parse_hmmsearch(tbl_path, hmm, hits):
     '''
     Parse the standard output from hmmsearch to get scores by sequence.
     '''
-    hits = {}
     with open(tbl_path, 'r') as fi:
         for line in fi:
             line = line.strip()
             if line[0] != '#':
                 items = re.split('\s+', line)
-                hits[items[0]] = float(items[7])
+                if items[0] in hits:
+                    if float(items[7]) > hits[items[0]][1]:
+                        hits[items[0]] = [hmm, float(items[7])]
+                else:
+                    hits[items[0]] = [hmm, float(items[7])]
     return (hits)
 
 def score_cutoff(pos, neg, nvalid, cutoff):
@@ -105,7 +108,7 @@ def cli():
     ext_parser.add_argument('-i', '-ignore_headers', action='store_true',
                             help='if this option is set in addition to -v, the best hit of each COG will be selected\nrecommended to use, if extracting sequences from a single genome in the same file')
     ext_parser.add_argument('-t', '-threads', default=1, help='number of processors/threads to be used')
-    ext_parser.add_argument('-x', '-executable', default=os.path.join(PACKAGE_DIR, ''),
+    ext_parser.add_argument('-x', '-executable', default="",
                             help='path to executables used by this script\nif set to \'\', will search for executables in $PATH (default)')
 
     cal_parser = subparsers.add_parser('calibration',
@@ -127,7 +130,7 @@ def cli():
     cal_parser.add_argument('-i', '-ignore_headers', action='store_true',
                             help='if this option is set in addition to -v, the best hit of each COG will be selected\nrecommended to use, if extracting sequences from a single genome in the same file')
     cal_parser.add_argument('-t', '-threads', default=1, help='number of processors/threads to be used')
-    cal_parser.add_argument('-x', '-executable', default=os.path.join(PACKAGE_DIR, ''),
+    cal_parser.add_argument('-x', '-executable', default="",
                             help='path to executables used by this script\nif set to \'\', will search for executables in $PATH (default)')
 
     args = parser.parse_args()
@@ -190,11 +193,18 @@ def import_files(args):
 
 def extraction(args, hmms, cutoffs):
     # Go through HMMs and save results
-    results = {}
+    hits = {}
     for hmm in hmms.keys():
         sys.stdout.write(f'    {hmm}\n')
-        results[hmm] = run_hmmsearch(hmm, hmms[hmm], cutoffs[hmm], args)
-    hit_ids = [k for result in results.values() for k in result.keys()]
+        hits = run_hmmsearch(hmm, hmms[hmm], cutoffs[hmm], args, hits)
+    hit_ids = list(hits.keys())
+
+    # Reorganise by HMM
+    results = {}
+    for hmm in hmms.keys():
+        results[hmm] = {}
+    for id, hit in hits.items():
+        results[hit[0]][id] = hit[1]
 
     # Get tax_ids if there are multiple genomes
     if not args.i:
