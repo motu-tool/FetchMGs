@@ -240,7 +240,7 @@ def calibration(args, results, valid_map, hmms, cutoffs):
 
         cutoff_scores = []
         min_cutoff = int(cutoffs[hmm]/10)*10
-        for cutoff in range(min_cutoff, max_cutoff, 10):
+        for cutoff in range(min_cutoff, max_cutoff+10, 10):
             cutoff_scores.append(score_cutoff(pos, neg, len(valid_map[hmm]), cutoff))
         cutoff_scores = sorted(cutoff_scores, key=lambda x: (-x[6], -x[0]))
         new_cutoffs[hmm] = cutoff_scores[0]
