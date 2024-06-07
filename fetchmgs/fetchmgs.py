@@ -19,7 +19,7 @@ def parse_cutoffs(args):
             if line[0] == '#':
                 if args.mode == 'calibration':
                     if line != '#UNCALIBRATED CUTOFFS FILE':
-                        sys.stderr.write(f'ERROR: When calibrating, the default bit score file provided with fetchMGs has to be used')
+                        sys.stderr.write(f'ERROR: When calibrating, the default bit score file provided with FetchMGs has to be used')
                         sys.exit(1)
                 elif args.v:
                     if line != '#CALIBRATED CUTOFFS FILE - BEST HITS':
@@ -33,7 +33,7 @@ def parse_cutoffs(args):
                cutoffs[items[0]] = int(items[1])
     return(cutoffs)
 
-def run_hmmsearch(hmm, hmm_path, cutoff, args, hits):
+def run_hmmsearch(hmm, hmm_path, cutoff, args):
     '''
     Run hmmsearch from HMMER3, one hmm file against one set of protein records, then parse the results.
     '''
@@ -45,24 +45,32 @@ def run_hmmsearch(hmm, hmm_path, cutoff, args, hits):
     except subprocess.CalledProcessError as err:
         sys.stderr.write(f'\t{err}\n')
         sys.exit(1)
-    hits = parse_hmmsearch(tbl_path, hmm, hits)
+    hits = parse_hmmsearch(tbl_path)
     return(hits)
 
-def parse_hmmsearch(tbl_path, hmm, hits):
+def parse_hmmsearch(tbl_path):
     '''
     Parse the standard output from hmmsearch to get scores by sequence.
     '''
+    hits = {}
     with open(tbl_path, 'r') as fi:
         for line in fi:
             line = line.strip()
             if line[0] != '#':
                 items = re.split('\s+', line)
-                if items[0] in hits:
-                    if float(items[7]) > hits[items[0]][1]:
-                        hits[items[0]] = [hmm, float(items[7])]
-                else:
-                    hits[items[0]] = [hmm, float(items[7])]
+                hits[items[0]] = float(items[7])
     return (hits)
+
+def sort_hits(hits):
+    '''
+    Rearrange all hits from all hmms to find the best hmm for each sequence
+    '''
+    seqs = [seq for hmm in hits for seq in hits[hmm]]
+    hits_by_seq = {seq:{hmm:hits[hmm][seq] for hmm in hits if seq in hits[hmm]} for seq in seqs}
+    best_hits_by_seq = {seq:max(hits_by_seq[seq].items(), key=lambda x:x[1]) for seq in seqs}
+    hits_by_hmm = {hmm:{seq:best_hits_by_seq[seq][1] for seq in seqs if hmm == best_hits_by_seq[seq][0]} for hmm in hits}
+
+    return(seqs, hits_by_hmm)
 
 def score_cutoff(pos, neg, nvalid, cutoff):
     '''
@@ -80,11 +88,11 @@ def score_cutoff(pos, neg, nvalid, cutoff):
 
 def cli():
     parser = argparse.ArgumentParser(
-        description='fetchMGs extracts the 40 single copy universal marker genes (decribed in Ciccarelli et al., Science, 2006 and Sorek et al., Science, 2007) from genomes and metagenomes in an easy and accurate manner.',
+        description='FetchMGs extracts the 40 single copy universal marker genes (decribed in Ciccarelli et al., Science, 2006 and Sorek et al., Science, 2007) from genomes and metagenomes in an easy and accurate manner.',
         formatter_class=argparse.RawTextHelpFormatter)
 
     # Add -m option for legacy - it does nothing
-    parser.add_argument('-m', '-mode', action='store_true', help='fetchMGs mode, see below')
+    parser.add_argument('-m', '-mode', action='store_true', help='FetchMGs mode, see below')
 
     subparsers = parser.add_subparsers(title='modes', description='valid modes', dest='mode')
     subparsers.required = True
@@ -193,18 +201,11 @@ def import_files(args):
 
 def extraction(args, hmms, cutoffs):
     # Go through HMMs and save results
-    hits = {}
-    for hmm in hmms.keys():
-        sys.stdout.write(f'    {hmm}\n')
-        hits = run_hmmsearch(hmm, hmms[hmm], cutoffs[hmm], args, hits)
-    hit_ids = list(hits.keys())
-
-    # Reorganise by HMM
     results = {}
     for hmm in hmms.keys():
-        results[hmm] = {}
-    for id, hit in hits.items():
-        results[hit[0]][id] = hit[1]
+        sys.stdout.write(f'    {hmm}\n')
+        results[hmm] = run_hmmsearch(hmm, hmms[hmm], cutoffs[hmm], args)
+    hit_ids, results = sort_hits(results)
 
     # Get tax_ids if there are multiple genomes
     if not args.i:
@@ -299,7 +300,7 @@ def main():
     #   Move import of valid map to calibrate function
 
     args = cli()
-
+    print(args)
     # Check that hmmsearch exists
     hmmsearch_path = os.path.join(args.x, 'hmmsearch')
     if which(hmmsearch_path) is None:
@@ -307,8 +308,8 @@ def main():
         sys.exit(1)
 
     # Create output directories before running HMMER
-    os.makedirs(args.o)
-    os.makedirs(os.path.join(args.o, 'hmmResults'))
+    os.makedirs(args.o, exist_ok = True)
+    os.makedirs(os.path.join(args.o, 'hmmResults'), exist_ok = True)
 
     hmms, cutoffs, valid_map, prot_records, nucl_records = import_files(args)
 

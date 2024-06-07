@@ -1,16 +1,16 @@
-usage: fetchMGs.py extraction [-h] [-c C [C ...]] [-o O] [-b B] [-l L] [-p]
-                              [-d D] [-v] [-i] [-t T] [-x X]
-                              file
+usage: fetchmgs.py calibration [-h] [-c C [C ...]] [-o O] [-l L] [-p] [-d D]
+                               [-v] [-i] [-t T] [-x X]
+                               file map
 
 positional arguments:
-  file                  multi-FASTA file with protein sequences from which universal single-copy marker genes should be extracted
+  file                  file with sequences that include marker genes (true positives)
+  map                   tab-delimited file with true positive protein identifiers and COG ID
 
 optional arguments:
   -h, --help            show this help message and exit
   -c C [C ...], -cog_used C [C ...]
                         orthologous group id(s) to be extracted; example: "COG0012"
   -o O, -outdir O       output directory
-  -b B, -bitscore B     path to bitscore cutoff file
   -l L, -library L      path to directory that contains hmm models
   -p, -protein          set if nucleotide sequences file for <protein sequences> is not available
   -d D, -dnaFastaFile D

@@ -1,4 +1,4 @@
-from fetchmgs.fetchMGs import parse_cutoffs, import_files
+from fetchmgs import fetchmgs
 from fetchmgs.test_config import *
 import os
 import pytest
@@ -51,7 +51,7 @@ fail_params = [
                 "b": f'{PACKAGE_DIR}/data/MG_BitScoreCutoffs.allhits.txt',
             }
         ),
-        "ERROR: When calibrating, the default bit score file provided with fetchMGs has to be used",
+        "ERROR: When calibrating, the default bit score file provided with FetchMGs has to be used",
     ),
     (
         FakeArgs(
@@ -79,7 +79,7 @@ fail_params = [
 @pytest.mark.parametrize("args, expected_error", fail_params)
 def test_parse_cutoffs_fail(args, expected_error, capsys):
     with pytest.raises(SystemExit) as pytest_error:
-        parse_cutoffs(args)
+        fetchmgs.parse_cutoffs(args)
     out, err = capsys.readouterr()
     assert err == expected_error
     assert pytest_error.type == SystemExit
@@ -303,7 +303,7 @@ def pass_cutoff_params():
 # Testing parse_cutoffs
 @pytest.mark.parametrize("args, expected_cutoffs", pass_cutoff_params())
 def test_parse_cutoffs(args, expected_cutoffs):
-    output_cutoffs = parse_cutoffs(args)
+    output_cutoffs = fetchmgs.parse_cutoffs(args)
     assert output_cutoffs == expected_cutoffs
 
 
@@ -354,7 +354,7 @@ def pass_import_files_params():
     "args, expected_cutoffs, expected_hmms", pass_import_files_params()
 )
 def test_import_files(args, expected_cutoffs, expected_hmms):
-    out_hmms, out_cutoffs, valid_map, prot_records, nucl_records = import_files(args)
+    out_hmms, out_cutoffs, valid_map, prot_records, nucl_records = fetchmgs.import_files(args)
     fseq = next(prot_records)
     assert out_cutoffs == expected_cutoffs
     assert out_hmms == expected_hmms

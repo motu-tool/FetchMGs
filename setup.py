@@ -6,8 +6,8 @@ def read(fname):
 install_requires = ['biopython', 'numpy']
 long_description = read('README.md')
 setup(
-    name='fetchMGs',
-    version='1.2.0',
+    name='FetchMGs',
+    version='1.3.0',
     description='FetchMGs extracts the 40 marker genes from genomes and metagenomes in an easy and accurate manner.',
     url='https://github.com/SushiLab/fetchmgs_dev',
     author='Chris Field, Shinichi Sunagawa, Daniel R. Mende',
@@ -17,9 +17,9 @@ setup(
     install_requires=install_requires,
     long_description=long_description,
     packages=['fetchmgs'],
-    download_url = "https://github.com/SushiLab/fetchmgs_dev/archive/refs/tags/1.2.0.tar.gz",
+    download_url = "https://github.com/SushiLab/fetchmgs_dev/archive/refs/tags/1.3.0.tar.gz",
     entry_points = {
-        'console_scripts': ['fetchMGs=fetchmgs.fetchMGs:main'],
+        'console_scripts': ['fetchmgs=fetchmgs.fetchmgs:main'],
         },
     classifiers=[
         'Programming Language :: Python',

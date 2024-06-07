@@ -3,7 +3,7 @@ import argparse
 import tempfile
 import io
 import os
-from fetchmgs import fetchMGs
+from fetchmgs import fetchmgs
 from fetchmgs.test_config import *
 
 def test_output_cutoffs_verybesthits():
@@ -76,7 +76,7 @@ def test_output_cutoffs_verybesthits():
 
     with tempfile.TemporaryDirectory() as tmpdirname:
         args.o = tmpdirname
-        fetchMGs.output_cutoffs(args=args, new_cutoffs=new_cutoffs, hmms=hmms)
+        fetchmgs.output_cutoffs(args=args, new_cutoffs=new_cutoffs, hmms=hmms)
         assert os.path.exists(os.path.join(tmpdirname, 'MG_BitScoreCutoffs.verybesthit.txt'))
         assert list(io.open(os.path.join(tmpdirname, 'MG_BitScoreCutoffs.verybesthit.txt'))) == list(io.open(f'{TRUE_OUTPUT_DIR}/cutoffs/MG_BitScoreCutoffs.verybesthit.txt'))
 
@@ -150,7 +150,7 @@ def test_output_cutoffs_allhits():
 
     with tempfile.TemporaryDirectory() as tmpdirname:
         args.o = tmpdirname
-        fetchMGs.output_cutoffs(args=args, new_cutoffs=new_cutoffs, hmms=hmms)
+        fetchmgs.output_cutoffs(args=args, new_cutoffs=new_cutoffs, hmms=hmms)
         assert os.path.exists(os.path.join(tmpdirname, 'MG_BitScoreCutoffs.allhits.txt'))
         assert list(io.open(os.path.join(tmpdirname, 'MG_BitScoreCutoffs.allhits.txt'))) == list(io.open(f'{TRUE_OUTPUT_DIR}/cutoffs/MG_BitScoreCutoffs.allhits.txt'))
 

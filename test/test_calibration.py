@@ -2,7 +2,7 @@ import pytest
 import argparse
 import tempfile
 import os
-from fetchmgs import fetchMGs
+from fetchmgs import fetchmgs
 from fetchmgs.test_config import *
 
 def test_calibration():
@@ -245,7 +245,7 @@ def test_calibration():
 
     with tempfile.TemporaryDirectory() as tmpdirname:
         args.o = tmpdirname
-        assert fetchMGs.calibration(args, results, valid_map, hmms, cutoffs) == \
+        assert fetchmgs.calibration(args, results, valid_map, hmms, cutoffs) == \
            {'COG0012': [510, 5, 0, 0, 1.0, 1.0, 1.0], 'COG0016': [380, 5, 0, 0, 1.0, 1.0, 1.0],
             'COG0018': [530, 5, 0, 0, 1.0, 1.0, 1.0], 'COG0048': [170, 5, 0, 0, 1.0, 1.0, 1.0],
             'COG0049': [210, 5, 0, 0, 1.0, 1.0, 1.0], 'COG0052': [380, 5, 0, 0, 1.0, 1.0, 1.0],
