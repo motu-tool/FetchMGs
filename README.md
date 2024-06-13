@@ -1,7 +1,9 @@
 # FetchMGs 1.3 for Python 3
 
-FetchMGs is copyright (c) 2019 Shinichi Sunagawa and Daniel R Mende
+FetchMGs is copyright (c) 2019 Shinichi Sunagawa and Daniel R Mende.
+
 FetchMGs is released under the GNU General Public Licence v3.
+
 Please see http://www.gnu.org/licenses/gpl.html and the seperately provided LICENSE file.
 
 ## Introduction
@@ -26,6 +28,8 @@ The output of this software is saved within the specified output folder and cons
 
 ## Full program help
 
+
+```
 usage: fetchmgs.py [-h] [-m] {extraction,calibration} ...
 
 FetchMGs extracts the 40 single copy universal marker genes (decribed in Ciccarelli et al., Science, 2006 and Sorek et al., Science, 2007) from genomes and metagenomes in an easy and accurate manner.
@@ -40,9 +44,11 @@ modes:
   {extraction,calibration}
     extraction          extract marker genes from sequences
     calibration         calibrate bitscores using results from extraction and a mapping file of known OGs
+```
 
 ### Extraction
 
+```
 positional arguments:
   file                  multi-FASTA file with protein sequences from which universal single-copy marker genes should be extracted
 
@@ -66,9 +72,11 @@ options:
   -t T, -threads T      number of processors/threads to be used
   -x X, -executable X   path to executables used by this script
                         if set to '', will search for executables in $PATH (default)
+```
 
 ### Calibration
 
+```
 positional arguments:
   file                  file with sequences that include marker genes (true positives)
   map                   tab-delimited file with true positive protein identifiers and COG ID
@@ -92,11 +100,12 @@ options:
   -t T, -threads T      number of processors/threads to be used
   -x X, -executable X   path to executables used by this script
                         if set to '', will search for executables in $PATH (default)
+```
 
 ## Software dependencies
 
 The fetchMGs script requires HMMER3 and Biopython:
 
-HMMER3: http://www.hmmer.org/
-Biopython: https://biopython.org/
+- HMMER3: http://www.hmmer.org/
+- Biopython: https://biopython.org/
 
