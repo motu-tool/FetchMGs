@@ -1,0 +1,69 @@
+# hmmsearch :: search profile(s) against a sequence database
+# HMMER 3.3.2 (Nov 2020); http://hmmer.org/
+# Copyright (C) 2020 Howard Hughes Medical Institute.
+# Freely distributed under the BSD open source license.
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+# query HMM file:                  /nfs/home/fieldc/.local/lib/python3.7/site-packages/fetchmgs/data/COG0172.hmm
+# target sequence database:        example_input/example_data_genomes.faa
+# output directed to file:         example_output/hmmResults/COG0172.out
+# per-dom hits tabular output:     example_output/hmmResults/COG0172.dom
+# show alignments in output:       no
+# max ASCII text line length:      unlimited
+# sequence reporting threshold:    score >= 170
+# number of worker threads:        1
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+Query:       COG0172  [M=477]
+Scores for complete sequences (score includes all domains):
+   --- full sequence ---   --- best 1 domain ---    -#dom-
+    E-value  score  bias    E-value  score  bias    exp  N  Sequence           Description
+    ------- ------ -----    ------- ------ -----   ---- --  --------           -----------
+   2.8e-197  656.4   0.0   3.1e-197  656.2   0.0    1.0  1  1089456.NCGM2_3628  protein_id="BAK90472.1" gene="serS" product="seryl-tRNA synthetase" GI="348035112" note="similar to GI:116050599; similar to PA14_30330 of P. aeruginosa UCBPP-PA14" project_id="73453"
+   4.2e-183  609.6   0.0   4.7e-183  609.5   0.0    1.0  1  1037409.BJ6T_49700  protein_id="BAL10232.1" product="seryl-tRNA synthetase" GI="354957553" project_id="67463"
+     5e-174  579.7   0.1   5.6e-174  579.5   0.1    1.0  1  944547.ABLL_0481    protein_id="BAK72356.1" product="seryl-tRNA synthase" GI="345470906" project_id="61721"
+   1.6e-172  574.7   0.0     2e-172  574.4   0.0    1.0  1  1148.SYNGTS_0652    protein_id="BAK49400.1" gene="serS" product="seryl-tRNA synthetase" GI="339272913" note="ORF_ID:slr1703" project_id="67081"
+   2.3e-170  567.6   0.0   2.6e-170  567.5   0.0    1.0  1  944546.ABED_0320    protein_id="BAK70037.1" product="seryl-tRNA synthase" GI="345468586" project_id="61719"
+
+
+Domain annotation for each sequence:
+>> 1089456.NCGM2_3628  protein_id="BAK90472.1" gene="serS" product="seryl-tRNA synthetase" GI="348035112" note="similar to GI:116050599; similar to PA14_30330 of P. aeruginosa UCBPP-PA14" project_id="73453"
+   #    score  bias  c-Evalue  i-Evalue hmmfrom  hmm to    alifrom  ali to    envfrom  env to     acc
+ ---   ------ ----- --------- --------- ------- -------    ------- -------    ------- -------    ----
+   1 !  656.2   0.0  6.7e-201  3.1e-197      52     473 ..       1     425 [.       1     426 [] 0.99
+
+>> 1037409.BJ6T_49700  protein_id="BAL10232.1" product="seryl-tRNA synthetase" GI="354957553" project_id="67463"
+   #    score  bias  c-Evalue  i-Evalue hmmfrom  hmm to    alifrom  ali to    envfrom  env to     acc
+ ---   ------ ----- --------- --------- ------- -------    ------- -------    ------- -------    ----
+   1 !  609.5   0.0    1e-186  4.7e-183      52     473 ..       1     440 [.       1     443 [] 0.97
+
+>> 944547.ABLL_0481  protein_id="BAK72356.1" product="seryl-tRNA synthase" GI="345470906" project_id="61721"
+   #    score  bias  c-Evalue  i-Evalue hmmfrom  hmm to    alifrom  ali to    envfrom  env to     acc
+ ---   ------ ----- --------- --------- ------- -------    ------- -------    ------- -------    ----
+   1 !  579.5   0.1  1.2e-177  5.6e-174      52     467 ..       1     412 [.       1     413 [] 0.98
+
+>> 1148.SYNGTS_0652  protein_id="BAK49400.1" gene="serS" product="seryl-tRNA synthetase" GI="339272913" note="ORF_ID:slr1703" project_id="67081"
+   #    score  bias  c-Evalue  i-Evalue hmmfrom  hmm to    alifrom  ali to    envfrom  env to     acc
+ ---   ------ ----- --------- --------- ------- -------    ------- -------    ------- -------    ----
+   1 !  574.4   0.0  4.3e-176    2e-172      52     467 ..       1     425 [.       1     429 [. 0.96
+
+>> 944546.ABED_0320  protein_id="BAK70037.1" product="seryl-tRNA synthase" GI="345468586" project_id="61719"
+   #    score  bias  c-Evalue  i-Evalue hmmfrom  hmm to    alifrom  ali to    envfrom  env to     acc
+ ---   ------ ----- --------- --------- ------- -------    ------- -------    ------- -------    ----
+   1 !  567.5   0.0  5.5e-174  2.6e-170      52     467 ..       1     412 []       1     412 [] 0.98
+
+
+
+Internal pipeline statistics summary:
+-------------------------------------
+Query model(s):                            1  (477 nodes)
+Target sequences:                      23272  (7230323 residues searched)
+Passed MSV filter:                      1370  (0.058869); expected 465.4 (0.02)
+Passed bias filter:                      845  (0.0363097); expected 465.4 (0.02)
+Passed Vit filter:                       156  (0.00670333); expected 23.3 (0.001)
+Passed Fwd filter:                        51  (0.00219147); expected 0.2 (1e-05)
+Initial search space (Z):              23272  [actual number of targets]
+Domain search space  (domZ):               5  [number of targets reported over threshold]
+# CPU time: 0.73u 0.02s 00:00:00.75 Elapsed: 00:00:00.63
+# Mc/sec: 5407.69
+//
+[ok]

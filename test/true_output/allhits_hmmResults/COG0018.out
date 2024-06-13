@@ -1,0 +1,69 @@
+# hmmsearch :: search profile(s) against a sequence database
+# HMMER 3.3.2 (Nov 2020); http://hmmer.org/
+# Copyright (C) 2020 Howard Hughes Medical Institute.
+# Freely distributed under the BSD open source license.
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+# query HMM file:                  /nfs/home/fieldc/.local/lib/python3.7/site-packages/fetchmgs/data/COG0018.hmm
+# target sequence database:        example_input/example_data_genomes.faa
+# output directed to file:         example_output/hmmResults/COG0018.out
+# per-dom hits tabular output:     example_output/hmmResults/COG0018.dom
+# show alignments in output:       no
+# max ASCII text line length:      unlimited
+# sequence reporting threshold:    score >= 340
+# number of worker threads:        1
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+Query:       COG0018  [M=621]
+Scores for complete sequences (score includes all domains):
+   --- full sequence ---   --- best 1 domain ---    -#dom-
+    E-value  score  bias    E-value  score  bias    exp  N  Sequence           Description
+    ------- ------ -----    ------- ------ -----   ---- --  --------           -----------
+   3.4e-177  591.2   0.0   3.8e-177  591.0   0.0    1.0  1  1089456.NCGM2_0461  protein_id="BAK87351.1" gene="argS" product="arginyl-tRNA synthetase" GI="348031991" note="similar to GI:116053199; similar to PA14_66750 of P. aeruginosa UCBPP-PA14" project_id="73453"
+   1.1e-175  586.3   0.0   1.3e-175  586.0   0.0    1.0  1  1037409.BJ6T_49620  protein_id="BAL10224.1" product="arginyl-tRNA synthetase" GI="354957545" project_id="67463"
+   3.3e-170  568.1   0.0   3.7e-170  568.0   0.0    1.0  1  1148.SYNGTS_2870    protein_id="BAK51618.1" gene="argS" product="arginyl-tRNA-synthetase" GI="339275131" note="ORF_ID:sll0502" project_id="67081"
+   3.8e-160  534.9   8.0   4.2e-160  534.7   8.0    1.0  1  944547.ABLL_2612    protein_id="BAK74487.1" product="arginyl-tRNA synthase" GI="345473037" project_id="61721"
+   3.4e-159  531.7   6.6   3.8e-159  531.6   6.6    1.0  1  944546.ABED_1924    protein_id="BAK71641.1" product="arginyl-tRNA synthase" GI="345470190" project_id="61719"
+
+
+Domain annotation for each sequence:
+>> 1089456.NCGM2_0461  protein_id="BAK87351.1" gene="argS" product="arginyl-tRNA synthetase" GI="348031991" note="similar to GI:116053199; similar to PA14_66750 of P. aeruginosa UCBPP-PA14" project_id="73453"
+   #    score  bias  c-Evalue  i-Evalue hmmfrom  hmm to    alifrom  ali to    envfrom  env to     acc
+ ---   ------ ----- --------- --------- ------- -------    ------- -------    ------- -------    ----
+   1 !  591.0   0.0  8.2e-181  3.8e-177      66     609 ..       1     587 []       1     587 [] 0.91
+
+>> 1037409.BJ6T_49620  protein_id="BAL10224.1" product="arginyl-tRNA synthetase" GI="354957545" project_id="67463"
+   #    score  bias  c-Evalue  i-Evalue hmmfrom  hmm to    alifrom  ali to    envfrom  env to     acc
+ ---   ------ ----- --------- --------- ------- -------    ------- -------    ------- -------    ----
+   1 !  586.0   0.0  2.8e-179  1.3e-175      73     610 ..      17     596 .]       4     596 .] 0.87
+
+>> 1148.SYNGTS_2870  protein_id="BAK51618.1" gene="argS" product="arginyl-tRNA-synthetase" GI="339275131" note="ORF_ID:sll0502" project_id="67081"
+   #    score  bias  c-Evalue  i-Evalue hmmfrom  hmm to    alifrom  ali to    envfrom  env to     acc
+ ---   ------ ----- --------- --------- ------- -------    ------- -------    ------- -------    ----
+   1 !  568.0   0.0  7.9e-174  3.7e-170      65     609 ..       3     584 .]       1     584 [] 0.90
+
+>> 944547.ABLL_2612  protein_id="BAK74487.1" product="arginyl-tRNA synthase" GI="345473037" project_id="61721"
+   #    score  bias  c-Evalue  i-Evalue hmmfrom  hmm to    alifrom  ali to    envfrom  env to     acc
+ ---   ------ ----- --------- --------- ------- -------    ------- -------    ------- -------    ----
+   1 !  534.7   8.0  9.1e-164  4.2e-160      69     609 ..       4     529 .]       1     529 [] 0.91
+
+>> 944546.ABED_1924  protein_id="BAK71641.1" product="arginyl-tRNA synthase" GI="345470190" project_id="61719"
+   #    score  bias  c-Evalue  i-Evalue hmmfrom  hmm to    alifrom  ali to    envfrom  env to     acc
+ ---   ------ ----- --------- --------- ------- -------    ------- -------    ------- -------    ----
+   1 !  531.6   6.6  8.3e-163  3.8e-159      69     609 ..       4     529 .]       1     529 [] 0.92
+
+
+
+Internal pipeline statistics summary:
+-------------------------------------
+Query model(s):                            1  (621 nodes)
+Target sequences:                      23272  (7230323 residues searched)
+Passed MSV filter:                       993  (0.0426693); expected 465.4 (0.02)
+Passed bias filter:                      570  (0.024493); expected 465.4 (0.02)
+Passed Vit filter:                        77  (0.0033087); expected 23.3 (0.001)
+Passed Fwd filter:                        27  (0.00116019); expected 0.2 (1e-05)
+Initial search space (Z):              23272  [actual number of targets]
+Domain search space  (domZ):               5  [number of targets reported over threshold]
+# CPU time: 0.47u 0.01s 00:00:00.48 Elapsed: 00:00:00.38
+# Mc/sec: 11793.96
+//
+[ok]
