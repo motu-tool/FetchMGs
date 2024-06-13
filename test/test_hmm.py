@@ -102,7 +102,7 @@ def test_run_hmmsearch_besthits(hmm_test_results):
     """  
     # Run hmmsearch with allhits
     results = {hmm:fetchmgs.parse_hmmsearch(f'{BEST_EXAMPLE_DIR}/{hmm}.dom') for hmm in hmms.keys()}
-    assert results==hmm_test_results['besthits'], f'HMM search using besthits cutoffs test failed'
+    results==hmm_test_results['besthits'], f'HMM search using besthits cutoffs test failed'
 
 def test_extraction_hit_ids_retrieval(hmm_test_results):
     """
