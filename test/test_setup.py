@@ -319,7 +319,7 @@ def pass_setup_params():
                 "l": "fetchmgs/data",
                 "c": "all",
                 "mode": "calibration",
-                "file": f'{TEST_INPUT_DIR}/input_test_data.faa',
+                "file": f'{TEST_INPUT_DIR}/setup_test_data.faa',
             }
         ),
         FakeArgs(
@@ -328,7 +328,7 @@ def pass_setup_params():
                 "c": "all",
                 "mode": "extraction",
                 "v": True,
-                "file": f'{TEST_INPUT_DIR}/input_test_data.faa',
+                "file": f'{TEST_INPUT_DIR}/setup_test_data.faa',
             }
         ),
         FakeArgs(
@@ -337,7 +337,7 @@ def pass_setup_params():
                 "c": "all",
                 "mode": "extraction",
                 "v": False,
-                "file": f'{TEST_INPUT_DIR}/input_test_data.faa',
+                "file": f'{TEST_INPUT_DIR}/setup_test_data.faa',
             }
         ),
     ]

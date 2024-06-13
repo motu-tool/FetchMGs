@@ -17,7 +17,7 @@ setup(
     install_requires=install_requires,
     long_description=long_description,
     packages=['fetchmgs'],
-    download_url = "https://github.com/SushiLab/fetchmgs_dev/archive/refs/tags/1.3.tar.gz",
+    download_url = "https://github.com/motu-tool/FetchMGs/archive/refs/tags/1.3.tar.gz",
     entry_points = {
         'console_scripts': ['fetchmgs=fetchmgs.fetchmgs:main'],
         },
