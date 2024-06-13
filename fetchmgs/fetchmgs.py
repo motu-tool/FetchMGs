@@ -57,7 +57,7 @@ def parse_hmmsearch(tbl_path):
         for line in fi:
             line = line.strip()
             if line[0] != '#':
-                items = re.split('\s+', line)
+                items = re.split(r'\s+', line)
                 hits[items[0]] = float(items[7])
     return (hits)
 
@@ -86,7 +86,7 @@ def score_cutoff(pos, neg, nvalid, cutoff):
 
     return ([cutoff, tp, fp, fn, precision, recall, fscore])
 
-def cli():
+def cli(argline=False):
     parser = argparse.ArgumentParser(
         description='FetchMGs extracts the 40 single copy universal marker genes (decribed in Ciccarelli et al., Science, 2006 and Sorek et al., Science, 2007) from genomes and metagenomes in an easy and accurate manner.',
         formatter_class=argparse.RawTextHelpFormatter)
@@ -141,10 +141,13 @@ def cli():
     cal_parser.add_argument('-x', '-executable', default="",
                             help='path to executables used by this script\nif set to \'\', will search for executables in $PATH (default)')
 
-    args = parser.parse_args()
+    if argline:
+        args = parser.parse_args(re.split(r'\s+', argline))
+    else:
+        args = parser.parse_args()
     return (args)
 
-def import_files(args):
+def setup(args):
     # Compile list of HMM models
     hmms = glob.glob(f'{args.l}/*.hmm')
     if args.c == 'all':
@@ -163,20 +166,7 @@ def import_files(args):
             args.b = f'{args.l}/MG_BitScoreCutoffs.allhits.txt'
     cutoffs = parse_cutoffs(args)
 
-    # Parse validated genes map if needed
-    if args.mode == 'calibration':
-        valid_map = {}
-        for hmm in hmms.keys():
-            valid_map[hmm] = []
-        with open(args.map, 'r') as fi:
-            for line in fi:
-                line = line.strip()
-                items = line.split("\t")
-                valid_map[items[1]].append(items[0])
-    else:
-        valid_map = None
-
-    # Set up protein sequence generators
+    # Parse protein sequence file
     prot_records = SeqIO.parse(args.file, 'fasta')
     sys.stdout.write(f'Protein sequences: {args.file}\n')
 
@@ -197,7 +187,11 @@ def import_files(args):
         nucl_records = None
         sys.stdout.write(f'Nucleotide sequences: none specified\n')
 
-    return (hmms, cutoffs, valid_map, prot_records, nucl_records)
+    # Create output directories before running HMMER
+    os.makedirs(args.o, exist_ok = True)
+    os.makedirs(os.path.join(args.o, 'hmmResults'), exist_ok = True)
+
+    return (hmms, cutoffs, prot_records, nucl_records)
 
 def extraction(args, hmms, cutoffs):
     # Go through HMMs and save results
@@ -230,7 +224,17 @@ def extraction(args, hmms, cutoffs):
 
     return (results, hit_ids)
 
-def calibration(args, results, valid_map, hmms, cutoffs):
+def calibration(args, results, hmms, cutoffs):
+    # Parse validated genes map
+    valid_map = {}
+    for hmm in hmms.keys():
+        valid_map[hmm] = []
+    with open(args.map, 'r') as fi:
+        for line in fi:
+            line = line.strip()
+            items = line.split("\t")
+            valid_map[items[1]].append(items[0])
+
     # Calibrate
     new_cutoffs = {}
     for hmm in hmms.keys():
@@ -273,7 +277,7 @@ def output_results(args, hmms, results, hit_ids, prot_records, nucl_records):
         for hmm in hmms.keys():
             for id, score in sorted(results[hmm].items()):
                 fo.write(f'{id}\t{score}\t{hmm}\t')
-                project_id = re.search('project_id="(.+?)"', prot_hits[id].description)
+                project_id = re.search(r'project_id="(.+?)"', prot_hits[id].description)
                 if project_id is not None:
                     tax_id = prot_hits[id].id.split(".")[0]
                     fo.write(f'{tax_id}.{project_id.group(1)}\n')
@@ -294,34 +298,37 @@ def output_results(args, hmms, results, hit_ids, prot_records, nucl_records):
                     seq = nucl_hits[id]
                     fo.write(f'>{seq.description}\n{seq.seq}\n')
 
-def main():
-    # Possible structural changes:
-    #   Move makedirs to import_files (change name to setup or something)
-    #   Move import of valid map to calibrate function
-
-    args = cli()
-    print(args)
+def workflow(args):
     # Check that hmmsearch exists
     hmmsearch_path = os.path.join(args.x, 'hmmsearch')
     if which(hmmsearch_path) is None:
         sys.stderr.write(f'ERROR: hmmsearch cannot be found at {hmmsearch_path}.')
         sys.exit(1)
 
-    # Create output directories before running HMMER
-    os.makedirs(args.o, exist_ok = True)
-    os.makedirs(os.path.join(args.o, 'hmmResults'), exist_ok = True)
-
-    hmms, cutoffs, valid_map, prot_records, nucl_records = import_files(args)
+    hmms, cutoffs, prot_records, nucl_records = setup(args)
 
     results, hit_ids = extraction(args, hmms, cutoffs)
 
     if args.mode == 'calibration':
-        new_cutoffs = calibration(args, results, valid_map, hmms, cutoffs)
+        new_cutoffs = calibration(args, results, hmms, cutoffs)
         output_cutoffs(args, new_cutoffs, hmms)
 
     output_results(args, hmms, results, hit_ids, prot_records, nucl_records)
+    return
 
+def fetchmgs(argline):
+    '''
+    Wrapper to allow the program to run within python without a system call
+    '''
+    args = cli(argline)
+    workflow(args)
+    return
 
+def main():
+    sys.stdout.write(f'{" ".join(sys.argv)}\n')
+    args = cli()
+    workflow(args)
+    return
 
 if __name__ == '__main__':
     main()

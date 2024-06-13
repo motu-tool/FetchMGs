@@ -19,13 +19,14 @@ class FakeArgs:
         self.d = params.get("d", None)
         self.map = params.get("map", None)
         self.p = params.get("p", None)
+        self.o = params.get("o", "output")
 
     def __repr__(self):
         return "\n".join(
             [
                 f"{k}: {v}"
                 for k, v in zip(
-                    ["mode", "file", "c", "l", "b", "v", "d", "map"],
+                    ["mode", "file", "c", "l", "b", "v", "d", "map", "o"],
                     [
                         self.mode,
                         self.file,
@@ -35,13 +36,14 @@ class FakeArgs:
                         self.v,
                         self.d,
                         self.map,
+                        self.o
                     ],
                 )
             ]
         )
 
 
-# Params taht should lead to error
+# Params that  should lead to error
 
 fail_params = [
     (
@@ -307,9 +309,9 @@ def test_parse_cutoffs(args, expected_cutoffs):
     assert output_cutoffs == expected_cutoffs
 
 
-def pass_import_files_params():
+def pass_setup_params():
     """
-    Generates params and expected outcomes for import_files function
+    Generates params and expected outcomes for setup function
     """
     cal_args, besthit_args, allhit_args = [
         FakeArgs(
@@ -318,7 +320,6 @@ def pass_import_files_params():
                 "c": "all",
                 "mode": "calibration",
                 "file": f'{TEST_INPUT_DIR}/input_test_data.faa',
-                "map": f'{TEST_INPUT_DIR}/known_positives.map',
             }
         ),
         FakeArgs(
@@ -328,7 +329,6 @@ def pass_import_files_params():
                 "mode": "extraction",
                 "v": True,
                 "file": f'{TEST_INPUT_DIR}/input_test_data.faa',
-                "map": f'{TEST_INPUT_DIR}/known_positives.map',
             }
         ),
         FakeArgs(
@@ -338,7 +338,6 @@ def pass_import_files_params():
                 "mode": "extraction",
                 "v": False,
                 "file": f'{TEST_INPUT_DIR}/input_test_data.faa',
-                "map": f'{TEST_INPUT_DIR}/known_positives.map',
             }
         ),
     ]
@@ -349,12 +348,12 @@ def pass_import_files_params():
     ]
 
 
-# Test import files
+# Test setup
 @pytest.mark.parametrize(
-    "args, expected_cutoffs, expected_hmms", pass_import_files_params()
+    "args, expected_cutoffs, expected_hmms", pass_setup_params()
 )
-def test_import_files(args, expected_cutoffs, expected_hmms):
-    out_hmms, out_cutoffs, valid_map, prot_records, nucl_records = fetchmgs.import_files(args)
+def test_setup(args, expected_cutoffs, expected_hmms):
+    out_hmms, out_cutoffs, prot_records, nucl_records = fetchmgs.setup(args)
     fseq = next(prot_records)
     assert out_cutoffs == expected_cutoffs
     assert out_hmms == expected_hmms
@@ -364,4 +363,4 @@ def test_import_files(args, expected_cutoffs, expected_hmms):
 
 # Todos:
 # todo test c != 'all'
-# todo check seq in all import_files tests
+# todo check seq in all setup tests

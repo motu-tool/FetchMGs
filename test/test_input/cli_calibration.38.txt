@@ -1,3 +1,4 @@
+fetchmgs/fetchmgs.py -h
 usage: fetchmgs.py calibration [-h] [-c C [C ...]] [-o O] [-l L] [-p] [-d D]
                                [-v] [-i] [-t T] [-x X]
                                file map

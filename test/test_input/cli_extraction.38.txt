@@ -1,3 +1,4 @@
+fetchmgs/fetchmgs.py -m extraction -h
 usage: fetchmgs.py extraction [-h] [-c C [C ...]] [-o O] [-b B] [-l L] [-p]
                               [-d D] [-v] [-i] [-t T] [-x X]
                               file
