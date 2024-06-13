@@ -7,7 +7,7 @@ install_requires = ['biopython']
 long_description = read('README.md')
 setup(
     name='FetchMGs',
-    version='1.2.1',
+    version='1.3',
     description='FetchMGs extracts the 40 marker genes from genomes and metagenomes in an easy and accurate manner.',
     url='https://github.com/SushiLab/fetchmgs_dev',
     author='Chris Field, Shinichi Sunagawa, Daniel R. Mende',
@@ -17,7 +17,7 @@ setup(
     install_requires=install_requires,
     long_description=long_description,
     packages=['fetchmgs'],
-    download_url = "https://github.com/SushiLab/fetchmgs_dev/archive/refs/tags/1.2.1.tar.gz",
+    download_url = "https://github.com/SushiLab/fetchmgs_dev/archive/refs/tags/1.3.tar.gz",
     entry_points = {
         'console_scripts': ['fetchmgs=fetchmgs.fetchmgs:main'],
         },
