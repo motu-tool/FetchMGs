@@ -1,10 +1,11 @@
-# FetchMGs 1.3 for Python 3
+# fetchMGs 2.0 for Python 3
 
-FetchMGs is copyright (c) 2019 Shinichi Sunagawa and Daniel R Mende.
+fetchMGs (1.0 - 1.2) is copyright (c) 2019 Shinichi Sunagawa and Daniel R Mende.
 
-FetchMGs is released under the GNU General Public Licence v3.
+fetchMGs (1.3) - written by Chris Field
 
-Please see http://www.gnu.org/licenses/gpl.html and the seperately provided LICENSE file.
+fetchMGs (>=2.0) - written by Hans-Joachim Ruscheweyh
+
 
 ## Introduction
  
@@ -12,100 +13,103 @@ Phylogenetic markers are genes (and proteins) which can be used to reconstruct t
 
 ## What the software does
  
-The program “FetchMGs” was written to extract the 40 MGs from genomes and metagenomes in an easy and accurate manner. This is done by utilizing Hidden Markov Models (HMMs) trained on protein alignments of known members of the 40 MGs as well as calibrated cutoffs for each of the 40 MGs. Please note that these cutoffs are only accurate when using complete protein sequences as input files. The output of the program are the protein sequences of the identified proteins, as well as their nucleotide sequences, if the nucleotide sequences of all complete genes are given as an additional input.
+The program `fetchMGs` was written to extract the 40 MGs from genomes and metagenomes in an easy and accurate manner. This is done by utilizing Hidden Markov Models (HMMs) trained on protein alignments of known members of the 40 MGs as well as calibrated cutoffs for each of the 40 MGs. Please note that these cutoffs are only accurate when using complete protein sequences as input files. The output of the program are the protein sequences of the identified proteins, as well as their nucleotide sequences, if the nucleotide sequences of all complete genes are given as an additional input.
+
+
+## Installation
+
+FetchMGs and all its dependencies can be installed via `pip` and have been tested with Python 3.12.
+
+```
+$pip install fetchMGs
+```
+
+
 
 ## Input
 
-A fasta file with protein coding sequences, and optionally the gene sequences of the proteins. If the DNA sequences are available, the corresponding genes of the proteins, are also extracted.
+Users can submit genes in protein space or (from v2.0 on) longer nucleotide sequences from assembled genomes/metagenomes.
 
 ## Output
 
-The output of this software is saved within the specified output folder and consists of:
-- 40 x COGxxxx.faa files (sequences of extracted proteins)
-- 40 x COGxxxx.fna files (sequences of extracted genes)
-- marker_genes_scores.table (tab-separated text with the columns protein, score, marker gene ID, genome identifier)
-- hmmResults (specific output files from HMMer3)
+Per input sample (`SAMPLE`), fetchMGs will produce 3 output file:
+
+1. `SAMPLE.fetchMGs.faa` --> the marker genes in protein space
+2. `SAMPLE.fetchMGs.fna` --> the marker genes in nucleotide space
+3. `SAMPLE.fetchMGs.scores` --> A link between marker genes and their bitscores
 
 ## Full program help
 
 
 ```
-usage: fetchmgs.py [-h] [-m] {extraction,calibration} ...
+$fetchMGs
 
-FetchMGs extracts the 40 single copy universal marker genes (decribed in Ciccarelli et al., Science, 2006 and Sorek et al., Science, 2007) from genomes and metagenomes in an easy and accurate manner.
+Program: FetchMGs extracts the 40
+    single copy universal marker genes (decribed in Ciccarelli et al.,
+    Science, 2006 and Sorek et al., Science, 2007) from genomes and metagenomes
+    in an easy and accurate manner.
 
-options:
-  -h, --help            show this help message and exit
-  -m, -mode             FetchMGs mode, see below
+    fetchMGs <command> [options]
 
-modes:
-  valid modes
+      extraction     extract marker genes from sequences
 
-  {extraction,calibration}
-    extraction          extract marker genes from sequences
-    calibration         calibrate bitscores using results from extraction and a mapping file of known OGs
+    Type fetchMGs <command> to print the help menu for a specific command
+
+
 ```
 
 ### Extraction
 
 ```
-positional arguments:
-  file                  multi-FASTA file with protein sequences from which universal single-copy marker genes should be extracted
+$fetchMGs extraction
 
-options:
-  -h, --help            show this help message and exit
-  -c C [C ...], -cog_used C [C ...]
-                        orthologous group id(s) to be extracted; example: "COG0012"
-  -o O, -outdir O       output directory
-  -b B, -bitscore B     path to bitscore cutoff file
-  -l L, -library L      path to directory that contains hmm models
-  -p, -protein          set if nucleotide sequences file for <protein sequences> is not available
-  -d D, -dnaFastaFile D
-                        multi-FASTA file with nucleotide sequences; not neccesary if protein and nucleotide fasta file have the same name except .faa and .fna suffixes
-  -v, -verybesthit_only
-                        only extract the best hit of each COG from each genome
-                        recommended to use, if extracting sequences from multiple reference genomes in the same file do not use it for metagenomes
-                        if this option is set fasta identifiers should be in the form: taxID.geneID and, if needed, have "project_id=XXX" in the header
-                        alternatively, set -i to ignore the headers; then, the best hit of each OG in the whole input file will be selected, regardless of the headers used
-  -i, -ignore_headers   if this option is set in addition to -v, the best hit of each COG will be selected
-                        recommended to use, if extracting sequences from a single genome in the same file
-  -t T, -threads T      number of processors/threads to be used
-  -x X, -executable X   path to executables used by this script
-                        if set to '', will search for executables in $PATH (default)
+Program: FetchMGs extracts the 40
+    single copy universal marker genes (decribed in Ciccarelli et al.,
+    Science, 2006 and Sorek et al., Science, 2007) from genomes and metagenomes
+    in an easy and accurate manner.
+
+    fetchMGs extraction [options]
+
+    Positional arguments:
+         FILE[ FILE]  Input file(s) - plain or gzipped. Can be either:
+                            - 1-n genome assembly file(s), requires -m genome. Will
+                                call genes before marker gene extraction.
+                            - 1-n metagenome assembly file(s), requires -m metagenome. Will
+                                call genes before marker gene extraction.
+                            - 1-n gene file(s) in protein space, requires -m gene. nucleotide
+                                sequences can be provided with -d parameter
+    Input options:
+       -d FILE[ FILE] Nucleotide files associated with protein files in -i. Same order as
+                        files in -i required. Enabled only in -m gene mode.
+
+    Output options:
+       -o   FOLDER    Output folder for marker genes
+
+    Algorithm options:
+       -m STR         Mode of extraction Values: [gene, genome, metagenome]
+
+       -t INT         Number of threads. Default=[1]
+       -v             Report only the very best hit per COG and input file. Only useful
+                        if input files contain genes from genomes or are genomes.
+
 ```
 
-### Calibration
+## Changelog
 
-```
-positional arguments:
-  file                  file with sequences that include marker genes (true positives)
-  map                   tab-delimited file with true positive protein identifiers and COG ID
+### 2.0.0
 
-options:
-  -h, --help            show this help message and exit
-  -c C [C ...], -cog_used C [C ...]
-                        orthologous group id(s) to be extracted; example: "COG0012"
-  -o O, -outdir O       output directory
-  -l L, -library L      path to directory that contains hmm models
-  -p, -protein          set if nucleotide sequences file for <protein sequences> is not available
-  -d D, -dnaFastaFile D
-                        multi-FASTA file with nucleotide sequences; not neccesary if protein and nucleotide fasta file have the same name except .faa and .fna suffixes
-  -v, -verybesthit_only
-                        only extract the best hit of each COG from each genome
-                        recommended to use, if extracting sequences from multiple reference genomes in the same file do not use it for metagenomes
-                        if this option is set fasta identifiers should be in the form: taxID.geneID and, if needed, have "project_id=XXX" in the header
-                        alternatively, set -i to ignore the headers; then, the best hit of each OG in the whole input file will be selected, regardless of the headers used
-  -i, -ignore_headers   if this option is set in addition to -v, the best hit of each COG will be selected
-                        recommended to use, if extracting sequences from a single genome in the same file
-  -t T, -threads T      number of processors/threads to be used
-  -x X, -executable X   path to executables used by this script
-                        if set to '', will search for executables in $PATH (default)
-```
+- Calibration mode was removed
+- `hmmer` and `prodigal` were replaced with `pyhmmer` and `pyrodigal`
+- Input is more flexible. Users can now submit multiple files and use different input formats:
+	- Genes (`-m gene`)
+	- Genomes (`-m genome`)
+	- Metagenomes (`-m metagenome`)
+- Output folder was cleaned up. Only one nucleotide and one protein file are generated compared to 40 in previous versions
 
-## Software dependencies
+### 1.3.0
 
-The fetchMGs script requires HMMER3 and Biopython:
+- FetchMGs was ported from Perl to Python 3
 
-- HMMER3: http://www.hmmer.org/
-- Biopython: https://biopython.org/
+
+
 
