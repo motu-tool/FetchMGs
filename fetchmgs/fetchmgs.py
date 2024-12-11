@@ -21,7 +21,6 @@ __maintainer__ = "Hans-Joachim Ruscheweyh"
 __email__ = 'hansr@ethz.ch'
 
 
-
 def load_fetchmgs_files(very_best):
     data_folder = pathlib.Path(__file__).parent.absolute().joinpath('data')
     cutoffs_file = data_folder.joinpath('MG_BitScoreCutoffs.allhits.txt')
@@ -340,7 +339,8 @@ class CapitalisedHelpFormatter(argparse.HelpFormatter):
         return super(CapitalisedHelpFormatter, self).add_usage(usage, actions, groups, prefix)
 
 
-if __name__ == '__main__':
+
+def main():
     parser = argparse.ArgumentParser(usage=f'''Program: FetchMGs extracts the 40 
     single copy universal marker genes (decribed in Ciccarelli et al., 
     Science, 2006 and Sorek et al., Science, 2007) from genomes and metagenomes 
@@ -364,3 +364,8 @@ if __name__ == '__main__':
         print(f'Unrecognized command {args}')
         shutdown(1)
     shutdown(0)
+
+
+if __name__ == '__main__':
+    main()
+

@@ -1,17 +1,19 @@
 from setuptools import setup
-import os
 
-def read(fname):
-    return open(os.path.join(os.path.dirname(__file__), fname)).read()
-install_requires = ['biopython ==1.84',
+
+install_requires = ['biopython',
                     'tqdm',
                     'pyrodigal ==3.6.3',
                     'pyhmmer ==0.10.15',
                     'psutil']
-long_description = read('README.md')
+
+
+with open("README.md", "r") as fh:
+    long_desc = fh.read()
+    long_desc = "\n".join(long_desc.split("\n")[1:])
 
 setup(
-    name='FetchMGs',
+    name='fetchMGs',
     version='2.0.0',
     description='FetchMGs extracts the 40 marker genes from genomes and metagenomes in an easy and accurate manner.',
     url='https://github.com/motu-tool/FetchMGs',
@@ -20,7 +22,8 @@ setup(
     license='GPL-3.0',
     include_package_data=True,
     install_requires=install_requires,
-    long_description=long_description,
+    long_description=long_desc,
+    long_description_content_type = "text/markdown",
     packages=['fetchmgs'],
     download_url = "https://github.com/motu-tool/FetchMGs/archive/refs/tags/2.0.0.tar.gz",
     entry_points = {
