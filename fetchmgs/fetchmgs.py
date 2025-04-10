@@ -14,8 +14,8 @@ from typing import List
 __author__ = ('Hans-Joachim Ruscheweyh (hansr@ethz.ch), '
               'Chris Field, '
               'Shinichi Sunagawa')
-__version__ = '2.0.0'
-__date__ = '11 Dec 2024'
+__version__ = '2.0.1'
+__date__ = '10 Apr 2025'
 __license__ = "GPL - v3"
 __maintainer__ = "Hans-Joachim Ruscheweyh"
 __email__ = 'hansr@ethz.ch'
@@ -90,6 +90,7 @@ def extraction_genes(input_files: List[pathlib.Path], nucleotide_files: List[pat
             hmms.append(hmm)
 
     for prot_file, nucl_file in tqdm.tqdm(zip(input_files, nucleotide_files), total=len(input_files), unit=f'protein files'):
+
         if not pathlib.Path(prot_file).is_file():
             logging.error(f'Protein file {prot_file} does not exist. Quitting ...')
             shutdown(1)
@@ -99,7 +100,7 @@ def extraction_genes(input_files: List[pathlib.Path], nucleotide_files: List[pat
                 shutdown(1)
 
         proteins = None
-        with pyhmmer.easel.SequenceFile(prot_file, digital=True) as seqs_file:
+        with pyhmmer.easel.SequenceFile(prot_file, digital=True, alphabet=pyhmmer.easel.Alphabet.amino()) as seqs_file:
             proteins = seqs_file.read_block()
 
         # for each gene, collect the cog and score
@@ -141,18 +142,17 @@ def extraction_genes(input_files: List[pathlib.Path], nucleotide_files: List[pat
             fna_out_file_name = output_folder.joinpath(basename + '.fetchMGs.fna')
             faa_out_file_name = output_folder.joinpath(basename + '.fetchMGs.faa')
             score_out_file_name = output_folder.joinpath(basename + '.fetchMGs.scores')
-        with open(fna_out_file_name, 'w') as fna_out_handle, open(faa_out_file_name, 'w') as faa_out_handle, open(score_out_file_name, 'w') as scores_out_handle:
+        with open(faa_out_file_name, 'w') as faa_out_handle, open(score_out_file_name, 'w') as scores_out_handle:
             scores_out_handle.write('#protein_sequence_id\tHMM bit score\tCOG\n')
             seen_genes_nucl = set()
             seen_genes_prot = set()
             if nucl_file:
-                with get_file_handle(nucl_file) as in_fna_handle:
+                with get_file_handle(nucl_file) as in_fna_handle, open(fna_out_file_name, 'w') as fna_out_handle:
                     for (header, sequence) in FastaIO.SimpleFastaParser(in_fna_handle):
                         header = header.split()[0]
                         if header in gene_2_cog_2_score:
                             cog, score = gene_2_cog_2_score[header]
                             fna_out_handle.write(f'>{header}.{cog}\n{sequence}\n')
-                            scores_out_handle.write(f'{header}\t{int(score)}\t{cog}\n')
                             seen_genes_nucl.add(header)
             with get_file_handle(prot_file) as in_faa_handle:
                 for (header, sequence) in FastaIO.SimpleFastaParser(in_faa_handle):
@@ -160,6 +160,7 @@ def extraction_genes(input_files: List[pathlib.Path], nucleotide_files: List[pat
                     if header in gene_2_cog_2_score:
                         cog, score = gene_2_cog_2_score[header]
                         faa_out_handle.write(f'>{header}.{cog}\n{sequence}\n')
+                        scores_out_handle.write(f'{header}\t{int(score)}\t{cog}\n')
                         seen_genes_prot.add(header)
             if nucl_file:
                 if seen_genes_nucl != seen_genes_prot:
@@ -230,6 +231,23 @@ def extraction_genomes(input_files: List[pathlib.Path], output_folder: pathlib.P
     extraction_genes(protein_files, nucleotide_files, output_folder, threads, very_best, genes_called=True)
 
 
+def load_input_files_from_file(input_file):
+    tmp_input_files = []
+    broken_file = None
+    with open(input_file, 'r') as fi:
+        for line in fi:
+            if pathlib.Path(line.strip()).exists():
+                tmp_input_files.append(pathlib.Path(line.strip()))
+            else:
+                broken_file = line.strip()
+                break
+    if len(tmp_input_files) >= 1:
+        if broken_file:
+            logging.error(f'Input file is a mapping file. But some lines have non existing files. E.g. {broken_file}')
+            shutdown(1)
+        input_files = tmp_input_files
+    return tmp_input_files
+
 def parse_extraction():
     parser = argparse.ArgumentParser(usage=f'''Program: FetchMGs extracts the 40 
     single copy universal marker genes (decribed in Ciccarelli et al., 
@@ -246,9 +264,14 @@ def parse_extraction():
                                 call genes before marker gene extraction.
                             - 1-n gene file(s) in protein space, requires -m gene. nucleotide 
                                 sequences can be provided with -d parameter
+                            - 1 text file with one line per input file. Requires 
+                                -m parameter to enable "metagenome", "genome" or "gene" mode.
+                                In "gene" mode another text file with samples in the
+                                same order can be provided with -d parameter. 
     Input options:
        -d FILE[ FILE] Nucleotide files associated with protein files in -i. Same order as
-                        files in -i required. Enabled only in -m gene mode. 
+                        files in -i required. Enabled only in -m gene mode. Can be either a 
+                        list of files or a text file with one line per input file. 
 
     Output options:
        -o   FOLDER    Output folder for marker genes
@@ -279,7 +302,12 @@ def parse_extraction():
         parser.print_usage()
         shutdown(1)
 
-    input_files = [pathlib.Path(i) for i in args.i]
+    input_files = [pathlib.Path(i) for i in args.i] # can also be a file with lines
+
+    if len(input_files) == 1 and not input_files[0].suffix == '.gz': # could be a mapping file
+        input_files = load_input_files_from_file(input_files[0])
+
+
     output_folder = pathlib.Path(args.o)
     mode = args.m
     threads = args.t
@@ -287,10 +315,14 @@ def parse_extraction():
     nucleotide_files = [None] * len(input_files)
     if mode == 'gene':
         if args.d:
-            nucleotide_files = args.d
+            nucleotide_files = [pathlib.Path(i) for i in args.d]
+            if len(nucleotide_files) == 1 and not nucleotide_files[0].suffix == '.gz':  # could be a mapping file
+                nucleotide_files = load_input_files_from_file(nucleotide_files[0])
+
         if len(nucleotide_files) != len(input_files):
             logging.error('Number of nucleotide files does not match number of protein files. Quitting ...')
             shutdown(1)
+
     if len(input_files) == 0:
         logging.error('No input files provided. Quitting ...')
         shutdown(1)

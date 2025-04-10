@@ -14,7 +14,7 @@ with open("README.md", "r") as fh:
 
 setup(
     name='fetchMGs',
-    version='2.0.0',
+    version='2.0.1',
     description='FetchMGs extracts the 40 marker genes from genomes and metagenomes in an easy and accurate manner.',
     url='https://github.com/motu-tool/FetchMGs',
     author='Hans-Joachim Ruscheweyh, Chris Field, Shinichi Sunagawa, Daniel R. Mende',
