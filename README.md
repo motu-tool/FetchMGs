@@ -78,9 +78,14 @@ Program: FetchMGs extracts the 40
                                 call genes before marker gene extraction.
                             - 1-n gene file(s) in protein space, requires -m gene. nucleotide
                                 sequences can be provided with -d parameter
+                            - 1 text file with one line per input file. Requires 
+                                -m parameter to enable "metagenome", "genome" or "gene" mode.
+                                In "gene" mode another text file with samples in the
+                                same order can be provided with -d parameter. 
     Input options:
        -d FILE[ FILE] Nucleotide files associated with protein files in -i. Same order as
-                        files in -i required. Enabled only in -m gene mode.
+                        files in -i required. Enabled only in -m gene mode. Can be either a 
+                        list of files or a text file with one line per input file. 
 
     Output options:
        -o   FOLDER    Output folder for marker genes
