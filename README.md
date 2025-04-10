@@ -96,6 +96,12 @@ Program: FetchMGs extracts the 40
 
 ## Changelog
 
+### 2.0.1
+
+- Changed automatic detection of input files to `amino` for pyhmmer
+- allow users to submit a file with a list of input files for positional and -d parameters
+
+
 ### 2.0.0
 
 - Calibration mode was removed
