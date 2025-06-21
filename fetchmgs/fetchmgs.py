@@ -47,11 +47,57 @@ def load_fetchmgs_files(very_best):
 
 
 def get_file_handle(f):
-    f = str(f)
-    if f.endswith('.gz'):
+    if is_gzipped(f):
         return gzip.open(f, 'rt')
     else:
         return open(f, 'r')
+
+
+def check_sequence_type(input_files, expected_sequence_type):
+    allowed_sequence_types = ['NT', 'AA']
+    if expected_sequence_type not in allowed_sequence_types:
+        logging.error(f'Expected sequence type {expected_sequence_type}. Quitting ...')
+        shutdown(1)
+    nucleotide_bases = set("ATGCUN")
+    amino_acids = set("ARNDCQEGHILKMFPSTWYVX*")
+    file_2_sequences = collections.defaultdict(list)
+
+    for input_file in input_files:
+        input_file_handle = get_file_handle(input_file)
+        for (header, sequence) in FastaIO.SimpleFastaParser(input_file_handle):
+            file_2_sequences[input_file].append(sequence)
+            if len(file_2_sequences[input_file]) > 100:
+                break
+        input_file_handle.close()
+    input_file_2_classification = {}
+    input_file_2_average_length = {}
+    for input_file, sequences in file_2_sequences.items():
+        seqs = ''
+        seq_lengths = []
+        for seq in sequences:
+            seq_clean = seq.upper().replace(" ", "")
+            seqs = seqs + seq_clean
+            seq_lengths.append(len(seq_clean))
+        input_file_2_average_length[input_file] = sum(seq_lengths) / len(seq_lengths)
+        chars = set(seq_clean)
+        if chars.issubset(nucleotide_bases):
+            input_file_2_classification[input_file] = "NT"
+        elif chars.issubset(amino_acids):
+            input_file_2_classification[input_file] = "AA"
+        else:
+            input_file_2_classification[input_file] = "UK"
+
+
+    for input_file, sequence_type in input_file_2_classification.items():
+        if sequence_type != expected_sequence_type:
+            logging.error(f'Expected sequence type is {expected_sequence_type} but some sequences in {input_file} match sequence type {sequence_type}. Quitting ...')
+            shutdown(1)
+
+    return True
+
+
+
+
 
 
 def extraction_genes(input_files: List[pathlib.Path], nucleotide_files: List[pathlib.Path], output_folder: pathlib.Path, threads: int, very_best: bool, genes_called: bool = False) -> None:
@@ -230,22 +276,46 @@ def extraction_genomes(input_files: List[pathlib.Path], output_folder: pathlib.P
     logging.info(f'Finished gene calling.')
     extraction_genes(protein_files, nucleotide_files, output_folder, threads, very_best, genes_called=True)
 
+def is_gzipped(filename):
+    with open(filename, 'rb') as f:
+        magic = f.read(2)
+    return magic == b'\x1f\x8b'
 
 def load_input_files_from_file(input_file):
+    '''Checks input files and if they all exist.
+    If the input file is a mapping file, return the contents
+
+    '''
+
+    input_handle = get_file_handle(input_file)
+    is_seq_file = False
+    for line in input_handle:
+        if line.startswith('>'):
+            is_seq_file = True
+        break
+    input_handle.close()
     tmp_input_files = []
-    broken_file = None
-    with open(input_file, 'r') as fi:
-        for line in fi:
+    if is_seq_file:
+        tmp_input_files = [input_file]
+    else:
+
+        broken_file = None
+        input_handle = get_file_handle(input_file)
+        for line in input_handle:
             if pathlib.Path(line.strip()).exists():
                 tmp_input_files.append(pathlib.Path(line.strip()))
             else:
                 broken_file = line.strip()
                 break
-    if len(tmp_input_files) >= 1:
+        input_handle.close()
+
         if broken_file:
             logging.error(f'Input file is a mapping file. But some lines have non existing files. E.g. {broken_file}')
             shutdown(1)
-        input_files = tmp_input_files
+
+    if len(tmp_input_files) == 0:
+        logging.error(f'No valid input files found. Quitting ...')
+        shutdown(1)
     return tmp_input_files
 
 def parse_extraction():
@@ -254,44 +324,49 @@ def parse_extraction():
     Science, 2006 and Sorek et al., Science, 2007) from genomes and metagenomes 
     in an easy and accurate manner.
 
-    fetchMGs extraction [options]
+    fetchMGs extraction input_file mode output_folder[options]
 
     Positional arguments:
-         FILE[ FILE]  Input file(s) - plain or gzipped. Can be either:
-                            - 1-n genome assembly file(s), requires -m genome. Will 
-                                call genes before marker gene extraction.
-                            - 1-n metagenome assembly file(s), requires -m metagenome. Will 
-                                call genes before marker gene extraction.
-                            - 1-n gene file(s) in protein space, requires -m gene. nucleotide 
-                                sequences can be provided with -d parameter
-                            - 1 text file with one line per input file. Requires 
-                                -m parameter to enable "metagenome", "genome" or "gene" mode.
-                                In "gene" mode another text file with samples in the
-                                same order can be provided with -d parameter. 
+         FILE        Input file - plain or gzipped. Can be either:
+                        - A genome assembly file (NT), requires -m genome. Will 
+                            call genes before marker gene extraction.
+                        - A metagenome assembly file (NT), requires -m metagenome. Will 
+                            call genes before marker gene extraction.
+                        - A gene file in protein space (AA), requires -m gene. nucleotide 
+                            sequences can be provided with -d parameter
+                        - A text file with one line per input file. Requires 
+                            -m parameter to enable "metagenome", "genome" or "gene" mode.
+                            In "gene" mode another text file with samples in the
+                            same order can be provided with -d parameter. 
+        
+        STR          Mode of extraction Values: [gene, genome, metagenome]
+        
+        FOLDER       Output folder for marker genes
+        
     Input options:
-       -d FILE[ FILE] Nucleotide files associated with protein files in -i. Same order as
-                        files in -i required. Enabled only in -m gene mode. Can be either a 
-                        list of files or a text file with one line per input file. 
-
-    Output options:
-       -o   FOLDER    Output folder for marker genes
+       -d FILE       Nucleotide file/Text file. Enabled only in the "gene" mode.
+                     Requires same order of sequence files if submitted as
+                     text file.
+                     
 
     Algorithm options:
-       -m STR         Mode of extraction Values: [gene, genome, metagenome]
 
        -t INT         Number of threads. Default=[1]
        -v             Report only the very best hit per COG and input file. Only useful 
                         if input files contain genes from genomes or are genomes.
           ''', formatter_class=CapitalisedHelpFormatter, add_help=False)
 
+    # Positional Parameters
+
+    parser.add_argument(type=str, dest='input_file')
+    parser.add_argument(type=str, choices=['gene', 'genome', 'metagenome'], dest='mode')
+    parser.add_argument(type=str, dest='output_folder')
+
     # Input options
-    parser.add_argument(nargs="+", default=[], dest='i')
-    parser.add_argument("-d", nargs="+", default=[], required=False)
-    # Output options
-    parser.add_argument("-o", required=True)
+    parser.add_argument("-d", type=str, default=None, required=False)
 
     # Algorithm options
-    parser.add_argument("-m", type=str, choices=['gene', 'genome', 'metagenome'], required=True)
+
     parser.add_argument("-t", type=int, default=1)
     parser.add_argument("-v", action='store_true')
 
@@ -302,30 +377,47 @@ def parse_extraction():
         parser.print_usage()
         shutdown(1)
 
-    input_files = [pathlib.Path(i) for i in args.i] # can also be a file with lines
+    # positionals
 
-    if len(input_files) == 1 and not input_files[0].suffix == '.gz': # could be a mapping file
-        input_files = load_input_files_from_file(input_files[0])
+    input_file = pathlib.Path(args.input_file)
+    output_folder = pathlib.Path(args.output_folder)
+    mode = args.mode
 
-
-    output_folder = pathlib.Path(args.o)
-    mode = args.m
+    # optionals
     threads = args.t
     very_best = args.v
-    nucleotide_files = [None] * len(input_files)
+    nucleotide_file = args.d
+
+
+    #checks
+    input_sequence_files = load_input_files_from_file(input_file) # can be AA or NT files at this moment
+    #nucleotide_input_files = [None] * len(input_sequence_files) # can be empty at this point
+
     if mode == 'gene':
+        # check that provided sequences are AA
+        check_sequence_type(input_sequence_files, 'AA')
+
         if args.d:
-            nucleotide_files = [pathlib.Path(i) for i in args.d]
-            if len(nucleotide_files) == 1 and not nucleotide_files[0].suffix == '.gz':  # could be a mapping file
-                nucleotide_files = load_input_files_from_file(nucleotide_files[0])
+            nucleotide_input_files = load_input_files_from_file(nucleotide_file)
+            check_sequence_type(nucleotide_input_files, 'NT')
+            if len(nucleotide_input_files) != len(input_sequence_files):
+                logging.error('Number of nucleotide files does not match number of protein files. Quitting ...')
+                shutdown(1)
+        else:
+            nucleotide_input_files = [None] * len(input_sequence_files)
 
-        if len(nucleotide_files) != len(input_files):
-            logging.error('Number of nucleotide files does not match number of protein files. Quitting ...')
+
+
+    elif mode == 'genome' or mode == 'metagenome':
+        check_sequence_type(input_sequence_files, 'NT')
+        if args.d:
+            logging.error('-d parameter can\'t be set in metagenome or genome mode. Quitting ...')
             shutdown(1)
-
-    if len(input_files) == 0:
-        logging.error('No input files provided. Quitting ...')
+    else:
+        logging.error(f'Invalid mode {mode}. Quitting ...')
         shutdown(1)
+
+
     if threads < 1:
         threads = 1
     if threads > psutil.cpu_count():
@@ -334,10 +426,12 @@ def parse_extraction():
     if not output_folder.exists():
         output_folder.mkdir(parents=True, exist_ok=True)
 
+
+
     if mode == 'gene':
-        extraction_genes(input_files, nucleotide_files, output_folder, threads, very_best, genes_called=False)
+        extraction_genes(input_sequence_files, nucleotide_input_files, output_folder, threads, very_best, genes_called=False)
     else:
-        extraction_genomes(input_files, output_folder, mode, threads, very_best)
+        extraction_genomes(input_sequence_files, output_folder, mode, threads, very_best)
 
 
 def shutdown(exitcode: int) -> None:
@@ -349,7 +443,7 @@ def shutdown(exitcode: int) -> None:
     Returns:
         None
     """
-    logging.info(f'fetchMGs shutting down with exitcode {exitcode}')
+    #logging.info(f'fetchMGs shutting down with exitcode {exitcode}')
     sys.exit(exitcode)
 
 
