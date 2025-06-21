@@ -28,7 +28,7 @@ $pip install fetchMGs
 
 ## Input
 
-Users can submit genes in protein space or (from v2.0 on) longer nucleotide sequences from assembled genomes/metagenomes.
+Users can submit genes in protein space or (from v2.0 on) genomes/metagenomes in nucleotide space.
 
 ## Output
 
@@ -68,38 +68,52 @@ Program: FetchMGs extracts the 40
     Science, 2006 and Sorek et al., Science, 2007) from genomes and metagenomes
     in an easy and accurate manner.
 
-    fetchMGs extraction [options]
+    fetchMGs extraction input_file mode output_folder[options]
 
     Positional arguments:
-         FILE[ FILE]  Input file(s) - plain or gzipped. Can be either:
-                            - 1-n genome assembly file(s), requires -m genome. Will
-                                call genes before marker gene extraction.
-                            - 1-n metagenome assembly file(s), requires -m metagenome. Will
-                                call genes before marker gene extraction.
-                            - 1-n gene file(s) in protein space, requires -m gene. nucleotide
-                                sequences can be provided with -d parameter
-                            - 1 text file with one line per input file. Requires 
-                                -m parameter to enable "metagenome", "genome" or "gene" mode.
-                                In "gene" mode another text file with samples in the
-                                same order can be provided with -d parameter. 
+         FILE        Input file - plain or gzipped. Can be either:
+                        - A genome assembly file (NT), requires -m genome. Will 
+                            call genes before marker gene extraction.
+                        - A metagenome assembly file (NT), requires -m metagenome. Will 
+                            call genes before marker gene extraction.
+                        - A gene file in protein space (AA), requires -m gene. nucleotide 
+                            sequences can be provided with -d parameter
+                        - A text file with one line per input file. Requires 
+                            -m parameter to enable "metagenome", "genome" or "gene" mode.
+                            In "gene" mode another text file with samples in the
+                            same order can be provided with -d parameter. 
+        
+        STR          Mode of extraction Values: [gene, genome, metagenome]
+        
+        FOLDER       Output folder for marker genes
+        
     Input options:
-       -d FILE[ FILE] Nucleotide files associated with protein files in -i. Same order as
-                        files in -i required. Enabled only in -m gene mode. Can be either a 
-                        list of files or a text file with one line per input file. 
-
-    Output options:
-       -o   FOLDER    Output folder for marker genes
+       -d FILE       Nucleotide file/Text file. Enabled only in the "gene" mode.
+                     Requires same order of sequence files if submitted as
+                     text file.
+                     
 
     Algorithm options:
-       -m STR         Mode of extraction Values: [gene, genome, metagenome]
 
        -t INT         Number of threads. Default=[1]
-       -v             Report only the very best hit per COG and input file. Only useful
+       -v             Report only the very best hit per COG and input file. Only useful 
                         if input files contain genes from genomes or are genomes.
-
+          
 ```
 
 ## Changelog
+
+### 2.1.0
+
+- No functional updates = produces the same output
+- Commandline interface refactored. 
+  - fetchMGs expects 3 positional arguments, `input_file`, `mode` and `output_folder`
+    - `input_file`: can be either a sequence file (genes in protein space, a genome or a metagenome) or a text file with one filepath per line to a genome/metagenome/protein file
+    - `mode`: chose between `gene` (input file(s) are proteins), `genome` (input file(s) are genomes) or `metagenome` (input file(s) are metagenomes). 
+    - `output_folder`: The output folder
+- Features:
+  - Checks if the input file is a map file or a sequence file now based on file content instead of file endings
+  - Checks if the input (and nucleotide) file(s) are in the right format. E.g. a nucleotide file is represented by a different alphabet compared to amino acid sequences.
 
 ### 2.0.1
 
