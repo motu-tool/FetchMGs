@@ -14,8 +14,8 @@ from typing import List
 __author__ = ('Hans-Joachim Ruscheweyh (hansr@ethz.ch), '
               'Chris Field, '
               'Shinichi Sunagawa')
-__version__ = '2.0.1'
-__date__ = '10 Apr 2025'
+__version__ = '2.1.1'
+__date__ = '20 Nov 2025'
 __license__ = "GPL - v3"
 __maintainer__ = "Hans-Joachim Ruscheweyh"
 __email__ = 'hansr@ethz.ch'
@@ -323,6 +323,8 @@ def parse_extraction():
     single copy universal marker genes (decribed in Ciccarelli et al., 
     Science, 2006 and Sorek et al., Science, 2007) from genomes and metagenomes 
     in an easy and accurate manner.
+    
+    Version: {__version__}
 
     fetchMGs extraction input_file mode output_folder[options]
 
@@ -471,7 +473,9 @@ def main():
     single copy universal marker genes (decribed in Ciccarelli et al., 
     Science, 2006 and Sorek et al., Science, 2007) from genomes and metagenomes 
     in an easy and accurate manner.
-
+    
+    Version: {__version__}
+    
     fetchMGs <command> [options]
 
       extraction     extract marker genes from sequences
