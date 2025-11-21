@@ -14,7 +14,7 @@ from typing import List
 __author__ = ('Hans-Joachim Ruscheweyh (hansr@ethz.ch), '
               'Chris Field, '
               'Shinichi Sunagawa')
-__version__ = '2.1.1'
+__version__ = '2.1.2'
 __date__ = '20 Nov 2025'
 __license__ = "GPL - v3"
 __maintainer__ = "Hans-Joachim Ruscheweyh"
