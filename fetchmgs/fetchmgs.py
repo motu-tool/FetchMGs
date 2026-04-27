@@ -152,10 +152,10 @@ def extraction_genes(input_files: List[pathlib.Path], nucleotide_files: List[pat
         # for each gene, collect the cog and score
         gene_2_cogs = collections.defaultdict(list)
         for hits in pyhmmer.hmmsearch(hmms, proteins, bit_cutoffs="trusted", cpus=threads):
-            cog = hits.query.name.decode()
+            cog = hits.query.name
             for hit in hits:
                 if hit.included:
-                    gene_2_cogs[hit.name.decode()].append((cog, hit.score))
+                    gene_2_cogs[hit.name].append((cog, hit.score))
 
         # then pick for each gene the best scoring cog
         cog_2_hits = collections.defaultdict(list)

@@ -4,7 +4,7 @@ from setuptools import setup
 install_requires = ['biopython',
                     'tqdm',
                     'pyrodigal ==3.6.3.post1',
-                    'pyhmmer ==0.11.2',
+                    'pyhmmer ~=0.12.0',
                     'psutil']
 
 
@@ -14,7 +14,7 @@ with open("README.md", "r") as fh:
 
 setup(
     name='fetchMGs',
-    version='2.1.2',
+    version='2.1.3',
     description='FetchMGs extracts the 40 marker genes from genomes and metagenomes in an easy and accurate manner.',
     url='https://github.com/motu-tool/FetchMGs',
     author='Hans-Joachim Ruscheweyh, Chris Field, Shinichi Sunagawa, Daniel R. Mende',
