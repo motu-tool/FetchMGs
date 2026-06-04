@@ -10,11 +10,12 @@ import gzip
 import collections
 import tqdm
 from typing import List
+from importlib.metadata import version
 
 __author__ = ('Hans-Joachim Ruscheweyh (hansr@ethz.ch), '
               'Chris Field, '
               'Shinichi Sunagawa')
-__version__ = '2.1.2'
+__version__ = version("fetchMGs")
 __date__ = '20 Nov 2025'
 __license__ = "GPL - v3"
 __maintainer__ = "Hans-Joachim Ruscheweyh"
@@ -64,7 +65,7 @@ def check_sequence_type(input_files, expected_sequence_type):
 
     for input_file in input_files:
         input_file_handle = get_file_handle(input_file)
-        for (header, sequence) in FastaIO.SimpleFastaParser(input_file_handle):
+        for (_, sequence) in FastaIO.SimpleFastaParser(input_file_handle):
             file_2_sequences[input_file].append(sequence)
             if len(file_2_sequences[input_file]) > 100:
                 break
@@ -152,10 +153,10 @@ def extraction_genes(input_files: List[pathlib.Path], nucleotide_files: List[pat
         # for each gene, collect the cog and score
         gene_2_cogs = collections.defaultdict(list)
         for hits in pyhmmer.hmmsearch(hmms, proteins, bit_cutoffs="trusted", cpus=threads):
-            cog = hits.query.name.decode()
+            cog = hits.query.name
             for hit in hits:
                 if hit.included:
-                    gene_2_cogs[hit.name.decode()].append((cog, hit.score))
+                    gene_2_cogs[hit.name].append((cog, hit.score))
 
         # then pick for each gene the best scoring cog
         cog_2_hits = collections.defaultdict(list)
