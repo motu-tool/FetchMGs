@@ -8,6 +8,7 @@ import pyhmmer
 import Bio.SeqIO.FastaIO as FastaIO
 import gzip
 import collections
+import itertools
 import tqdm
 from typing import List
 from importlib.metadata import version
@@ -16,7 +17,7 @@ __author__ = ('Hans-Joachim Ruscheweyh (hansr@ethz.ch), '
               'Chris Field, '
               'Shinichi Sunagawa')
 __version__ = version("fetchMGs")
-__date__ = '20 Nov 2025'
+__date__ = '06 Jun 2026'
 __license__ = "GPL - v3"
 __maintainer__ = "Hans-Joachim Ruscheweyh"
 __email__ = 'hansr@ethz.ch'
@@ -38,7 +39,7 @@ def load_fetchmgs_files(very_best):
     hmm_files = data_folder.glob('*hmm')
     cog_2_cutoff_hmm_file = {}
     for hmm_file in hmm_files:
-        cog = str(hmm_file).split('/')[-1].split('.')[0]
+        cog = hmm_file.stem
         cutoff = cutoffs[cog]
         cog_2_cutoff_hmm_file[cog] = (cutoff, hmm_file)
     if len(cog_2_cutoff_hmm_file) != len(cutoffs):
@@ -64,12 +65,11 @@ def check_sequence_type(input_files, expected_sequence_type):
     file_2_sequences = collections.defaultdict(list)
 
     for input_file in input_files:
-        input_file_handle = get_file_handle(input_file)
-        for (_, sequence) in FastaIO.SimpleFastaParser(input_file_handle):
-            file_2_sequences[input_file].append(sequence)
-            if len(file_2_sequences[input_file]) > 100:
-                break
-        input_file_handle.close()
+        with get_file_handle(input_file) as input_file_handle:
+            for (_, sequence) in FastaIO.SimpleFastaParser(input_file_handle):
+                file_2_sequences[input_file].append(sequence)
+                if len(file_2_sequences[input_file]) > 100:
+                    break
     input_file_2_classification = {}
     input_file_2_average_length = {}
     for input_file, sequences in file_2_sequences.items():
@@ -80,7 +80,7 @@ def check_sequence_type(input_files, expected_sequence_type):
             seqs = seqs + seq_clean
             seq_lengths.append(len(seq_clean))
         input_file_2_average_length[input_file] = sum(seq_lengths) / len(seq_lengths)
-        chars = set(seq_clean)
+        chars = set(seqs)
         if chars.issubset(nucleotide_bases):
             input_file_2_classification[input_file] = "NT"
         elif chars.issubset(amino_acids):
@@ -101,7 +101,7 @@ def check_sequence_type(input_files, expected_sequence_type):
 
 
 
-def extraction_genes(input_files: List[pathlib.Path], nucleotide_files: List[pathlib.Path], output_folder: pathlib.Path, threads: int, very_best: bool, genes_called: bool = False) -> None:
+def extraction_genes(input_files: List[pathlib.Path], nucleotide_files: List[pathlib.Path], output_folder: pathlib.Path, threads: int, very_best: bool, genes_called: bool = False, chunk_size: int = 50000) -> None:
     """
     Extract the 40 marker genes from genes. Takes a list of protein
     files as input (input_files) and searches them against the HMM
@@ -146,17 +146,17 @@ def extraction_genes(input_files: List[pathlib.Path], nucleotide_files: List[pat
                 logging.error(f'Nucleotide file {nucl_file} does not exist. Quitting ...')
                 shutdown(1)
 
-        proteins = None
-        with pyhmmer.easel.SequenceFile(prot_file, digital=True, alphabet=pyhmmer.easel.Alphabet.amino()) as seqs_file:
-            proteins = seqs_file.read_block()
-
         # for each gene, collect the cog and score
         gene_2_cogs = collections.defaultdict(list)
-        for hits in pyhmmer.hmmsearch(hmms, proteins, bit_cutoffs="trusted", cpus=threads):
-            cog = hits.query.name
-            for hit in hits:
-                if hit.included:
-                    gene_2_cogs[hit.name].append((cog, hit.score))
+        alphabet = pyhmmer.easel.Alphabet.amino()
+        with pyhmmer.easel.SequenceFile(prot_file, digital=True, alphabet=alphabet) as seqs_file:
+            while chunk := list(itertools.islice(seqs_file, chunk_size)):
+                block = pyhmmer.easel.DigitalSequenceBlock(alphabet, chunk)
+                for hits in pyhmmer.hmmsearch(hmms, block, bit_cutoffs="trusted", cpus=threads):
+                    cog = hits.query.name
+                    for hit in hits:
+                        if hit.included:
+                            gene_2_cogs[hit.name].append((cog, hit.score))
 
         # then pick for each gene the best scoring cog
         cog_2_hits = collections.defaultdict(list)
@@ -179,16 +179,12 @@ def extraction_genes(input_files: List[pathlib.Path], nucleotide_files: List[pat
             for gene, score in final_hits:
                 gene_2_cog_2_score[gene] = (cog, score)
 
-        basename = str(prot_file).split('/')[-1]
+        basename = pathlib.Path(prot_file).name
         if genes_called:
             basename = basename.replace('.genes.faa', '')
-            fna_out_file_name = output_folder.joinpath(basename + '.fetchMGs.fna')
-            faa_out_file_name = output_folder.joinpath(basename + '.fetchMGs.faa')
-            score_out_file_name = output_folder.joinpath(basename + '.fetchMGs.scores')
-        else:
-            fna_out_file_name = output_folder.joinpath(basename + '.fetchMGs.fna')
-            faa_out_file_name = output_folder.joinpath(basename + '.fetchMGs.faa')
-            score_out_file_name = output_folder.joinpath(basename + '.fetchMGs.scores')
+        fna_out_file_name = output_folder.joinpath(basename + '.fetchMGs.fna')
+        faa_out_file_name = output_folder.joinpath(basename + '.fetchMGs.faa')
+        score_out_file_name = output_folder.joinpath(basename + '.fetchMGs.scores')
         with open(faa_out_file_name, 'w') as faa_out_handle, open(score_out_file_name, 'w') as scores_out_handle:
             scores_out_handle.write('#protein_sequence_id\tHMM bit score\tCOG\n')
             seen_genes_nucl = set()
@@ -253,19 +249,15 @@ def extraction_genomes(input_files: List[pathlib.Path], output_folder: pathlib.P
             shutdown(1)
 
         scaffold_2_sequence = {}
-        fname = str(input_file).split('/')[-1]
-        fna_basename = f'{str(output_folder)}/{fname}.genes.fna'
-        faa_basename = f'{str(output_folder)}/{fname}.genes.faa'
+        fname = pathlib.Path(input_file).name
+        fna_basename = str(output_folder / f'{fname}.genes.fna')
+        faa_basename = str(output_folder / f'{fname}.genes.faa')
         nucleotide_files.append(pathlib.Path(fna_basename))
         protein_files.append(pathlib.Path(faa_basename))
-        infile = None
-        if str(input_file).endswith('.gz'):
-            infile = gzip.open(input_file, 'rt')
-        else:
-            infile = open(input_file, 'r')
-        for (header, sequence) in FastaIO.SimpleFastaParser(infile):
-            header = header.split()[0]
-            scaffold_2_sequence[header] = sequence
+        with get_file_handle(input_file) as infile:
+            for (header, sequence) in FastaIO.SimpleFastaParser(infile):
+                header = header.split()[0]
+                scaffold_2_sequence[header] = sequence
         if mode == 'genome':
             training_info = gene_finder.train(*(seq for seq in scaffold_2_sequence.values()))
         with open(fna_basename, 'w') as fi, open(faa_basename, 'w') as fo:
@@ -273,7 +265,6 @@ def extraction_genomes(input_files: List[pathlib.Path], output_folder: pathlib.P
                 genes = gene_finder.find_genes(sequence)
                 genes.write_genes(fi, sequence_id=header)
                 genes.write_translations(fo, sequence_id=header)
-        infile.close()
     logging.info(f'Finished gene calling.')
     extraction_genes(protein_files, nucleotide_files, output_folder, threads, very_best, genes_called=True)
 
@@ -288,27 +279,27 @@ def load_input_files_from_file(input_file):
 
     '''
 
-    input_handle = get_file_handle(input_file)
     is_seq_file = False
-    for line in input_handle:
-        if line.startswith('>'):
-            is_seq_file = True
-        break
-    input_handle.close()
+    with get_file_handle(input_file) as input_handle:
+        for line in input_handle:
+            if line.startswith('>'):
+                is_seq_file = True
+            break
     tmp_input_files = []
     if is_seq_file:
         tmp_input_files = [input_file]
     else:
 
         broken_file = None
-        input_handle = get_file_handle(input_file)
-        for line in input_handle:
-            if pathlib.Path(line.strip()).exists():
-                tmp_input_files.append(pathlib.Path(line.strip()))
-            else:
-                broken_file = line.strip()
-                break
-        input_handle.close()
+        with get_file_handle(input_file) as input_handle:
+            for line in input_handle:
+                if not line.strip():
+                    continue
+                if pathlib.Path(line.strip()).exists():
+                    tmp_input_files.append(pathlib.Path(line.strip()))
+                else:
+                    broken_file = line.strip()
+                    break
 
         if broken_file:
             logging.error(f'Input file is a mapping file. But some lines have non existing files. E.g. {broken_file}')
@@ -373,12 +364,12 @@ def parse_extraction():
     parser.add_argument("-t", type=int, default=1)
     parser.add_argument("-v", action='store_true')
 
+    if not sys.argv[2:]:
+        parser.print_usage()
+        shutdown(0)
+
     startup()
     args = parser.parse_args(sys.argv[2:])
-
-    if sys.argv[2:] == []:
-        parser.print_usage()
-        shutdown(1)
 
     # positionals
 
@@ -411,14 +402,11 @@ def parse_extraction():
 
 
 
-    elif mode == 'genome' or mode == 'metagenome':
+    elif mode in ('genome', 'metagenome'):
         check_sequence_type(input_sequence_files, 'NT')
         if args.d:
             logging.error('-d parameter can\'t be set in metagenome or genome mode. Quitting ...')
             shutdown(1)
-    else:
-        logging.error(f'Invalid mode {mode}. Quitting ...')
-        shutdown(1)
 
 
     if threads < 1:
@@ -486,14 +474,15 @@ def main():
 
     parser.add_argument('command',
                         choices=["extraction"])
+
+    if not sys.argv[1:]:
+        parser.print_usage()
+        shutdown(0)
+
     args: argparse.Namespace = parser.parse_args(sys.argv[1:2])
 
     if args.command == 'extraction':
         parse_extraction()
-    else:
-        parser.print_usage()
-        print(f'Unrecognized command {args}')
-        shutdown(1)
     shutdown(0)
 
 

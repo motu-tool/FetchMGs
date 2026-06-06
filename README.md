@@ -1,4 +1,4 @@
-# fetchMGs 2.0 for Python 3
+# fetchMGs 2 for Python 3
 
 fetchMGs (1.0 - 1.2) is copyright (c) 2019 Shinichi Sunagawa and Daniel R Mende.
 
@@ -18,7 +18,7 @@ The program `fetchMGs` was written to extract the 40 MGs from genomes and metage
 
 ## Installation
 
-FetchMGs and all its dependencies can be installed via `pip` and have been tested with Python 3.12.
+FetchMGs and all its dependencies can be installed via `pip` and have been tested with Python 3.10-3.14.
 
 ```
 $pip install fetchMGs
@@ -102,6 +102,16 @@ Program: FetchMGs extracts the 40
 ```
 
 ## Changelog
+
+### 2.1.3
+
+- Updated `pyhmmer` to `~0.12.0`; fixed API compatibility (sequence name fields now return `str` instead of `bytes`)
+- Loosened `pyrodigal` pin from `== 3.6.3.post1` to `>= 3.6.3.post1`
+- Memory optimisation: protein sequences are now searched in chunks of 50,000 instead of loading entire files into memory at once
+- Bug fixes:
+  - Map files with empty or trailing blank lines no longer trigger false "file not found" errors
+- Build system migrated to `pyproject.toml` only (removed `setup.py`, `setup.cfg`, `MANIFEST.in`)
+- Regression test suite added (pytest + tox, GitHub Actions CI for Python 3.10–3.14)
 
 ### 2.1.0
 

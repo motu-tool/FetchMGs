@@ -68,7 +68,7 @@ _GENOME_GENES_SINGLE = _single_cases(_GENOME_GENES_DIR)
                          ids=[c[1].name for c in _GENOME_GENES_SINGLE])
 def test_gene_from_genomes_single(input_faa, expected_dir, tmp_path):
     input_fna = input_faa.with_name(input_faa.name.replace(".faa.gz", ".fna.gz"))
-    extraction_genes([input_faa], [input_fna], tmp_path, threads=1, very_best=True)
+    extraction_genes([input_faa], [input_fna], tmp_path, threads=1, very_best=True, chunk_size=100)
     assert_dir_matches(tmp_path, expected_dir)
 
 
@@ -76,7 +76,7 @@ def test_gene_from_genomes_multi(tmp_path, monkeypatch):
     monkeypatch.chdir(_GENOME_GENES_DIR)
     input_faa_files = load_input_files_from_file(_GENOME_GENES_DIR / "input" / "genome_genes_faa")
     input_fna_files = load_input_files_from_file(_GENOME_GENES_DIR / "input" / "genome_genes_fna")
-    extraction_genes(input_faa_files, input_fna_files, tmp_path, threads=1, very_best=True)
+    extraction_genes(input_faa_files, input_fna_files, tmp_path, threads=1, very_best=True, chunk_size=100)
     assert_dir_matches(tmp_path, _GENOME_GENES_DIR / "output_multi")
 
 
@@ -110,7 +110,7 @@ _METAGENOME_GENES_SINGLE = _single_cases(_METAGENOME_GENES_DIR)
                          ids=[c[1].name for c in _METAGENOME_GENES_SINGLE])
 def test_gene_from_metagenomes_single(input_faa, expected_dir, tmp_path):
     input_fna = input_faa.with_name(input_faa.name.replace(".faa.gz", ".fna.gz"))
-    extraction_genes([input_faa], [input_fna], tmp_path, threads=1, very_best=False)
+    extraction_genes([input_faa], [input_fna], tmp_path, threads=1, very_best=False, chunk_size=100)
     assert_dir_matches(tmp_path, expected_dir)
 
 
@@ -118,5 +118,15 @@ def test_gene_from_metagenomes_multi(tmp_path, monkeypatch):
     monkeypatch.chdir(_METAGENOME_GENES_DIR)
     input_faa_files = load_input_files_from_file(_METAGENOME_GENES_DIR / "input" / "metagenome_genes_faa")
     input_fna_files = load_input_files_from_file(_METAGENOME_GENES_DIR / "input" / "metagenome_genes_fna")
-    extraction_genes(input_faa_files, input_fna_files, tmp_path, threads=1, very_best=False)
+    extraction_genes(input_faa_files, input_fna_files, tmp_path, threads=1, very_best=False, chunk_size=100)
     assert_dir_matches(tmp_path, _METAGENOME_GENES_DIR / "output_multi")
+
+
+# ── load_input_files_from_file ────────────────────────────────────────────────
+
+def test_map_file_with_empty_lines(tmp_path):
+    input_file = _GENOME_DIR / "input" / "ACIN21-1_SAMN05422111_MAG_00000002.fa.gz"
+    map_file = tmp_path / "map.txt"
+    map_file.write_text(f"{input_file}\n\n")
+    result = load_input_files_from_file(map_file)
+    assert result == [input_file]
