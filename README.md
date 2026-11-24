@@ -109,31 +109,18 @@ Program: FetchMGs extracts the 40
 ### 2.2.0
 
 - Same marker genes as 2.1.3; faster, and memory no longer grows with the input. On 6 threads:
-  - 1M metagenome genes (gene mode): 201 s and up to 2.6 GB → 140 s and a flat 1.2 GB
-  - 60 genomes (genome mode): 48 s → 24 s
-  - a 153 Mbp metagenome (metagenome mode): 292 s → 90 s
-- Marker gene search: every HMM is now searched by all threads, each on its share of the proteins (pyhmmer
-  `parallel="targets"`). Before, each thread took whole HMMs, and every batch waited for COG0085, a quarter of the
-  work, so no number of threads went past ~3.8x.
-- Proteins are searched `-b` at a time (default 500,000), across input files: many small genomes share a batch,
-  and every hit goes back to its file. pyhmmer's hits hold reference cycles that Python freed only rarely (GBs per
-  million proteins); they are now collected after every batch.
+  - 1M genes (gene mode): 140s, 1.2 GB
+  - 60 genomes (genome mode): 24s
+  - 150Mbp metagenome (metagenome mode): 90s
+- Marker gene search: switching to pyhmmer `parallel="targets"`.
+- Proteins are searched `-b` at a time (default 500,000) to reduce memory spikes.
 - Gene calling uses the `-t` threads: genomes are called in parallel, each with its own Prodigal model, and the
-  contigs of a metagenome are called in parallel and streamed, so the assembly is no longer held in memory.
-  Metagenome mode calls every record; before, records with the same name were collapsed into one.
-- The contig number in the `ID=` field of the `.genes.faa` and `.genes.fna` headers counts the contigs of each
-  input file from 1, as Prodigal does and as a run with that file alone did. Before, it kept counting across the
-  files of a run. The marker gene outputs carry only the gene names and are unchanged.
+  contigs of a metagenome are called in parallel.
 - Bug fixes:
   - Genomes and nucleotide gene files with IUPAC ambiguity codes (R, Y, K, M, S, W, B, D, H, V) were rejected as
     amino acids or unknown. They are accepted now; pyrodigal reads them as unknown bases, so called genes show N
     there and their proteins X.
-  - Protein files with B, Z, J, U or O are accepted as amino acids.
   - An input file without sequences gives empty outputs and exit code 0, instead of "No valid input files found".
-  - Results no longer depend on the file system or on the batches: the HMMs are loaded in sorted order (it decides
-    the COG of a gene with two equal scores), and `-v` reports, of two genes with the same score, the one earlier
-    in its file.
-- Tests for threads, batches across files, ambiguous bases, empty input and ties.
 
 ### 2.1.3
 
