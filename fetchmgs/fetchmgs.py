@@ -8,7 +8,10 @@ import pyhmmer
 import Bio.SeqIO.FastaIO as FastaIO
 import gzip
 import collections
-import itertools
+import concurrent.futures
+import gc
+import io
+import re
 import tqdm
 from typing import List
 from importlib.metadata import version
@@ -17,7 +20,25 @@ __author__ = ('Hans-Joachim Ruscheweyh (hansr@ethz.ch), '
               'Chris Field, '
               'Shinichi Sunagawa')
 __version__ = version("fetchMGs")
-__date__ = '06 Jun 2026'
+__date__ = '23 Nov 2026'
+
+# Number of protein sequences searched against the HMMs at a time (-b). The proteins of several files can share a
+# batch, and a large file is split over several. Memory grows with the batch, not with the input.
+DEFAULT_BATCH_SIZE = 500000
+
+# Sequence type check (first 101 sequences of a file). A nucleotide file may hold IUPAC ambiguity codes; pyrodigal
+# reads every letter but A, C, G and T as an unknown base, written as N in the genes. At least 90% of the letters must
+# be A, C, G, T, U or N, so that a few short peptides made of nucleotide letters are not taken for DNA.
+NUCLEOTIDE_CODES = set('ACGTUNRYKMSWBDHV')
+PLAIN_NUCLEOTIDES = 'ACGTUN'
+MIN_PLAIN_NUCLEOTIDE_SHARE = 0.9
+AMINO_ACIDS = set('ARNDCQEGHILKMFPSTWYVX*BZJUO')
+
+# At most this many contigs per thread wait for gene calling or writing in metagenome mode.
+CONTIGS_PER_THREAD = 4
+
+# The contig number in the ID=<contig>_<gene> field of pyrodigal's gene headers.
+GENE_ID = re.compile(r' # ID=\d+_')
 __license__ = "GPL - v3"
 __maintainer__ = "Hans-Joachim Ruscheweyh"
 __email__ = 'hansr@ethz.ch'
@@ -36,7 +57,9 @@ def load_fetchmgs_files(very_best):
             splits = line.strip().split('\t')
             cutoffs[splits[0]] = float(splits[1])
 
-    hmm_files = data_folder.glob('*hmm')
+    # sorted: the HMM order decides which COG a gene gets when two score the same, so it must not depend on the
+    # file system's listing order
+    hmm_files = sorted(data_folder.glob('*hmm'))
     cog_2_cutoff_hmm_file = {}
     for hmm_file in hmm_files:
         cog = hmm_file.stem
@@ -55,42 +78,49 @@ def get_file_handle(f):
         return open(f, 'r')
 
 
+def classify_sequences(sequences):
+    """
+    Classify sequences as nucleotides (NT), amino acids (AA) or unknown (UK).
+
+    NT: only IUPAC nucleotide codes, at least MIN_PLAIN_NUCLEOTIDE_SHARE of them A, C, G, T, U or N.
+    AA: only amino acid letters, including B, Z, J, U, O, X and the stop *.
+    Checked in this order, as every nucleotide code but U is also an amino acid letter.
+
+    Returns:
+        'NT', 'AA', 'UK', or None if the sequences hold no letters at all
+    """
+    chars = set()
+    plain = 0
+    total = 0
+    for sequence in sequences:
+        sequence = sequence.upper().replace(" ", "")
+        chars.update(sequence)
+        plain += sum(sequence.count(base) for base in PLAIN_NUCLEOTIDES)
+        total += len(sequence)
+    if total == 0:
+        return None
+    if chars <= NUCLEOTIDE_CODES and plain >= MIN_PLAIN_NUCLEOTIDE_SHARE * total:
+        return "NT"
+    if chars <= AMINO_ACIDS:
+        return "AA"
+    return "UK"
+
+
 def check_sequence_type(input_files, expected_sequence_type):
     allowed_sequence_types = ['NT', 'AA']
     if expected_sequence_type not in allowed_sequence_types:
         logging.error(f'Expected sequence type {expected_sequence_type}. Quitting ...')
         shutdown(1)
-    nucleotide_bases = set("ATGCUN")
-    amino_acids = set("ARNDCQEGHILKMFPSTWYVX*")
-    file_2_sequences = collections.defaultdict(list)
 
     for input_file in input_files:
+        sequences = []
         with get_file_handle(input_file) as input_file_handle:
             for (_, sequence) in FastaIO.SimpleFastaParser(input_file_handle):
-                file_2_sequences[input_file].append(sequence)
-                if len(file_2_sequences[input_file]) > 100:
+                sequences.append(sequence)
+                if len(sequences) > 100:
                     break
-    input_file_2_classification = {}
-    input_file_2_average_length = {}
-    for input_file, sequences in file_2_sequences.items():
-        seqs = ''
-        seq_lengths = []
-        for seq in sequences:
-            seq_clean = seq.upper().replace(" ", "")
-            seqs = seqs + seq_clean
-            seq_lengths.append(len(seq_clean))
-        input_file_2_average_length[input_file] = sum(seq_lengths) / len(seq_lengths)
-        chars = set(seqs)
-        if chars.issubset(nucleotide_bases):
-            input_file_2_classification[input_file] = "NT"
-        elif chars.issubset(amino_acids):
-            input_file_2_classification[input_file] = "AA"
-        else:
-            input_file_2_classification[input_file] = "UK"
-
-
-    for input_file, sequence_type in input_file_2_classification.items():
-        if sequence_type != expected_sequence_type:
+        sequence_type = classify_sequences(sequences)
+        if sequence_type is not None and sequence_type != expected_sequence_type:
             logging.error(f'Expected sequence type is {expected_sequence_type} but some sequences in {input_file} match sequence type {sequence_type}. Quitting ...')
             shutdown(1)
 
@@ -101,7 +131,77 @@ def check_sequence_type(input_files, expected_sequence_type):
 
 
 
-def extraction_genes(input_files: List[pathlib.Path], nucleotide_files: List[pathlib.Path], output_folder: pathlib.Path, threads: int, very_best: bool, genes_called: bool = False, chunk_size: int = 50000) -> None:
+def load_hmms(very_best):
+    hmms = []
+    for cog, (cutoff, f) in load_fetchmgs_files(very_best).items():
+        with pyhmmer.plan7.HMMFile(f) as hmm_file:
+            hmm = hmm_file.read()
+            hmm.cutoffs.trusted = (cutoff, cutoff)
+            hmms.append(hmm)
+    return hmms
+
+
+def search_marker_genes(protein_files, hmms, threads, chunk_size):
+    """
+    Search the proteins of all files against the HMMs, chunk_size proteins at a time. A batch may hold the proteins
+    of several files (small genomes fill one together), and a large file is split over several batches. For the
+    search each protein is named <file index>:<position in its file>:<name>, so genes of the same name in different
+    files stay apart and every hit goes back to its file.
+
+    Args:
+        protein_files (List[pathlib.Path]): Files with genes in protein space. An empty file has no proteins.
+
+        hmms (list): The HMMs, with their cutoffs as trusted cutoffs.
+
+        threads (int): The number of threads to use for the search.
+
+        chunk_size (int): The number of proteins searched at a time.
+
+    Returns:
+        Per file a dict gene -> [(cog, score), ...] in HMM order, and per file a dict gene -> position in its file
+        (for the genes with a hit only)
+    """
+    alphabet = pyhmmer.easel.Alphabet.amino()
+    file_2_gene_2_cogs = [collections.defaultdict(list) for _ in protein_files]
+    file_2_gene_2_position = [{} for _ in protein_files]
+
+    def search(batch):
+        block = pyhmmer.easel.DigitalSequenceBlock(alphabet, batch)
+        # parallel="targets": every HMM is searched by all threads, each on its share of the batch (balanced by
+        # residues). By default each thread takes whole HMMs, and COG0085 alone is a quarter of the work.
+        for hits in pyhmmer.hmmsearch(hmms, block, bit_cutoffs="trusted", cpus=threads, parallel="targets"):
+            cog = hits.query.name
+            for hit in hits:
+                if hit.included:
+                    file_index, position, gene = hit.name.split(':', 2)
+                    file_index = int(file_index)
+                    file_2_gene_2_cogs[file_index][gene].append((cog, hit.score))
+                    file_2_gene_2_position[file_index][gene] = int(position)
+
+    batch = []
+    for file_index, prot_file in enumerate(tqdm.tqdm(protein_files, total=len(protein_files), unit='protein files')):
+        try:
+            seqs_file = pyhmmer.easel.SequenceFile(prot_file, digital=True, alphabet=alphabet, format='fasta')
+        except EOFError:  # an empty file: no proteins
+            continue
+        with seqs_file:
+            for position, seq in enumerate(seqs_file):
+                seq.name = f'{file_index}:{position}:{seq.name}'
+                batch.append(seq)
+                if len(batch) == chunk_size:
+                    search(batch)
+                    batch = []
+                    # pyhmmer's hits hold reference cycles around large C buffers. Only a full garbage collection
+                    # frees them, and Python runs one rarely: without this, memory grew by GBs per million proteins.
+                    gc.collect()
+    if batch:
+        search(batch)
+        batch = []
+        gc.collect()
+    return file_2_gene_2_cogs, file_2_gene_2_position
+
+
+def extraction_genes(input_files: List[pathlib.Path], nucleotide_files: List[pathlib.Path], output_folder: pathlib.Path, threads: int, very_best: bool, genes_called: bool = False, chunk_size: int = DEFAULT_BATCH_SIZE) -> None:
     """
     Extract the 40 marker genes from genes. Takes a list of protein
     files as input (input_files) and searches them against the HMM
@@ -122,22 +222,17 @@ def extraction_genes(input_files: List[pathlib.Path], nucleotide_files: List[pat
 
         genes_called (bool): False by default. Will be set to true if the extraction_genomes routine has also been executed
 
+        chunk_size (int): The number of protein sequences searched at a time, across files.
+
     Returns:
         None -> This method will write the results to output files and will not return any value
     """
 
     logging.info(f'Starting marker gene extraction from {len(input_files)} protein files.')
     output_folder.mkdir(exist_ok=True, parents=True)
-    cog_2_cutoff_hmm_file = load_fetchmgs_files(very_best)
-    hmms = []
-    for cog, (cutoff, f) in cog_2_cutoff_hmm_file.items():
-        with pyhmmer.plan7.HMMFile(f) as hmm_file:
-            hmm = hmm_file.read()
-            hmm.cutoffs.trusted = (cutoff, cutoff)
-            hmms.append(hmm)
+    hmms = load_hmms(very_best)
 
-    for prot_file, nucl_file in tqdm.tqdm(zip(input_files, nucleotide_files), total=len(input_files), unit=f'protein files'):
-
+    for prot_file, nucl_file in zip(input_files, nucleotide_files):
         if not pathlib.Path(prot_file).is_file():
             logging.error(f'Protein file {prot_file} does not exist. Quitting ...')
             shutdown(1)
@@ -146,19 +241,14 @@ def extraction_genes(input_files: List[pathlib.Path], nucleotide_files: List[pat
                 logging.error(f'Nucleotide file {nucl_file} does not exist. Quitting ...')
                 shutdown(1)
 
-        # for each gene, collect the cog and score
-        gene_2_cogs = collections.defaultdict(list)
-        alphabet = pyhmmer.easel.Alphabet.amino()
-        with pyhmmer.easel.SequenceFile(prot_file, digital=True, alphabet=alphabet) as seqs_file:
-            while chunk := list(itertools.islice(seqs_file, chunk_size)):
-                block = pyhmmer.easel.DigitalSequenceBlock(alphabet, chunk)
-                for hits in pyhmmer.hmmsearch(hmms, block, bit_cutoffs="trusted", cpus=threads):
-                    cog = hits.query.name
-                    for hit in hits:
-                        if hit.included:
-                            gene_2_cogs[hit.name].append((cog, hit.score))
+    # for each gene, collect the cog and score
+    file_2_gene_2_cogs, file_2_gene_2_position = search_marker_genes(input_files, hmms, threads, chunk_size)
 
-        # then pick for each gene the best scoring cog
+    for file_index, (prot_file, nucl_file) in enumerate(zip(input_files, nucleotide_files)):
+        gene_2_cogs = file_2_gene_2_cogs[file_index]
+        gene_2_position = file_2_gene_2_position[file_index]
+
+        # then pick for each gene the best scoring cog (on equal scores the first in HMM order)
         cog_2_hits = collections.defaultdict(list)
         for gene, cog_and_score in gene_2_cogs.items():
             (cog, score) = sorted(cog_and_score, key=lambda x: x[1], reverse=True)[0]
@@ -170,7 +260,8 @@ def extraction_genes(input_files: List[pathlib.Path], nucleotide_files: List[pat
         else:
             cog_2_final_hits = collections.defaultdict(list)
             for cog, hits in cog_2_hits.items():
-                best_hit = sorted(hits, key=lambda x: x[1], reverse=True)[0]
+                # on equal scores the gene that comes first in the input file, whatever the batches were
+                best_hit = sorted(hits, key=lambda x: (-x[1], gene_2_position[x[0]]))[0]
                 cog_2_final_hits[cog] = [best_hit]
 
         cog_2_final_hits.pop('COG0086', None)
@@ -213,7 +304,57 @@ def extraction_genes(input_files: List[pathlib.Path], nucleotide_files: List[pat
     logging.info(f'Finished marker gene extraction.')
 
 
-def extraction_genomes(input_files: List[pathlib.Path], output_folder: pathlib.Path, mode: str, threads: int, very_best: bool):
+def call_genes_genome(input_file, fna_file, faa_file):
+    """
+    Genome mode: train Prodigal on all contigs of the genome, then call the genes of each contig. Every genome gets
+    its own GeneFinder, so genomes can be called in parallel threads (pyrodigal releases the GIL while it works).
+    """
+    scaffold_2_sequence = {}
+    with get_file_handle(input_file) as infile:
+        for (header, sequence) in FastaIO.SimpleFastaParser(infile):
+            header = header.split()[0]
+            scaffold_2_sequence[header] = sequence
+    gene_finder = pyrodigal.GeneFinder(meta=False, closed=True, mask=True)
+    if scaffold_2_sequence:
+        gene_finder.train(*(seq for seq in scaffold_2_sequence.values()))
+    with open(fna_file, 'w') as fi, open(faa_file, 'w') as fo:
+        for header, sequence in scaffold_2_sequence.items():
+            genes = gene_finder.find_genes(sequence)
+            genes.write_genes(fi, sequence_id=header)
+            genes.write_translations(fo, sequence_id=header)
+
+
+def call_genes_metagenome(input_file, fna_file, faa_file, gene_finder, pool, threads):
+    """
+    Metagenome mode: the contigs are read one after the other and their genes called in parallel threads, all with
+    the same meta-mode GeneFinder (it is never trained, so it can be shared). Genes are written in contig order, and
+    at most CONTIGS_PER_THREAD contigs per thread are held in memory, not the whole assembly.
+    """
+    pending = collections.deque()
+    with get_file_handle(input_file) as infile, open(fna_file, 'w') as fi, open(faa_file, 'w') as fo, \
+            tqdm.tqdm(unit='contigs', position=1, leave=False) as progress:
+
+        def write_next():
+            contig_number, header, future = pending.popleft()
+            genes = future.result()
+            # The ID=<contig>_<gene> field: pyrodigal numbers the contigs of a shared GeneFinder in the order the
+            # threads happen to start them, so it is set here to the contig's position in its file, as Prodigal
+            # numbers the contigs of one input file. Contig names hold no whitespace, so ' # ID=' is only the field.
+            for write, handle in ((genes.write_genes, fi), (genes.write_translations, fo)):
+                buffer = io.StringIO()
+                write(buffer, sequence_id=header)
+                handle.write(GENE_ID.sub(f' # ID={contig_number}_', buffer.getvalue()))
+            progress.update()
+
+        for contig_number, (header, sequence) in enumerate(FastaIO.SimpleFastaParser(infile), start=1):
+            pending.append((contig_number, header.split()[0], pool.submit(gene_finder.find_genes, sequence)))
+            if len(pending) >= CONTIGS_PER_THREAD * threads:
+                write_next()
+        while pending:
+            write_next()
+
+
+def extraction_genomes(input_files: List[pathlib.Path], output_folder: pathlib.Path, mode: str, threads: int, very_best: bool, chunk_size: int = DEFAULT_BATCH_SIZE):
     """
     Extract genes from the input genomes/metagenomes and then also extract
     marker genes.
@@ -225,9 +366,12 @@ def extraction_genomes(input_files: List[pathlib.Path], output_folder: pathlib.P
 
         mode: str: can be either genome or metagenome. Decides on the mode in which the genes are being called.
 
-        threads (int): The number of threads to use for parallel processing.
+        threads (int): The number of threads to use for parallel processing: genomes are called in parallel, the
+            contigs of a metagenome are called in parallel, and the marker gene search uses them too.
 
         very_best (bool): By default all marker genes passing the cutoff will be reported. If this flag is set to True then only the best copy of the marker genes will be reported.
+
+        chunk_size (int): The number of protein sequences searched at a time, across files.
 
     Returns:
         None -> This method will write the results to output files and will not return any value
@@ -236,37 +380,25 @@ def extraction_genomes(input_files: List[pathlib.Path], output_folder: pathlib.P
     # 1. extract the genes from the genomes/metagenomes
     # 2. run the extraction_genes routine
     output_folder.mkdir(exist_ok=True, parents=True)
-    if mode == 'metagenome':
-        gene_finder = pyrodigal.GeneFinder(meta=True, closed=True, mask=True)
-    else:
-        gene_finder = pyrodigal.GeneFinder(meta=False, closed=True, mask=True)
-
-    nucleotide_files = []
-    protein_files = []
-    for input_file in tqdm.tqdm(input_files, total=len(input_files), unit=f'{mode}s', position=0):
+    for input_file in input_files:
         if not pathlib.Path(input_file).is_file():
             logging.error(f'{input_file} does not exist. Quitting ...')
             shutdown(1)
 
-        scaffold_2_sequence = {}
-        fname = pathlib.Path(input_file).name
-        fna_basename = str(output_folder / f'{fname}.genes.fna')
-        faa_basename = str(output_folder / f'{fname}.genes.faa')
-        nucleotide_files.append(pathlib.Path(fna_basename))
-        protein_files.append(pathlib.Path(faa_basename))
-        with get_file_handle(input_file) as infile:
-            for (header, sequence) in FastaIO.SimpleFastaParser(infile):
-                header = header.split()[0]
-                scaffold_2_sequence[header] = sequence
-        if mode == 'genome':
-            training_info = gene_finder.train(*(seq for seq in scaffold_2_sequence.values()))
-        with open(fna_basename, 'w') as fi, open(faa_basename, 'w') as fo:
-            for header, sequence in tqdm.tqdm(scaffold_2_sequence.items(), total=len(scaffold_2_sequence), unit='contigs', position=1, leave=False):
-                genes = gene_finder.find_genes(sequence)
-                genes.write_genes(fi, sequence_id=header)
-                genes.write_translations(fo, sequence_id=header)
+    nucleotide_files = [output_folder / f'{pathlib.Path(input_file).name}.genes.fna' for input_file in input_files]
+    protein_files = [output_folder / f'{pathlib.Path(input_file).name}.genes.faa' for input_file in input_files]
+    with concurrent.futures.ThreadPoolExecutor(max_workers=threads) as pool:
+        if mode == 'metagenome':
+            gene_finder = pyrodigal.GeneFinder(meta=True, closed=True, mask=True)
+            for input_file, fna_file, faa_file in tqdm.tqdm(zip(input_files, nucleotide_files, protein_files), total=len(input_files), unit=f'{mode}s', position=0):
+                call_genes_metagenome(input_file, fna_file, faa_file, gene_finder, pool, threads)
+        else:
+            futures = [pool.submit(call_genes_genome, input_file, fna_file, faa_file)
+                       for input_file, fna_file, faa_file in zip(input_files, nucleotide_files, protein_files)]
+            for future in tqdm.tqdm(concurrent.futures.as_completed(futures), total=len(futures), unit=f'{mode}s', position=0):
+                future.result()
     logging.info(f'Finished gene calling.')
-    extraction_genes(protein_files, nucleotide_files, output_folder, threads, very_best, genes_called=True)
+    extraction_genes(protein_files, nucleotide_files, output_folder, threads, very_best, genes_called=True, chunk_size=chunk_size)
 
 def is_gzipped(filename):
     with open(filename, 'rb') as f:
@@ -279,12 +411,17 @@ def load_input_files_from_file(input_file):
 
     '''
 
-    is_seq_file = False
+    first_line = None
     with get_file_handle(input_file) as input_handle:
         for line in input_handle:
-            if line.startswith('>'):
-                is_seq_file = True
-            break
+            if line.strip():
+                first_line = line
+                break
+    if first_line is None:
+        # nothing but blank lines: a sequence file without sequences, which gives empty outputs
+        logging.warning(f'{input_file} holds no sequences.')
+        return [input_file]
+    is_seq_file = first_line.startswith('>')
     tmp_input_files = []
     if is_seq_file:
         tmp_input_files = [input_file]
@@ -345,8 +482,11 @@ def parse_extraction():
 
     Algorithm options:
 
-       -t INT         Number of threads. Default=[1]
-       -v             Report only the very best hit per COG and input file. Only useful 
+       -t INT         Number of threads, for gene calling and the marker gene
+                        search. Default=[1]
+       -b INT         Number of protein sequences searched at a time, across
+                        input files. Memory grows with it. Default=[{DEFAULT_BATCH_SIZE}]
+       -v             Report only the very best hit per COG and input file. Only useful
                         if input files contain genes from genomes or are genomes.
           ''', formatter_class=CapitalisedHelpFormatter, add_help=False)
 
@@ -362,6 +502,7 @@ def parse_extraction():
     # Algorithm options
 
     parser.add_argument("-t", type=int, default=1)
+    parser.add_argument("-b", type=int, default=DEFAULT_BATCH_SIZE)
     parser.add_argument("-v", action='store_true')
 
     if not sys.argv[2:]:
@@ -379,6 +520,7 @@ def parse_extraction():
 
     # optionals
     threads = args.t
+    batch_size = args.b
     very_best = args.v
     nucleotide_file = args.d
 
@@ -411,6 +553,9 @@ def parse_extraction():
 
     if threads < 1:
         threads = 1
+    if batch_size < 1:
+        logging.error(f'-b must be at least 1 (got {batch_size}). Quitting ...')
+        shutdown(1)
     if threads > psutil.cpu_count():
         logging.warning('Number of threads requested is above the number of CPUs.')
 
@@ -420,9 +565,9 @@ def parse_extraction():
 
 
     if mode == 'gene':
-        extraction_genes(input_sequence_files, nucleotide_input_files, output_folder, threads, very_best, genes_called=False)
+        extraction_genes(input_sequence_files, nucleotide_input_files, output_folder, threads, very_best, genes_called=False, chunk_size=batch_size)
     else:
-        extraction_genomes(input_sequence_files, output_folder, mode, threads, very_best)
+        extraction_genomes(input_sequence_files, output_folder, mode, threads, very_best, chunk_size=batch_size)
 
 
 def shutdown(exitcode: int) -> None:
